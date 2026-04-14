@@ -76,23 +76,40 @@ body { font-family: 'Barlow', sans-serif; background: var(--bg); color: var(--te
 .main { max-width: 960px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
 
 /* TABS */
-.tabs { display: flex; gap: 0; margin-bottom: 1.5rem; border-bottom: 2px solid var(--border); }
+.tabs {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  margin-bottom: 1.5rem;
+}
 .tab {
-  padding: 10px 24px;
+  padding: 11px 6px;
   font-family: 'Barlow Condensed', sans-serif;
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 0.82rem;
+  font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--muted);
   cursor: pointer;
-  border: none;
-  background: none;
-  border-bottom: 3px solid transparent;
-  margin-bottom: -2px;
-  transition: color 0.15s;
+  border: 1.5px solid var(--border);
+  background: var(--white);
+  border-radius: var(--radius);
+  text-align: center;
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+  line-height: 1.2;
 }
-.tab.on { color: var(--blue); border-bottom-color: var(--blue); }
+.tab.on {
+  color: var(--white);
+  background: var(--blue);
+  border-color: var(--blue);
+}
+.tab:hover:not(.on) { border-color: var(--blue); color: var(--blue); background: var(--blue-pale); }
+@media (max-width: 600px) {
+  .tabs { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 380px) {
+  .tabs { grid-template-columns: 1fr 1fr; }
+}
 
 /* FILTERS */
 .filters {
@@ -153,6 +170,7 @@ td { padding: 7px 10px; vertical-align: middle; }
 .tp-1 { background: #d6ead9; color: #1a5c2e; padding: 2px 8px; border-radius: 20px; font-size: 0.72rem; font-weight: 600; }
 .tp-2 { background: #fef9c3; color: #713f12; padding: 2px 8px; border-radius: 20px; font-size: 0.72rem; font-weight: 600; }
 .tp-3 { background: #fce8e0; color: #8b3010; padding: 2px 8px; border-radius: 20px; font-size: 0.72rem; font-weight: 600; }
+.tp-4 { background: #ede9fe; color: #5b21b6; padding: 2px 8px; border-radius: 20px; font-size: 0.72rem; font-weight: 600; }
 .nome-cell { font-weight: 600; white-space: nowrap; }
 .anno-cell { color: var(--muted); font-size: 0.82rem; }
 .soc-cell { color: var(--muted); font-size: 0.8rem; max-width: 160px; }
@@ -213,6 +231,95 @@ footer { text-align: center; padding: 2rem 1rem; font-size: 0.75rem; color: var(
   font-weight: 700;
   text-decoration: underline;
 }
+
+thead th.sortable {
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  padding-right: 22px;
+}
+thead th.sortable::after {
+  content: '⇅';
+  position: absolute;
+  right: 6px;
+  opacity: 0.45;
+  font-size: 0.75rem;
+}
+thead th.sort-asc::after  { content: '▲'; opacity: 1; }
+thead th.sort-desc::after { content: '▼'; opacity: 1; }
+
+/* SCHEDA ATLETA */
+.scheda-search { display:flex; gap:12px; align-items:center; margin-bottom:1.2rem; }
+.scheda-search input { flex:1; padding:10px 14px; border:1.5px solid var(--border); border-radius:var(--radius); font-size:0.95rem; font-family:'Barlow',sans-serif; outline:none; }
+.scheda-search input:focus { border-color:var(--blue); }
+.scheda-suggestions { position:relative; flex:1; }
+.scheda-dropdown { position:absolute; top:100%; left:0; right:0; background:#fff; border:1.5px solid var(--border); border-radius:var(--radius); box-shadow:0 4px 16px rgba(0,0,0,0.10); z-index:100; max-height:220px; overflow-y:auto; }
+.scheda-dropdown div { padding:9px 14px; cursor:pointer; font-size:0.9rem; border-bottom:1px solid #f0f0f0; }
+.scheda-dropdown div:hover { background:var(--blue-pale); color:var(--blue); }
+.scheda-empty { text-align:center; color:var(--muted); padding:3rem 1rem; font-size:1rem; }
+.scheda-header { display:flex; align-items:flex-start; gap:1.5rem; background:var(--blue); color:#fff; border-radius:var(--radius); padding:1.4rem 1.6rem; margin-bottom:1.2rem; }
+.scheda-avatar { width:54px; height:54px; border-radius:50%; background:rgba(255,255,255,0.18); display:flex; align-items:center; justify-content:center; font-family:'Barlow Condensed',sans-serif; font-size:1.5rem; font-weight:900; flex-shrink:0; }
+.scheda-nome { font-family:'Barlow Condensed',sans-serif; font-size:1.5rem; font-weight:700; letter-spacing:0.04em; }
+.scheda-meta { font-size:0.82rem; opacity:0.8; margin-top:3px; }
+.scheda-pills { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+.scheda-pill { background:rgba(255,255,255,0.15); border-radius:20px; padding:3px 12px; font-size:0.78rem; font-family:'Barlow Condensed',sans-serif; letter-spacing:0.05em; }
+.gara-block { background:#fff; border:1.5px solid var(--border); border-radius:var(--radius); margin-bottom:1rem; overflow:hidden; }
+.gara-block-header { background:var(--blue-pale); padding:10px 16px; font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:0.95rem; letter-spacing:0.04em; color:var(--blue); display:flex; justify-content:space-between; align-items:center; }
+.gara-best { font-size:0.78rem; color:var(--muted); font-family:'Barlow',sans-serif; font-weight:400; }
+.gara-rows { }
+.gara-row { display:grid; grid-template-columns:80px 1fr 100px 100px; padding:9px 16px; border-top:1px solid #f0f0f0; align-items:center; font-size:0.87rem; }
+.gara-row:first-child { border-top:none; }
+.tappa-dot { display:inline-flex; align-items:center; gap:6px; }
+.progress-bar-wrap { background:#eef0f4; border-radius:4px; height:8px; position:relative; overflow:hidden; }
+.progress-bar-fill { height:100%; border-radius:4px; background:var(--blue); transition:width 0.4s; }
+.progress-bar-fill.best { background:var(--gold); }
+.gara-punti-val { text-align:right; font-weight:600; color:var(--blue); }
+.gara-tempo-val { text-align:right; color:var(--muted); font-size:0.82rem; }
+.scheda-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem; }
+.stat-card { background:#fff; border:1.5px solid var(--border); border-radius:var(--radius); padding:1rem 1.2rem; text-align:center; }
+.stat-card-val { font-family:'Barlow Condensed',sans-serif; font-size:1.8rem; font-weight:900; color:var(--blue); }
+.stat-card-label { font-size:0.75rem; color:var(--muted); margin-top:2px; text-transform:uppercase; letter-spacing:0.06em; }
+@media(max-width:600px){.scheda-grid{grid-template-columns:1fr 1fr;}.gara-row{grid-template-columns:70px 1fr 80px 80px;}}
+
+/* Staffette filters */
+.filters-staffette {
+  grid-template-columns: 1fr 1fr;
+}
+.filters-staffette .filter-full {
+  grid-column: 1 / -1;
+}
+@media (min-width: 600px) {
+  .filters-staffette {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+  .filters-staffette .filter-full {
+    grid-column: 1 / -1;
+  }
+}
+@media (min-width: 800px) {
+  .filters-staffette {
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+  }
+  .filters-staffette .filter-full {
+    grid-column: auto;
+  }
+}
+
+/* Iron filters */
+.filters-iron {
+  grid-template-columns: 1fr 1fr;
+}
+.filters-iron select:first-child {
+  grid-column: 1 / -1;
+}
+@media (min-width: 600px) {
+  .filters-iron {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+  .filters-iron select:first-child {
+    grid-column: auto;
+  }
+}
 </style>
 </head>
 <body>
@@ -235,9 +342,11 @@ footer { text-align: center; padding: 2rem 1rem; font-size: 0.75rem; color: var(
 
 <div class="main">
   <div class="tabs">
-    <button class="tab on" onclick="sw('atleti',this)">Per atleta</button>
+    <button class="tab on" onclick="sw('atleti',this)">Atleti</button>
     <button class="tab" onclick="sw('staffette',this)">Staffette</button>
-    <button class="tab" onclick="sw('societa',this)">Per società</button>
+    <button class="tab" onclick="sw('societa',this)">Classifica Società</button>
+    <button class="tab" onclick="sw('iron',this)">Classifiche Iron</button>
+    <button class="tab" onclick="sw('scheda',this)">Scheda Atleta</button>
   </div>
 
   <!-- ATLETI -->
@@ -249,6 +358,7 @@ footer { text-align: center; padding: 2rem 1rem; font-size: 0.75rem; color: var(
         <option value="T1">Tappa 1 (14 dic)</option>
         <option value="T2">Tappa 2 (1 feb)</option>
         <option value="T3">Tappa 3 (1 mar)</option>
+        <option value="T4">Tappa 4 (12 apr)</option>
       </select>
       <select id="fG" onchange="fa()">
         <option value="">Tutti i generi</option>
@@ -263,8 +373,8 @@ footer { text-align: center; padding: 2rem 1rem; font-size: 0.75rem; color: var(
       <table>
         <thead>
           <tr>
-            <th>Pos</th><th>Atleta</th><th>Società</th>
-            <th>Gara</th><th>Gen</th><th>Cat</th><th>Tempo</th><th>Punti</th><th>Tappa</th>
+            <th class="sortable" data-tbl="a" data-col="1" data-type="num">Pos</th><th class="sortable" data-tbl="a" data-col="2" data-type="str">Atleta</th><th class="sortable" data-tbl="a" data-col="4" data-type="str">Società</th>
+            <th class="sortable" data-tbl="a" data-col="5" data-type="str">Gara</th><th class="sortable" data-tbl="a" data-col="6" data-type="str">Gen</th><th class="sortable" data-tbl="a" data-col="7" data-type="str">Cat</th><th class="sortable" data-tbl="a" data-col="8" data-type="str">Tempo</th><th class="sortable" data-tbl="a" data-col="9" data-type="num">Punti</th><th class="sortable" data-tbl="a" data-col="0" data-type="str">Tappa</th>
           </tr>
         </thead>
         <tbody id="tbA"></tbody>
@@ -274,18 +384,19 @@ footer { text-align: center; padding: 2rem 1rem; font-size: 0.75rem; color: var(
 
   <!-- STAFFETTE -->
   <div id="staffette" class="pane">
-    <div class="filters" style="grid-template-columns:1fr 1fr 1fr 1fr">
-      <input type="text" id="sSt" placeholder="Cerca società..." oninput="fst()" style="grid-column:1/3">
+    <div class="filters filters-staffette">
+      <input type="text" id="sSt" placeholder="Cerca società..." oninput="fst()" class="filter-full">
       <select id="fTst" onchange="fst()">
         <option value="">Tutte le tappe</option>
         <option value="T1">Tappa 1 (14 dic)</option>
         <option value="T2">Tappa 2 (1 feb)</option>
         <option value="T3">Tappa 3 (1 mar)</option>
+        <option value="T4">Tappa 4 (12 apr)</option>
       </select>
       <select id="fTipo" onchange="fst()">
         <option value="">Tutti i tipi</option>
       </select>
-      <select id="fCatSt" onchange="fst()" style="grid-column:1/2">
+      <select id="fCatSt" onchange="fst()">
         <option value="">Tutte le categorie</option>
       </select>
     </div>
@@ -294,7 +405,7 @@ footer { text-align: center; padding: 2rem 1rem; font-size: 0.75rem; color: var(
       <table>
         <thead>
           <tr>
-            <th>Pos</th><th>Società</th><th>Tipo</th><th>Categoria</th><th>Tempo</th><th>Punti</th><th>Tappa</th>
+            <th class="sortable" data-tbl="s" data-col="1" data-type="num">Pos</th><th class="sortable" data-tbl="s" data-col="2" data-type="str">Società</th><th class="sortable" data-tbl="s" data-col="3" data-type="str">Tipo</th><th class="sortable" data-tbl="s" data-col="4" data-type="str">Categoria</th><th class="sortable" data-tbl="s" data-col="7" data-type="str">Tempo</th><th class="sortable" data-tbl="s" data-col="6" data-type="num">Punti</th><th class="sortable" data-tbl="s" data-col="0" data-type="str">Tappa</th>
           </tr>
         </thead>
         <tbody id="tbSt"></tbody>
@@ -302,6 +413,45 @@ footer { text-align: center; padding: 2rem 1rem; font-size: 0.75rem; color: var(
     </div>
   </div>
 
+
+  <!-- IRON CLASSIFICA -->
+  <div id="iron" class="pane">
+    <div class="filters filters-iron">
+      <select id="fIronType" onchange="fi()">
+        <option value="">Seleziona classifica...</option>
+        <option value="iron8">IRON 8</option>
+        <option value="iron4">IRON 4</option>
+      </select>
+      <select id="fIronGen" onchange="fi()">
+        <option value="">Tutti</option>
+        <option value="F">Femmine</option>
+        <option value="M">Maschi</option>
+      </select>
+      <select id="fIronCat" onchange="fi()">
+        <option value="">Tutte le categorie</option>
+      </select>
+    </div>
+    <div class="cnt" id="cntIron"></div>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Pos</th><th>Atleta</th><th>Società</th><th>Gen</th><th>Cat</th><th>Gare conteggiate</th><th>Punti Iron</th>
+          </tr>
+        </thead>
+        <tbody id="tbIron"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SCHEDA ATLETA -->
+  <div id="scheda" class="pane">
+    <div class="scheda-suggestions">
+      <input type="text" id="schedaInput" placeholder="Cerca atleta per nome..." oninput="schedaSearch()" autocomplete="off" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:0.95rem;font-family:Barlow,sans-serif;outline:none;margin-bottom:0.8rem;">
+      <div class="scheda-dropdown" id="schedaDrop" style="display:none"></div>
+    </div>
+    <div id="schedaContent"><p class="scheda-empty">Cerca un atleta per visualizzare la sua scheda personale.</p></div>
+  </div>
   <!-- SOCIETA -->
   <div id="societa" class="pane">
     <div class="filters" style="grid-template-columns:1fr 1fr">
@@ -311,6 +461,7 @@ footer { text-align: center; padding: 2rem 1rem; font-size: 0.75rem; color: var(
         <option value="T1">Tappa 1 (14 dic)</option>
         <option value="T2">Tappa 2 (1 feb)</option>
         <option value="T3">Tappa 3 (1 mar)</option>
+        <option value="T4">Tappa 4 (12 apr)</option>
       </select>
     </div>
     <div class="cnt" id="cntS"></div>
@@ -322,15 +473,15 @@ footer { text-align: center; padding: 2rem 1rem; font-size: 0.75rem; color: var(
 
 <script>
 const D=[
-["T1","1","MAINOLFI GIULIA","2011","AQUA SSD SRL","50 Dorso","F","U17","00:38.90","0"],
+["T1","1","MAINOLFI GIULIA","2011","AQUA SSD SRL","50 Dorso","F","U17","00:38.90","718.27"],
 ["T1","1","FUNICIELLO SOFIA","2008","AQUA SSD SRL","50 Dorso","F","U20","00:43.50","642.11"],
 ["T1","2","MONTUORI MARIA NEVE","2007","BLU TEAM CAMPANIA ASD","50 Dorso","F","U20","00:50.60","552.36"],
 ["T1","1","MIRANTE SARA","2005","ASD EUROPA NUOTO CLUB","50 Dorso","F","M20","00:41.00","681.07"],
 ["T1","2","NUMA EMMANUELA","2004","BLU TEAM CAMPANIA ASD","50 Dorso","F","M20","00:43.70","639.18"],
 ["T1","3","CICCARELLI ANNA","2005","ASD EUROPA NUOTO CLUB","50 Dorso","F","M20","00:45.90","608.68"],
 ["T1","4","VICIDOMINI MARIKA","2002","SSD OLIMPIA SPORT VILLAGE SRL","50 Dorso","F","M20","00:46.80","597.02"],
-["T1","1","CORAGGIO FRANCESCO","2011","BLU TEAM CAMPANIA ASD","50 Dorso","M","U17","00:34.90","0"],
-["T1","2","BUONOCORE FRANCESCO","2012","BLU TEAM CAMPANIA ASD","50 Dorso","M","U17","00:38.20","0"],
+["T1","1","CORAGGIO FRANCESCO","2011","BLU TEAM CAMPANIA ASD","50 Dorso","M","U17","00:34.90","684.67"],
+["T1","2","BUONOCORE FRANCESCO","2012","BLU TEAM CAMPANIA ASD","50 Dorso","M","U17","00:38.20","625.52"],
 ["T1","1","NASTRO PIETRO","2009","ASD EUROPA NUOTO CLUB","50 Dorso","M","U20","00:33.20","718.86"],
 ["T1","2","MANNIELLO VINCENZO","2008","BLU TEAM CAMPANIA ASD","50 Dorso","M","U20","00:36.40","656.01"],
 ["T1","3","SICIGNANO SIMONE","2008","BLU TEAM CAMPANIA ASD","50 Dorso","M","U20","00:48.70","491.0"],
@@ -380,15 +531,15 @@ const D=[
 ["T1","2","MESOLELLA PAOLO","1985","GIVA SSD ARL","200 Rana","M","M40","03:39.20","627.8"],
 ["T1","1","CAROTENUTO ANTONIO","1978","SPOR.CLUB POGGIOMARINO ASD","200 Rana","M","M45","03:59.20","592.4"],
 ["T1","1","CARBONE GIANNIGNAZIO","1972","SPOR.CLUB POGGIOMARINO ASD","200 Rana","M","M50","03:44.60","648.31"],
-["T1","1","CAVALLO ALBERTO","2011","ASD EUROPA NUOTO CLUB","100 Farfalla","M","U17","01:07.90","0"],
-["T1","2","GENOVESE SALVATORE","2010","BLU TEAM CAMPANIA ASD","100 Farfalla","M","U17","01:10.50","0"],
+["T1","1","CAVALLO ALBERTO","2011","ASD EUROPA NUOTO CLUB","100 Farfalla","M","U17","01:07.90","763.18"],
+["T1","2","GENOVESE SALVATORE","2010","BLU TEAM CAMPANIA ASD","100 Farfalla","M","U17","01:10.50","735.03"],
 ["T1","1","NASTRO PIETRO","2009","ASD EUROPA NUOTO CLUB","100 Farfalla","M","U20","01:09.40","746.55"],
 ["T1","2","CAMERLINGO DIEGO","2008","ASD EUROPA NUOTO CLUB","100 Farfalla","M","U20","01:19.10","655.23"],
 ["T1","1","CASSESE PAOLINO","2000","SPOR.CLUB POGGIOMARINO ASD","100 Farfalla","M","M25","01:02.90","834.39"],
 ["T1","2","ESPOSITO DONATO","1998","ASD EUROPA NUOTO CLUB","100 Farfalla","M","M25","01:16.30","688.24"],
-["T1","1","CARIELLO ALESSIA","2011","BLU TEAM CAMPANIA ASD","50 Rana","F","U17","00:42.10","0"],
-["T1","2","BRUSCO JASMINE","2010","ASD EUROPA NUOTO CLUB","50 Rana","F","U17","00:43.20","0"],
-["T1","3","MUSELLA ROSA","2012","BLU TEAM CAMPANIA ASD","50 Rana","F","U17","00:47.30","0"],
+["T1","1","CARIELLO ALESSIA","2011","BLU TEAM CAMPANIA ASD","50 Rana","F","U17","00:42.10","735.64"],
+["T1","2","BRUSCO JASMINE","2010","ASD EUROPA NUOTO CLUB","50 Rana","F","U17","00:43.20","716.91"],
+["T1","3","MUSELLA ROSA","2012","BLU TEAM CAMPANIA ASD","50 Rana","F","U17","00:47.30","654.77"],
 ["T1","1","MASIELLO ANNA FILIMENA","2009","AQUA SSD SRL","50 Rana","F","U20","00:49.30","628.08"],
 ["T1","2","MONTUORI MARIA NEVE","2007","BLU TEAM CAMPANIA ASD","50 Rana","F","U20","00:54.80","565.27"],
 ["T1","1","NAPOLANO CONSIGLIA","2005","ASD EUROPA NUOTO CLUB","50 Rana","F","M20","00:48.10","643.69"],
@@ -401,11 +552,11 @@ const D=[
 ["T1","1","FONTANELLA FELICIANA","1988","BLU TEAM CAMPANIA ASD","50 Rana","F","M35","00:41.90","765.8"],
 ["T1","1","PALMA LUCIA","1969","ASD EUROPA NUOTO CLUB","50 Rana","F","M55","01:05.40","554.12"],
 ["T1","1","ACONE MATILDE","1961","BLU TEAM CAMPANIA ASD","50 Rana","F","M65","01:08.20","595.18"],
-["T1","1","VAIANO CRISTIAN","2010","BLU TEAM CAMPANIA ASD","50 Rana","M","U17","00:31.90","0"],
-["T1","2","CACCIAPUOTI ALESSANDRO","2011","ASD EUROPA NUOTO CLUB","50 Rana","M","U17","00:36.60","0"],
-["T1","3","CARRIERI LORENZO","2010","ASD EUROPA NUOTO CLUB","50 Rana","M","U17","00:39.40","0"],
-["T1","4","MARINARO MARCELLO","2010","BLU TEAM CAMPANIA ASD","50 Rana","M","U17","00:44.00","0"],
-["T1","5","EREDITARIO DANIELE","2011","AQUA SSD SRL","50 Rana","M","U17","00:56.80","0"],
+["T1","1","VAIANO CRISTIAN","2010","BLU TEAM CAMPANIA ASD","50 Rana","M","U17","00:31.90","836.34"],
+["T1","2","CACCIAPUOTI ALESSANDRO","2011","ASD EUROPA NUOTO CLUB","50 Rana","M","U17","00:36.60","728.94"],
+["T1","3","CARRIERI LORENZO","2010","ASD EUROPA NUOTO CLUB","50 Rana","M","U17","00:39.40","677.14"],
+["T1","4","MARINARO MARCELLO","2010","BLU TEAM CAMPANIA ASD","50 Rana","M","U17","00:44.00","606.35"],
+["T1","5","EREDITARIO DANIELE","2011","AQUA SSD SRL","50 Rana","M","U17","00:56.80","469.7"],
 ["T1","1","MERCADANTE ANDREA","2008","AQUA SSD SRL","50 Rana","M","U20","00:37.80","705.53"],
 ["T1","2","SANNINO VINCENZO","2008","GAZZELLA TEAM ASD","50 Rana","M","U20","00:40.50","658.72"],
 ["T1","3","SICIGNANO SIMONE","2008","BLU TEAM CAMPANIA ASD","50 Rana","M","U20","00:44.60","598.44"],
@@ -431,7 +582,7 @@ const D=[
 ["T1","1","CAPOCCI MARCELLO","1968","ASD NANTES CLUB MASTER","50 Rana","M","M55","00:50.10","613.72"],
 ["T1","1","MANFREDONIA FRANCESCO","1962","BLU TEAM CAMPANIA ASD","50 Rana","M","M60","00:50.00","640.44"],
 ["T1","1","CORDUA PASQUALE","1947","AQUA SSD SRL","50 Rana","M","M75","00:56.60","686.44"],
-["T1","1","CARIELLO ALESSIA","2011","BLU TEAM CAMPANIA ASD","50 Farfalla","F","U17","00:43.40","0"],
+["T1","1","CARIELLO ALESSIA","2011","BLU TEAM CAMPANIA ASD","50 Farfalla","F","U17","00:43.40","609.27"],
 ["T1","1","GALLOTTI GIORGIA","2008","BLU TEAM CAMPANIA ASD","50 Farfalla","F","U20","00:35.20","750.56"],
 ["T1","2","PALMIERI PAPERA ARIANNA","2009","BLU TEAM CAMPANIA ASD","50 Farfalla","F","U20","00:50.30","526.14"],
 ["T1","1","GALLOTTI FEDERICA","2005","BLU TEAM CAMPANIA ASD","50 Farfalla","F","M20","00:34.60","763.51"],
@@ -440,9 +591,9 @@ const D=[
 ["T1","4","ORLANDO GIOVANNA","2006","ASD EUROPA NUOTO CLUB","50 Farfalla","F","M20","00:41.60","635.65"],
 ["T1","1","PINTO CHIARA","2000","ASD EUROPA NUOTO CLUB","50 Farfalla","F","M25","00:37.80","708.42"],
 ["T1","1","PANARIELLO CINZIA","1974","SPOR.CLUB POGGIOMARINO ASD","50 Farfalla","F","M50","00:47.90","611.64"],
-["T1","1","VAIANO CRISTIAN","2010","BLU TEAM CAMPANIA ASD","50 Farfalla","M","U17","00:30.10","0"],
-["T1","2","PICCOLO CLAUDIO","2010","BLU TEAM CAMPANIA ASD","50 Farfalla","M","U17","00:31.60","0"],
-["T1","3","CUSANO GIOVANNI PAOLO","2011","AQUA SSD SRL","50 Farfalla","M","U17","00:40.10","0"],
+["T1","1","VAIANO CRISTIAN","2010","BLU TEAM CAMPANIA ASD","50 Farfalla","M","U17","00:30.10","767.14"],
+["T1","2","PICCOLO CLAUDIO","2010","BLU TEAM CAMPANIA ASD","50 Farfalla","M","U17","00:31.60","730.73"],
+["T1","3","CUSANO GIOVANNI PAOLO","2011","AQUA SSD SRL","50 Farfalla","M","U17","00:40.10","575.83"],
 ["T1","1","MONGILLO STEFANO","2008","AQUA SSD SRL","50 Farfalla","M","U20","00:30.20","764.14"],
 ["T1","2","LONGOBARDI GIACOMO MARIA","2007","BLU TEAM CAMPANIA ASD","50 Farfalla","M","U20","00:32.10","719.2"],
 ["T1","3","MANNIELLO VINCENZO","2008","BLU TEAM CAMPANIA ASD","50 Farfalla","M","U20","00:33.80","683.24"],
@@ -467,74 +618,74 @@ const D=[
 ["T1","3","DE PASCALE ALFONSO","1981","AQUA SSD SRL","50 Farfalla","M","M45","00:45.30","552.97"],
 ["T1","1","CARBONE GIANNIGNAZIO","1972","SPOR.CLUB POGGIOMARINO ASD","50 Farfalla","M","M50","00:41.00","625.73"],
 ["T1","1","CAPOCCI MARCELLO","1968","ASD NANTES CLUB MASTER","50 Farfalla","M","M55","00:39.70","667.42"],
-["T1","1","TORTORELLI AURORA","2011","AQUA SSD SRL","50 SL","F","U17","00:34.30","0"],
-["T1","2","MAINOLFI GIULIA","2011","AQUA SSD SRL","50 SL","F","U17","00:34.60","0"],
-["T1","3","MUSELLA ROSA","2012","BLU TEAM CAMPANIA ASD","50 SL","F","U17","00:36.80","0"],
-["T1","1","FUNICIELLO SOFIA","2008","AQUA SSD SRL","50 SL","F","U20","00:36.80","671.35"],
-["T1","2","MASIELLO ANNA FILIMENA","2009","AQUA SSD SRL","50 SL","F","U20","00:37.60","657.14"],
-["T1","3","PALMIERI PAPERA ARIANNA","2009","BLU TEAM CAMPANIA ASD","50 SL","F","U20","00:44.60","554.46"],
-["T1","1","REBECCA ALTISSIMI","2003","A.S. AEROACCADEMIA","50 SL","F","M20","00:33.60","734.91"],
-["T1","2","NUMA EMMANUELA","2004","BLU TEAM CAMPANIA ASD","50 SL","F","M20","00:36.70","673.17"],
-["T1","3","DI LAURO CELONE CLAUDIA","2005","BLU TEAM CAMPANIA ASD","50 SL","F","M20","00:52.70","469.57"],
-["T1","1","CARUSO GLORIA","2001","A.S. AEROACCADEMIA","50 SL","F","M25","00:30.40","822.55"],
-["T1","2","PINTO CHIARA","2000","ASD EUROPA NUOTO CLUB","50 SL","F","M25","00:35.80","699.17"],
-["T1","1","FONTANELLA FELICIANA","1988","BLU TEAM CAMPANIA ASD","50 SL","F","M35","00:32.10","805.88"],
-["T1","1","PANARIELLO CINZIA","1974","SPOR.CLUB POGGIOMARINO ASD","50 SL","F","M50","00:40.30","672.1"],
-["T1","1","ACONE MATILDE","1961","BLU TEAM CAMPANIA ASD","50 SL","F","M65","00:52.40","579.47"],
-["T1","1","CACCIAPUOTI ALESSANDRO","2011","ASD EUROPA NUOTO CLUB","50 SL","M","U17","00:29.00","0"],
-["T1","2","GENOVESE SALVATORE","2010","BLU TEAM CAMPANIA ASD","50 SL","M","U17","00:29.40","0"],
-["T1","3","CORAGGIO FRANCESCO","2011","BLU TEAM CAMPANIA ASD","50 SL","M","U17","00:31.60","0"],
-["T1","4","BUONOCORE FRANCESCO","2012","BLU TEAM CAMPANIA ASD","50 SL","M","U17","00:32.40","0"],
-["T1","5","CUSANO GIOVANNI PAOLO","2011","AQUA SSD SRL","50 SL","M","U17","00:34.10","0"],
-["T1","6","MARINARO MARCELLO","2010","BLU TEAM CAMPANIA ASD","50 SL","M","U17","00:38.30","0"],
-["T1","7","EREDITARIO DANIELE","2011","AQUA SSD SRL","50 SL","M","U17","00:38.80","0"],
-["T1","1","MERCADANTE ANDREA","2008","AQUA SSD SRL","50 SL","M","U20","00:27.50","780.51"],
-["T1","2","MONGILLO STEFANO","2008","AQUA SSD SRL","50 SL","M","U20","00:28.60","750.69"],
-["T1","3","SANNINO VINCENZO","2008","GAZZELLA TEAM ASD","50 SL","M","U20","00:29.80","720.67"],
-["T1","4","LONGOBARDI GIACOMO MARIA","2007","BLU TEAM CAMPANIA ASD","50 SL","M","U20","00:30.60","701.95"],
-["T1","5","CAMERLINGO DIEGO","2008","ASD EUROPA NUOTO CLUB","50 SL","M","U20","00:32.30","665.23"],
-["T1","6","DI SOMMA CHRISTIAN","2007","BLU TEAM CAMPANIA ASD","50 SL","M","U20","00:42.30","508.71"],
-["T1","1","CARDIN ALBERTO","2003","A.S. AEROACCADEMIA","50 SL","M","M20","00:26.60","806.72"],
-["T1","2","GALIZIA MATTIA PIO","2005","BLU TEAM CAMPANIA ASD","50 SL","M","M20","00:27.10","791.94"],
-["T1","3","SEMERIA FEDERICO PATRICK","2005","A.S. AEROACCADEMIA","50 SL","M","M20","00:27.60","777.7"],
-["T1","4","DI MARCO MATTIA","2004","A.S. AEROACCADEMIA","50 SL","M","M20","00:27.80","772.14"],
-["T1","5","D'AMORE ALESSANDRO","2005","ATLAS SPORT VILLAGE SSD","50 SL","M","M20","00:28.30","758.6"],
-["T1","6","SANTAGATA ANTONIO","2004","A.S. AEROACCADEMIA","50 SL","M","M20","00:28.70","748.1"],
-["T1","7","CAPALDO ANTONIO PIO","2005","ATLAS SPORT VILLAGE SSD","50 SL","M","M20","00:28.90","742.96"],
-["T1","8","RUOCCO GIUSEPPE","2006","BLU TEAM CAMPANIA ASD","50 SL","M","M20","00:30.70","699.68"],
-["T1","9","CAIAZZO DAVIDE","2005","BLU TEAM CAMPANIA ASD","50 SL","M","M20","00:31.10","690.73"],
-["T1","10","COZZOLINO MARIO","2003","GIVA SSD ARL","50 SL","M","M20","00:33.20","647.31"],
-["T1","1","CASSESE PAOLINO","2000","SPOR.CLUB POGGIOMARINO ASD","50 SL","M","M25","00:26.70","814.13"],
-["T1","2","LANGELLOTTO NICOLA FRANCESCO","2001","BLU TEAM CAMPANIA ASD","50 SL","M","M25","00:31.30","695.24"],
-["T1","3","PAGANO EMIDDIO","2000","SSD OLIMPIA SPORT VILLAGE SRL","50 SL","M","M25","00:40.90","532.85"],
-["T1","4","FASOLINO LORENZO","1998","SSD OLIMPIA SPORT VILLAGE SRL","50 SL","M","M25","00:41.90","520.19"],
-["T1","5","BALDI ANTONIO","1998","ATLAS SPORT VILLAGE SSD","50 SL","M","M25","00:49.70","438.88"],
-["T1","1","CASABURI RAFFAELE","1996","SSD OLIMPIA SPORT VILLAGE SRL","50 SL","M","M30","00:32.20","679.94"],
-["T1","2","GIANNATTASIO ALFONSO MICHELE","1994","ATLAS SPORT VILLAGE SSD","50 SL","M","M30","00:33.60","651.78"],
-["T1","3","MASTROIANNI PASQUALE","1996","GIVA SSD ARL","50 SL","M","M30","00:35.50","617.09"],
-["T1","4","BOCCIA FELICE","1993","SPOR.CLUB POGGIOMARINO ASD","50 SL","M","M30","00:37.60","582.8"],
-["T1","5","PIERRI VINCENZO","1996","ATLAS SPORT VILLAGE SSD","50 SL","M","M30","00:38.50","569.25"],
-["T1","1","BALZANO MAURIZIO","1991","SPOR.CLUB POGGIOMARINO ASD","50 SL","M","M35","00:31.70","700.63"],
-["T1","2","GENIALE CHRISTIAN","1991","SSD OLIMPIA SPORT VILLAGE SRL","50 SL","M","M35","00:36.50","608.99"],
-["T1","3","COZZOLINO DOMENICO","1988","SPOR.CLUB POGGIOMARINO ASD","50 SL","M","M35","00:36.90","602.43"],
-["T1","1","RICCIO VINCENZO","1985","ASD EUROPA NUOTO CLUB","50 SL","M","M40","00:31.70","714.73"],
-["T1","2","OTTONE RAFFAELE","1986","SPOR.CLUB POGGIOMARINO ASD","50 SL","M","M40","00:33.80","670.59"],
-["T1","3","FORTE GIOVANNI","1986","SSD OLIMPIA SPORT VILLAGE SRL","50 SL","M","M40","00:33.90","668.62"],
-["T1","4","CARPENTIERI GERARDO","1985","SSD OLIMPIA SPORT VILLAGE SRL","50 SL","M","M40","00:34.10","664.72"],
-["T1","5","SOMMA SALVATORE","1982","BLU TEAM CAMPANIA ASD","50 SL","M","M40","00:34.20","662.79"],
-["T1","6","MESOLELLA PAOLO","1985","GIVA SSD ARL","50 SL","M","M40","00:34.40","658.96"],
-["T1","7","D'AURIA ISIDORO","1985","BLU TEAM CAMPANIA ASD","50 SL","M","M40","00:35.90","631.58"],
-["T1","8","CORREA IACOPO","1985","SPOR.CLUB POGGIOMARINO ASD","50 SL","M","M40","00:36.60","619.57"],
-["T1","9","FIONDELLA MICHELE","1984","AQUA SSD SRL","50 SL","M","M40","00:43.40","522.94"],
-["T1","1","CAROTENUTO ANTONIO","1978","SPOR.CLUB POGGIOMARINO ASD","50 SL","M","M45","00:32.10","728.17"],
-["T1","2","DI MEO FABIO","1979","AQUA SSD SRL","50 SL","M","M45","00:37.70","620.58"],
-["T1","3","DE PASCALE ALFONSO","1981","AQUA SSD SRL","50 SL","M","M45","00:38.50","607.75"],
-["T1","4","D'ANNA SALVATORE","1981","ASD IL DELFINO NUOTO","50 SL","M","M45","00:43.20","541.94"],
-["T1","1","RINALDI GIOVANNI","1973","AQUA SSD SRL","50 SL","M","M50","00:33.60","705.92"],
-["T1","1","CAPOCCI MARCELLO","1968","ASD NANTES CLUB MASTER","50 SL","M","M55","00:35.90","686.43"],
-["T1","1","FEO LUCIANO","1965","SSD OLIMPIA SPORT VILLAGE SRL","50 SL","M","M60","00:32.10","788.85"],
-["T1","2","MANFREDONIA FRANCESCO","1962","BLU TEAM CAMPANIA ASD","50 SL","M","M60","00:43.10","588.45"],
-["T1","1","DE VIVO NUNZIO","1956","SSD OLIMPIA SPORT VILLAGE SRL","50 SL","M","M70","01:07.10","414.86"],
+["T1","1","TORTORELLI AURORA","2011","AQUA SSD SRL","50 Stile","F","U17","00:34.30","720.54"],
+["T1","2","MAINOLFI GIULIA","2011","AQUA SSD SRL","50 Stile","F","U17","00:34.60","714.29"],
+["T1","3","MUSELLA ROSA","2012","BLU TEAM CAMPANIA ASD","50 Stile","F","U17","00:36.80","671.59"],
+["T1","1","FUNICIELLO SOFIA","2008","AQUA SSD SRL","50 Stile","F","U20","00:36.80","671.35"],
+["T1","2","MASIELLO ANNA FILIMENA","2009","AQUA SSD SRL","50 Stile","F","U20","00:37.60","657.14"],
+["T1","3","PALMIERI PAPERA ARIANNA","2009","BLU TEAM CAMPANIA ASD","50 Stile","F","U20","00:44.60","554.46"],
+["T1","1","REBECCA ALTISSIMI","2003","A.S. AEROACCADEMIA","50 Stile","F","M20","00:33.60","734.91"],
+["T1","2","NUMA EMMANUELA","2004","BLU TEAM CAMPANIA ASD","50 Stile","F","M20","00:36.70","673.17"],
+["T1","3","DI LAURO CELONE CLAUDIA","2005","BLU TEAM CAMPANIA ASD","50 Stile","F","M20","00:52.70","469.57"],
+["T1","1","CARUSO GLORIA","2001","A.S. AEROACCADEMIA","50 Stile","F","M25","00:30.40","822.55"],
+["T1","2","PINTO CHIARA","2000","ASD EUROPA NUOTO CLUB","50 Stile","F","M25","00:35.80","699.17"],
+["T1","1","FONTANELLA FELICIANA","1988","BLU TEAM CAMPANIA ASD","50 Stile","F","M35","00:32.10","805.88"],
+["T1","1","PANARIELLO CINZIA","1974","SPOR.CLUB POGGIOMARINO ASD","50 Stile","F","M50","00:40.30","672.1"],
+["T1","1","ACONE MATILDE","1961","BLU TEAM CAMPANIA ASD","50 Stile","F","M65","00:52.40","579.47"],
+["T1","1","CACCIAPUOTI ALESSANDRO","2011","ASD EUROPA NUOTO CLUB","50 Stile","M","U17","00:29.00","740.77"],
+["T1","2","GENOVESE SALVATORE","2010","BLU TEAM CAMPANIA ASD","50 Stile","M","U17","00:29.40","730.7"],
+["T1","3","CORAGGIO FRANCESCO","2011","BLU TEAM CAMPANIA ASD","50 Stile","M","U17","00:31.60","679.82"],
+["T1","4","BUONOCORE FRANCESCO","2012","BLU TEAM CAMPANIA ASD","50 Stile","M","U17","00:32.40","663.04"],
+["T1","5","CUSANO GIOVANNI PAOLO","2011","AQUA SSD SRL","50 Stile","M","U17","00:34.10","629.98"],
+["T1","6","MARINARO MARCELLO","2010","BLU TEAM CAMPANIA ASD","50 Stile","M","U17","00:38.30","560.9"],
+["T1","7","EREDITARIO DANIELE","2011","AQUA SSD SRL","50 Stile","M","U17","00:38.80","553.67"],
+["T1","1","MERCADANTE ANDREA","2008","AQUA SSD SRL","50 Stile","M","U20","00:27.50","780.51"],
+["T1","2","MONGILLO STEFANO","2008","AQUA SSD SRL","50 Stile","M","U20","00:28.60","750.69"],
+["T1","3","SANNINO VINCENZO","2008","GAZZELLA TEAM ASD","50 Stile","M","U20","00:29.80","720.67"],
+["T1","4","LONGOBARDI GIACOMO MARIA","2007","BLU TEAM CAMPANIA ASD","50 Stile","M","U20","00:30.60","701.95"],
+["T1","5","CAMERLINGO DIEGO","2008","ASD EUROPA NUOTO CLUB","50 Stile","M","U20","00:32.30","665.23"],
+["T1","6","DI SOMMA CHRISTIAN","2007","BLU TEAM CAMPANIA ASD","50 Stile","M","U20","00:42.30","508.71"],
+["T1","1","CARDIN ALBERTO","2003","A.S. AEROACCADEMIA","50 Stile","M","M20","00:26.60","806.72"],
+["T1","2","GALIZIA MATTIA PIO","2005","BLU TEAM CAMPANIA ASD","50 Stile","M","M20","00:27.10","791.94"],
+["T1","3","SEMERIA FEDERICO PATRICK","2005","A.S. AEROACCADEMIA","50 Stile","M","M20","00:27.60","777.7"],
+["T1","4","DI MARCO MATTIA","2004","A.S. AEROACCADEMIA","50 Stile","M","M20","00:27.80","772.14"],
+["T1","5","D'AMORE ALESSANDRO","2005","ATLAS SPORT VILLAGE SSD","50 Stile","M","M20","00:28.30","758.6"],
+["T1","6","SANTAGATA ANTONIO","2004","A.S. AEROACCADEMIA","50 Stile","M","M20","00:28.70","748.1"],
+["T1","7","CAPALDO ANTONIO PIO","2005","ATLAS SPORT VILLAGE SSD","50 Stile","M","M20","00:28.90","742.96"],
+["T1","8","RUOCCO GIUSEPPE","2006","BLU TEAM CAMPANIA ASD","50 Stile","M","M20","00:30.70","699.68"],
+["T1","9","CAIAZZO DAVIDE","2005","BLU TEAM CAMPANIA ASD","50 Stile","M","M20","00:31.10","690.73"],
+["T1","10","COZZOLINO MARIO","2003","GIVA SSD ARL","50 Stile","M","M20","00:33.20","647.31"],
+["T1","1","CASSESE PAOLINO","2000","SPOR.CLUB POGGIOMARINO ASD","50 Stile","M","M25","00:26.70","814.13"],
+["T1","2","LANGELLOTTO NICOLA FRANCESCO","2001","BLU TEAM CAMPANIA ASD","50 Stile","M","M25","00:31.30","695.24"],
+["T1","3","PAGANO EMIDDIO","2000","SSD OLIMPIA SPORT VILLAGE SRL","50 Stile","M","M25","00:40.90","532.85"],
+["T1","4","FASOLINO LORENZO","1998","SSD OLIMPIA SPORT VILLAGE SRL","50 Stile","M","M25","00:41.90","520.19"],
+["T1","5","BALDI ANTONIO","1998","ATLAS SPORT VILLAGE SSD","50 Stile","M","M25","00:49.70","438.88"],
+["T1","1","CASABURI RAFFAELE","1996","SSD OLIMPIA SPORT VILLAGE SRL","50 Stile","M","M30","00:32.20","679.94"],
+["T1","2","GIANNATTASIO ALFONSO MICHELE","1994","ATLAS SPORT VILLAGE SSD","50 Stile","M","M30","00:33.60","651.78"],
+["T1","3","MASTROIANNI PASQUALE","1996","GIVA SSD ARL","50 Stile","M","M30","00:35.50","617.09"],
+["T1","4","BOCCIA FELICE","1993","SPOR.CLUB POGGIOMARINO ASD","50 Stile","M","M30","00:37.60","582.8"],
+["T1","5","PIERRI VINCENZO","1996","ATLAS SPORT VILLAGE SSD","50 Stile","M","M30","00:38.50","569.25"],
+["T1","1","BALZANO MAURIZIO","1991","SPOR.CLUB POGGIOMARINO ASD","50 Stile","M","M35","00:31.70","700.63"],
+["T1","2","GENIALE CHRISTIAN","1991","SSD OLIMPIA SPORT VILLAGE SRL","50 Stile","M","M35","00:36.50","608.99"],
+["T1","3","COZZOLINO DOMENICO","1988","SPOR.CLUB POGGIOMARINO ASD","50 Stile","M","M35","00:36.90","602.43"],
+["T1","1","RICCIO VINCENZO","1985","ASD EUROPA NUOTO CLUB","50 Stile","M","M40","00:31.70","714.73"],
+["T1","2","OTTONE RAFFAELE","1986","SPOR.CLUB POGGIOMARINO ASD","50 Stile","M","M40","00:33.80","670.59"],
+["T1","3","FORTE GIOVANNI","1986","SSD OLIMPIA SPORT VILLAGE SRL","50 Stile","M","M40","00:33.90","668.62"],
+["T1","4","CARPENTIERI GERARDO","1985","SSD OLIMPIA SPORT VILLAGE SRL","50 Stile","M","M40","00:34.10","664.72"],
+["T1","5","SOMMA SALVATORE","1982","BLU TEAM CAMPANIA ASD","50 Stile","M","M40","00:34.20","662.79"],
+["T1","6","MESOLELLA PAOLO","1985","GIVA SSD ARL","50 Stile","M","M40","00:34.40","658.96"],
+["T1","7","D'AURIA ISIDORO","1985","BLU TEAM CAMPANIA ASD","50 Stile","M","M40","00:35.90","631.58"],
+["T1","8","CORREA IACOPO","1985","SPOR.CLUB POGGIOMARINO ASD","50 Stile","M","M40","00:36.60","619.57"],
+["T1","9","FIONDELLA MICHELE","1984","AQUA SSD SRL","50 Stile","M","M40","00:43.40","522.94"],
+["T1","1","CAROTENUTO ANTONIO","1978","SPOR.CLUB POGGIOMARINO ASD","50 Stile","M","M45","00:32.10","728.17"],
+["T1","2","DI MEO FABIO","1979","AQUA SSD SRL","50 Stile","M","M45","00:37.70","620.58"],
+["T1","3","DE PASCALE ALFONSO","1981","AQUA SSD SRL","50 Stile","M","M45","00:38.50","607.75"],
+["T1","4","D'ANNA SALVATORE","1981","ASD IL DELFINO NUOTO","50 Stile","M","M45","00:43.20","541.94"],
+["T1","1","RINALDI GIOVANNI","1973","AQUA SSD SRL","50 Stile","M","M50","00:33.60","705.92"],
+["T1","1","CAPOCCI MARCELLO","1968","ASD NANTES CLUB MASTER","50 Stile","M","M55","00:35.90","686.43"],
+["T1","1","FEO LUCIANO","1965","SSD OLIMPIA SPORT VILLAGE SRL","50 Stile","M","M60","00:32.10","788.85"],
+["T1","2","MANFREDONIA FRANCESCO","1962","BLU TEAM CAMPANIA ASD","50 Stile","M","M60","00:43.10","588.45"],
+["T1","1","DE VIVO NUNZIO","1956","SSD OLIMPIA SPORT VILLAGE SRL","50 Stile","M","M70","01:07.10","414.86"],
 ["T1","1","GALLOTTI GIORGIA","2008","BLU TEAM CAMPANIA ASD","100 Dorso","F","U20","01:23.60","730.19"],
 ["T1","1","GALLOTTI FEDERICA","2005","BLU TEAM CAMPANIA ASD","100 Dorso","F","M20","01:19.10","771.63"],
 ["T1","2","D'ANIELLO CARMEN","2006","BLU TEAM CAMPANIA ASD","100 Dorso","F","M20","01:26.00","709.86"],
@@ -550,8 +701,8 @@ const D=[
 ["T1","1","CIPOLLETTA DIEGO","1985","GAZZELLA TEAM ASD","100 Dorso","M","M40","01:16.50","744.07"],
 ["T1","2","CARPENTIERI GERARDO","1985","SSD OLIMPIA SPORT VILLAGE SRL","100 Dorso","M","M40","01:33.20","611.03"],
 ["T1","3","OTTONE RAFFAELE","1986","SPOR.CLUB POGGIOMARINO ASD","100 Dorso","M","M40","01:40.20","568.43"],
-["T2","1","MAINOLFI GIULIA","2011","AQUA SSD SRL","50 Dorso","F","U17","00:39.30","0"],
-["T2","2","BORRELLI SABRINA","2010","BLU TEAM CAMPANIA ASD","50 Dorso","F","U17","00:44.70","0"],
+["T2","1","MAINOLFI GIULIA","2011","AQUA SSD SRL","50 Dorso","F","U17","00:39.30","710.95"],
+["T2","2","BORRELLI SABRINA","2010","BLU TEAM CAMPANIA ASD","50 Dorso","F","U17","00:44.70","625.06"],
 ["T2","1","CASTELLANO CHIARA","2008","AS ACQUACHIARA","50 Dorso","F","U20","00:41.20","677.78"],
 ["T2","2","AVOSSA SOFIA","2007","AS ACQUACHIARA","50 Dorso","F","U20","00:44.80","623.56"],
 ["T2","3","FONTANA VITTORIA","2009","AS ACQUACHIARA","50 Dorso","F","U20","00:45.50","614.0"],
@@ -568,8 +719,8 @@ const D=[
 ["T2","2","GALIERO MARIA SOFIA","1967","ASD NANTES CLUB MASTER","50 Dorso","F","M55","00:48.70","667.48"],
 ["T2","1","ACONE MATILDE","1961","BLU TEAM CAMPANIA ASD","50 Dorso","F","M65","01:06.90","542.62"],
 ["T2","1","MAURIELLO ERMINIA","1956","ASD NANTES CLUB MASTER","50 Dorso","F","M70","01:06.50","578.26"],
-["T2","1","CAVALLO ALBERTO","2011","ASD EUROPA NUOTO CLUB","50 Dorso","M","U17","00:34.50","0"],
-["T2","2","CARRIERI LORENZO","2010","ASD EUROPA NUOTO CLUB","50 Dorso","M","U17","00:38.40","0"],
+["T2","1","CAVALLO ALBERTO","2011","ASD EUROPA NUOTO CLUB","50 Dorso","M","U17","00:34.50","692.19"],
+["T2","2","CARRIERI LORENZO","2010","ASD EUROPA NUOTO CLUB","50 Dorso","M","U17","00:38.40","621.89"],
 ["T2","1","MONGILLO STEFANO","2008","AQUA SSD SRL","50 Dorso","M","U20","00:31.60","755.03"],
 ["T2","2","CERQUA ANDREA","2007","ASD NANTES CLUB MASTER","50 Dorso","M","U20","00:35.60","670.67"],
 ["T2","3","CARUSO ANTONIO","2009","AS ACQUACHIARA","50 Dorso","M","U20","00:40.70","587.04"],
@@ -600,7 +751,7 @@ const D=[
 ["T2","1","FARINA DOMENICO","1955","ASD IL DELFINO NUOTO","50 Dorso","M","M70","00:40.60","822.79"],
 ["T2","2","ESPOSITO VINCENZO","1956","CARAVAGGIO SPORTING VILLAGE","50 Dorso","M","M70","00:53.10","629.83"],
 ["T2","3","DE VIVO NUNZIO","1956","SSD OLIMPIA SPORT VILLAGE SRL","50 Dorso","M","M70","01:12.80","459.86"],
-["T2","1","MUSELLA ROSA","2012","BLU TEAM CAMPANIA ASD","50 Rana","F","U17","00:50.70","0"],
+["T2","1","MUSELLA ROSA","2012","BLU TEAM CAMPANIA ASD","50 Rana","F","U17","00:50.70","610.91"],
 ["T2","1","DI VAIO MARIA LAURA","2008","AS ACQUACHIARA","50 Rana","F","U20","00:50.00","619.32"],
 ["T2","2","FONTANA VITTORIA","2009","AS ACQUACHIARA","50 Rana","F","U20","00:54.20","571.51"],
 ["T2","3","MONTUORI MARIA NEVE","2007","BLU TEAM CAMPANIA ASD","50 Rana","F","U20","00:54.90","564.25"],
@@ -616,9 +767,9 @@ const D=[
 ["T2","1","GALIERO MARIA SOFIA","1967","ASD NANTES CLUB MASTER","50 Rana","F","M55","00:49.30","734.34"],
 ["T2","2","PALMA LUCIA","1969","ASD EUROPA NUOTO CLUB","50 Rana","F","M55","01:04.80","559.23"],
 ["T2","1","CRISTIANO GIUSEPPINA","1961","ASD NANTES CLUB MASTER","50 Rana","F","M65","00:57.10","710.47"],
-["T2","1","CACCIAPUOTI ALESSANDRO","2011","ASD EUROPA NUOTO CLUB","50 Rana","M","U17","00:38.40","0"],
-["T2","2","CARRIERI LORENZO","2010","ASD EUROPA NUOTO CLUB","50 Rana","M","U17","00:40.20","0"],
-["T2","3","EREDITARIO DANIELE","2011","AQUA SSD SRL","50 Rana","M","U17","00:52.70","0"],
+["T2","1","CACCIAPUOTI ALESSANDRO","2011","ASD EUROPA NUOTO CLUB","50 Rana","M","U17","00:38.40","694.52"],
+["T2","2","CARRIERI LORENZO","2010","ASD EUROPA NUOTO CLUB","50 Rana","M","U17","00:40.20","663.43"],
+["T2","3","EREDITARIO DANIELE","2011","AQUA SSD SRL","50 Rana","M","U17","00:52.70","506.07"],
 ["T2","1","TRONCONE DAVIDE","2007","AS ACQUACHIARA","50 Rana","M","U20","00:34.00","783.92"],
 ["T2","2","SICIGNANO SIMONE","2008","BLU TEAM CAMPANIA ASD","50 Rana","M","U20","00:43.10","619.17"],
 ["T2","1","GALIZIA MATTIA PIO","2005","BLU TEAM CAMPANIA ASD","50 Rana","M","M20","00:34.10","781.63"],
@@ -661,8 +812,8 @@ const D=[
 ["T2","1","PINTO CHIARA","2000","ASD EUROPA NUOTO CLUB","50 Farfalla","F","M25","00:38.60","693.81"],
 ["T2","1","BENFIDI CLORINDA","1973","AQUA SSD SRL","50 Farfalla","F","M50","00:46.20","634.05"],
 ["T2","1","POLVERINO EMILIA","1968","AQUA SSD SRL","50 Farfalla","F","M55","00:57.50","535.7"],
-["T2","1","GENOVESE SALVATORE","2010","BLU TEAM CAMPANIA ASD","50 Farfalla","M","U17","00:30.60","0"],
-["T2","2","CUSANO GIOVANNI PAOLO","2011","AQUA SSD SRL","50 Farfalla","M","U17","00:39.60","0"],
+["T2","1","GENOVESE SALVATORE","2010","BLU TEAM CAMPANIA ASD","50 Farfalla","M","U17","00:30.60","754.78"],
+["T2","2","CUSANO GIOVANNI PAOLO","2011","AQUA SSD SRL","50 Farfalla","M","U17","00:39.60","583.24"],
 ["T2","1","COMITI ANDREA","2009","AS ACQUACHIARA","50 Farfalla","M","U20","00:29.50","782.15"],
 ["T2","2","NASTRO PIETRO","2009","ASD EUROPA NUOTO CLUB","50 Farfalla","M","U20","00:30.00","769.21"],
 ["T2","3","PIROZZI MATTEO","2007","AS ACQUACHIARA","50 Farfalla","M","U20","00:30.90","746.95"],
@@ -692,104 +843,104 @@ const D=[
 ["T2","1","PASSARETTI GIANLUCA","1972","CARAVAGGIO SPORTING VILLAGE","50 Farfalla","M","M50","00:40.20","638.12"],
 ["T2","1","CANCELLO GENNARO","1969","ASD NANTES CLUB MASTER","50 Farfalla","M","M55","00:35.80","739.72"],
 ["T2","1","TUPPO GAETANO","1958","CARAVAGGIO SPORTING VILLAGE","50 Farfalla","M","M65","00:37.40","768.62"],
-["T2","1","BRUSCO JASMINE","2010","ASD EUROPA NUOTO CLUB","50 SL","F","U17","00:32.00","0"],
-["T2","2","MAINOLFI GIULIA","2011","AQUA SSD SRL","50 SL","F","U17","00:33.50","0"],
-["T2","3","MUSELLA ROSA","2012","BLU TEAM CAMPANIA ASD","50 SL","F","U17","00:36.40","0"],
-["T2","4","CARIELLO ALESSIA","2011","BLU TEAM CAMPANIA ASD","50 SL","F","U17","00:38.60","0"],
-["T2","5","BORRELLI SABRINA","2010","BLU TEAM CAMPANIA ASD","50 SL","F","U17","00:40.00","0"],
-["T2","1","GALLOTTI GIORGIA","2008","BLU TEAM CAMPANIA ASD","50 SL","F","U20","00:32.40","761.96"],
-["T2","2","CASTELLANO CHIARA","2008","AS ACQUACHIARA","50 SL","F","U20","00:35.30","699.72"],
-["T2","3","AVOSSA SOFIA","2007","AS ACQUACHIARA","50 SL","F","U20","00:38.20","646.88"],
-["T2","4","PALMIERI PAPERA ARIANNA","2009","BLU TEAM CAMPANIA ASD","50 SL","F","U20","00:40.40","611.82"],
-["T2","5","MONTUORI MARIA NEVE","2007","BLU TEAM CAMPANIA ASD","50 SL","F","U20","00:44.30","558.2"],
-["T2","1","D'ANIELLO CARMEN","2006","BLU TEAM CAMPANIA ASD","50 SL","F","M20","00:33.60","734.91"],
-["T2","2","DI VITTORIO CLAUDIA","2003","SPORT LIFE SSD ARL","50 SL","F","M20","00:36.20","682.42"],
-["T2","3","SALZANO MARIA LUCIA","2003","AS ACQUACHIARA","50 SL","F","M20","00:36.60","675.0"],
-["T2","4","D'ANIELLO FEDERICA","2004","BLU TEAM CAMPANIA ASD","50 SL","F","M20","00:41.90","590.02"],
-["T2","5","QUALTIERI ROBERTA","2005","SPORT LIFE SSD ARL","50 SL","F","M20","00:43.30","571.03"],
-["T2","1","FABOZZI LUCIA","1999","GIVA SSD ARL","50 SL","F","M25","00:46.80","535.53"],
-["T2","1","CAPONE CLAUDIA","1990","ASD IL DELFINO NUOTO","50 SL","F","M35","00:33.30","777.01"],
-["T2","2","GALASSO FEDERICA","1987","ASD NANTES CLUB MASTER","50 SL","F","M35","00:36.10","717.08"],
-["T2","1","GRECO GAIA RAFFAELA","1977","ASD NANTES CLUB MASTER","50 SL","F","M45","00:39.10","682.7"],
-["T2","1","BENFIDI CLORINDA","1973","AQUA SSD SRL","50 SL","F","M50","00:39.40","687.37"],
-["T2","1","CALVINO DANIELA","1969","ASD NANTES CLUB MASTER","50 SL","F","M55","00:35.00","798.86"],
-["T2","2","POLVERINO EMILIA","1968","AQUA SSD SRL","50 SL","F","M55","00:42.30","661.65"],
-["T2","1","CRISTIANO GIUSEPPINA","1961","ASD NANTES CLUB MASTER","50 SL","F","M65","00:42.80","708.84"],
-["T2","1","MAURIELLO ERMINIA","1956","ASD NANTES CLUB MASTER","50 SL","F","M70","00:52.90","620.53"],
-["T2","1","VAIANO CRISTIAN","2010","BLU TEAM CAMPANIA ASD","50 SL","M","U17","00:26.60","0"],
-["T2","2","CACCIAPUOTI ALESSANDRO","2011","ASD EUROPA NUOTO CLUB","50 SL","M","U17","00:29.00","0"],
-["T2","3","CUSANO GIOVANNI PAOLO","2011","AQUA SSD SRL","50 SL","M","U17","00:32.80","0"],
-["T2","4","RACE FABIO","2011","PLAY OFF SSD E DI TEMPO LIBERO A RL","50 SL","M","U17","00:34.70","0"],
-["T2","5","EREDITARIO DANIELE","2011","AQUA SSD SRL","50 SL","M","U17","00:36.00","0"],
-["T2","1","PIROZZI MATTEO","2007","AS ACQUACHIARA","50 SL","M","U20","00:27.60","777.7"],
-["T2","2","MONGILLO STEFANO","2008","AQUA SSD SRL","50 SL","M","U20","00:27.90","769.4"],
-["T2","3","COMITI ANDREA","2009","AS ACQUACHIARA","50 SL","M","U20","00:28.60","750.69"],
-["T2","3","NASTRO PIETRO","2009","ASD EUROPA NUOTO CLUB","50 SL","M","U20","00:28.60","750.69"],
-["T2","5","CERQUA ANDREA","2007","ASD NANTES CLUB MASTER","50 SL","M","U20","00:29.00","740.41"],
-["T2","6","SANNINO VINCENZO","2008","GAZZELLA TEAM ASD","50 SL","M","U20","00:29.30","732.88"],
-["T2","7","FALCONE CHARLIE","2007","PLAY OFF SSD E DI TEMPO LIBERO A RL","50 SL","M","U20","00:29.50","727.95"],
-["T2","8","RAPPOSELLI ASCANIO","2009","PLAY OFF SSD E DI TEMPO LIBERO A RL","50 SL","M","U20","00:30.20","711.18"],
-["T2","9","CAMERLINGO DIEGO","2008","ASD EUROPA NUOTO CLUB","50 SL","M","U20","00:31.40","684.18"],
-["T2","10","COZZOLINO LORENZO","2008","PLAY OFF SSD E DI TEMPO LIBERO A RL","50 SL","M","U20","00:32.40","663.19"],
-["T2","11","RACE SALVATORE","2007","PLAY OFF SSD E DI TEMPO LIBERO A RL","50 SL","M","U20","00:32.60","659.15"],
-["T2","12","ESPOSITO VITTORIO","2008","PLAY OFF SSD E DI TEMPO LIBERO A RL","50 SL","M","U20","00:33.10","649.25"],
-["T2","13","CARUSO ANTONIO","2009","AS ACQUACHIARA","50 SL","M","U20","00:34.90","615.95"],
-["T2","1","SCOLA CATELLO","2002","BLU TEAM CAMPANIA ASD","50 SL","M","M20","00:26.50","809.74"],
-["T2","2","RAGUSEO FRANCESCO SAVERIO","2002","A.S. AEROACCADEMIA","50 SL","M","M20","00:27.70","774.91"],
-["T2","3","SANTAGATA ANTONIO","2004","A.S. AEROACCADEMIA","50 SL","M","M20","00:28.60","750.69"],
-["T2","4","RAPPOSELLI ENEA","2006","PLAY OFF SSD E DI TEMPO LIBERO A RL","50 SL","M","M20","00:28.70","748.1"],
-["T2","5","RAPPOSELLI TARCISIO","2004","PLAY OFF SSD E DI TEMPO LIBERO A RL","50 SL","M","M20","00:29.30","732.88"],
-["T2","6","MASSA MICHELE","2006","PLAY OFF SSD E DI TEMPO LIBERO A RL","50 SL","M","M20","00:30.10","713.53"],
-["T2","7","PINTO FRANCESCO ALESSANDRO","2002","SSD OLIMPIA SPORT VILLAGE SRL","50 SL","M","M20","00:30.30","708.85"],
-["T2","8","CHIERICHELLA PAOLO","2004","ASD IL DELFINO NUOTO","50 SL","M","M20","00:31.30","686.35"],
-["T2","9","D'AIELLO ANTONIO","2002","SPORT LIFE SSD ARL","50 SL","M","M20","00:31.60","679.87"],
-["T2","10","JABARIN ERNESTO","2005","ASD IL DELFINO NUOTO","50 SL","M","M20","00:31.90","673.52"],
-["T2","11","RIZZO MARIO","2002","ASD IL DELFINO NUOTO","50 SL","M","M20","00:32.10","669.35"],
-["T2","12","CRESPO RODRIGUEZ JON","2004","ASD IL DELFINO NUOTO","50 SL","M","M20","00:32.30","665.23"],
-["T2","13","SCHETTINO CARMINE","2003","BLU TEAM CAMPANIA ASD","50 SL","M","M20","00:33.20","647.31"],
-["T2","14","CERQUA LORENZO","2005","ASD NANTES CLUB MASTER","50 SL","M","M20","00:34.30","626.67"],
-["T2","15","MANZO GIUSEPPE","2005","BLU TEAM CAMPANIA ASD","50 SL","M","M20","00:36.10","595.59"],
-["T2","16","CHIROLLI GAETANO","2005","PLAY OFF SSD E DI TEMPO LIBERO A RL","50 SL","M","M20","00:37.80","568.95"],
-["T2","1","VINCIGUERRA GIUSEPPE ALFREDO","1998","SPORT LIFE SSD ARL","50 SL","M","M25","00:34.20","636.63"],
-["T2","2","IOVINE CIRO","1998","BLU TEAM CAMPANIA ASD","50 SL","M","M25","00:38.40","567.36"],
-["T2","3","FASOLINO LORENZO","1998","SSD OLIMPIA SPORT VILLAGE SRL","50 SL","M","M25","00:39.60","550.25"],
-["T2","4","PAGANO EMIDDIO","2000","SSD OLIMPIA SPORT VILLAGE SRL","50 SL","M","M25","00:44.10","494.36"],
-["T2","5","BALDI ANTONIO","1998","ATLAS SPORT VILLAGE SSD","50 SL","M","M25","00:51.00","427.73"],
-["T2","1","NAPPI DENIS","1996","ASD IL DELFINO NUOTO","50 SL","M","M30","00:26.30","831.32"],
-["T2","2","TRONCONE ANDREA","1993","ASD NANTES CLUB MASTER","50 SL","M","M30","00:33.40","655.65"],
-["T2","3","BOCCIA FELICE","1993","SPOR.CLUB POGGIOMARINO ASD","50 SL","M","M30","00:35.90","610.25"],
-["T2","4","ANNARUMMA NICOLA","1994","SPOR.CLUB POGGIOMARINO ASD","50 SL","M","M30","00:36.40","601.91"],
-["T2","5","SELLITTO STEFANO","1995","SSD OLIMPIA SPORT VILLAGE SRL","50 SL","M","M30","00:37.00","592.2"],
-["T2","6","PIERRI VINCENZO","1996","ATLAS SPORT VILLAGE SSD","50 SL","M","M30","00:39.90","549.38"],
-["T2","1","BALZANO MAURIZIO","1991","SPOR.CLUB POGGIOMARINO ASD","50 SL","M","M35","00:30.00","740.07"],
-["T2","2","DE MARTINO DANIELE","1988","PLAY OFF SSD E DI TEMPO LIBERO A RL","50 SL","M","M35","00:33.30","667.16"],
-["T2","3","GENIALE CHRISTIAN","1991","SSD OLIMPIA SPORT VILLAGE SRL","50 SL","M","M35","00:37.10","599.2"],
-["T2","4","DI PACE STEFANO","1990","SSD OLIMPIA SPORT VILLAGE SRL","50 SL","M","M35","00:37.90","586.61"],
-["T2","5","FURBATTO GIANLUCA","1987","ASD NANTES CLUB MASTER","50 SL","M","M35","00:44.20","503.38"],
-["T2","1","CATANIA DARIO","1985","ASD NANTES CLUB MASTER","50 SL","M","M40","00:30.20","750.0"],
-["T2","2","MILONE FERNANDO","1984","ASD IL DELFINO NUOTO","50 SL","M","M40","00:32.30","701.54"],
-["T2","3","FORTE GIOVANNI","1986","SSD OLIMPIA SPORT VILLAGE SRL","50 SL","M","M40","00:33.30","680.6"],
-["T2","4","COCCOS GIUSEPPE","1983","ASD EUROPA NUOTO CLUB","50 SL","M","M40","00:38.80","584.62"],
-["T2","5","FIONDELLA MICHELE","1984","AQUA SSD SRL","50 SL","M","M40","00:44.00","515.84"],
-["T2","1","SECCIA ADRIANO","1980","ASD NANTES CLUB MASTER","50 SL","M","M45","00:31.40","744.3"],
-["T2","2","MASIELLO ERMANNO","1977","AQUA SSD SRL","50 SL","M","M45","00:36.60","639.13"],
-["T2","3","DE PASCALE ALFONSO","1981","AQUA SSD SRL","50 SL","M","M45","00:40.20","582.18"],
-["T2","4","SCOLA AGOSTINO","1979","SPORT LIFE SSD ARL","50 SL","M","M45","00:41.50","564.03"],
-["T2","5","D'ANNA SALVATORE","1981","ASD IL DELFINO NUOTO","50 SL","M","M45","00:41.60","562.68"],
-["T2","1","OTTIERI ALFREDO","1976","PLAY OFF SSD E DI TEMPO LIBERO A RL","50 SL","M","M50","00:31.90","743.3"],
-["T2","2","D'ERRICO CRISTIANO","1974","CARAVAGGIO SPORTING VILLAGE","50 SL","M","M50","00:35.60","666.48"],
-["T2","3","LIPARULO VINCENZO","1972","PLAY OFF SSD E DI TEMPO LIBERO A RL","50 SL","M","M50","00:39.00","608.67"],
-["T2","4","CASTELLANO ANDREA","1973","AS ACQUACHIARA","50 SL","M","M50","00:39.90","595.01"],
-["T2","1","MASTRORILLI GIOVANNI","1967","ASD NANTES CLUB MASTER","50 SL","M","M55","00:30.50","807.17"],
-["T2","2","D'ARCANGELO ANDREA","1971","BLU TEAM CAMPANIA ASD","50 SL","M","M55","00:31.80","774.38"],
-["T2","3","CANCELLO GENNARO","1969","ASD NANTES CLUB MASTER","50 SL","M","M55","00:31.90","771.96"],
-["T2","4","SATARIANO CARLO","1967","ASD NANTES CLUB MASTER","50 SL","M","M55","00:35.70","690.25"],
-["T2","5","CAPONE ARMANDO","1971","ASD EUROPA NUOTO CLUB","50 SL","M","M55","00:37.00","666.13"],
-["T2","1","FORQUET ERALDO","1965","ASD NANTES CLUB MASTER","50 SL","M","M60","00:30.70","824.6"],
-["T2","2","CAMMAROTA UMBERTO","1963","ASD NANTES CLUB MASTER","50 SL","M","M60","00:32.60","776.83"],
-["T2","3","MARANGIO SERGIO","1964","ASD EUROPA NUOTO CLUB","50 SL","M","M60","00:39.30","645.06"],
-["T2","1","DE VIVO NUNZIO","1956","SSD OLIMPIA SPORT VILLAGE SRL","50 SL","M","M70","00:59.70","466.11"],
-["T2","1","CORDUA PASQUALE","1947","AQUA SSD SRL","50 SL","M","M75","00:47.10","634.46"],
+["T2","1","BRUSCO JASMINE","2010","ASD EUROPA NUOTO CLUB","50 Stile","F","U17","00:32.00","772.15"],
+["T2","2","MAINOLFI GIULIA","2011","AQUA SSD SRL","50 Stile","F","U17","00:33.50","737.58"],
+["T2","3","MUSELLA ROSA","2012","BLU TEAM CAMPANIA ASD","50 Stile","F","U17","00:36.40","678.81"],
+["T2","4","CARIELLO ALESSIA","2011","BLU TEAM CAMPANIA ASD","50 Stile","F","U17","00:38.60","640.13"],
+["T2","5","BORRELLI SABRINA","2010","BLU TEAM CAMPANIA ASD","50 Stile","F","U17","00:40.00","617.72"],
+["T2","1","GALLOTTI GIORGIA","2008","BLU TEAM CAMPANIA ASD","50 Stile","F","U20","00:32.40","761.96"],
+["T2","2","CASTELLANO CHIARA","2008","AS ACQUACHIARA","50 Stile","F","U20","00:35.30","699.72"],
+["T2","3","AVOSSA SOFIA","2007","AS ACQUACHIARA","50 Stile","F","U20","00:38.20","646.88"],
+["T2","4","PALMIERI PAPERA ARIANNA","2009","BLU TEAM CAMPANIA ASD","50 Stile","F","U20","00:40.40","611.82"],
+["T2","5","MONTUORI MARIA NEVE","2007","BLU TEAM CAMPANIA ASD","50 Stile","F","U20","00:44.30","558.2"],
+["T2","1","D'ANIELLO CARMEN","2006","BLU TEAM CAMPANIA ASD","50 Stile","F","M20","00:33.60","734.91"],
+["T2","2","DI VITTORIO CLAUDIA","2003","SPORT LIFE SSD ARL","50 Stile","F","M20","00:36.20","682.42"],
+["T2","3","SALZANO MARIA LUCIA","2003","AS ACQUACHIARA","50 Stile","F","M20","00:36.60","675.0"],
+["T2","4","D'ANIELLO FEDERICA","2004","BLU TEAM CAMPANIA ASD","50 Stile","F","M20","00:41.90","590.02"],
+["T2","5","QUALTIERI ROBERTA","2005","SPORT LIFE SSD ARL","50 Stile","F","M20","00:43.30","571.03"],
+["T2","1","FABOZZI LUCIA","1999","GIVA SSD ARL","50 Stile","F","M25","00:46.80","535.53"],
+["T2","1","CAPONE CLAUDIA","1990","ASD IL DELFINO NUOTO","50 Stile","F","M35","00:33.30","777.01"],
+["T2","2","GALASSO FEDERICA","1987","ASD NANTES CLUB MASTER","50 Stile","F","M35","00:36.10","717.08"],
+["T2","1","GRECO GAIA RAFFAELA","1977","ASD NANTES CLUB MASTER","50 Stile","F","M45","00:39.10","682.7"],
+["T2","1","BENFIDI CLORINDA","1973","AQUA SSD SRL","50 Stile","F","M50","00:39.40","687.37"],
+["T2","1","CALVINO DANIELA","1969","ASD NANTES CLUB MASTER","50 Stile","F","M55","00:35.00","798.86"],
+["T2","2","POLVERINO EMILIA","1968","AQUA SSD SRL","50 Stile","F","M55","00:42.30","661.65"],
+["T2","1","CRISTIANO GIUSEPPINA","1961","ASD NANTES CLUB MASTER","50 Stile","F","M65","00:42.80","708.84"],
+["T2","1","MAURIELLO ERMINIA","1956","ASD NANTES CLUB MASTER","50 Stile","F","M70","00:52.90","620.53"],
+["T2","1","VAIANO CRISTIAN","2010","BLU TEAM CAMPANIA ASD","50 Stile","M","U17","00:26.60","807.44"],
+["T2","2","CACCIAPUOTI ALESSANDRO","2011","ASD EUROPA NUOTO CLUB","50 Stile","M","U17","00:29.00","740.62"],
+["T2","3","CUSANO GIOVANNI PAOLO","2011","AQUA SSD SRL","50 Stile","M","U17","00:32.80","654.82"],
+["T2","4","RACE FABIO","2011","PLAY OFF SSD E DI TEMPO LIBERO A RL","50 Stile","M","U17","00:34.70","618.96"],
+["T2","5","EREDITARIO DANIELE","2011","AQUA SSD SRL","50 Stile","M","U17","00:36.00","596.61"],
+["T2","1","PIROZZI MATTEO","2007","AS ACQUACHIARA","50 Stile","M","U20","00:27.60","777.7"],
+["T2","2","MONGILLO STEFANO","2008","AQUA SSD SRL","50 Stile","M","U20","00:27.90","769.4"],
+["T2","3","COMITI ANDREA","2009","AS ACQUACHIARA","50 Stile","M","U20","00:28.60","750.69"],
+["T2","3","NASTRO PIETRO","2009","ASD EUROPA NUOTO CLUB","50 Stile","M","U20","00:28.60","750.69"],
+["T2","5","CERQUA ANDREA","2007","ASD NANTES CLUB MASTER","50 Stile","M","U20","00:29.00","740.41"],
+["T2","6","SANNINO VINCENZO","2008","GAZZELLA TEAM ASD","50 Stile","M","U20","00:29.30","732.88"],
+["T2","7","FALCONE CHARLIE","2007","PLAY OFF SSD E DI TEMPO LIBERO A RL","50 Stile","M","U20","00:29.50","727.95"],
+["T2","8","RAPPOSELLI ASCANIO","2009","PLAY OFF SSD E DI TEMPO LIBERO A RL","50 Stile","M","U20","00:30.20","711.18"],
+["T2","9","CAMERLINGO DIEGO","2008","ASD EUROPA NUOTO CLUB","50 Stile","M","U20","00:31.40","684.18"],
+["T2","10","COZZOLINO LORENZO","2008","PLAY OFF SSD E DI TEMPO LIBERO A RL","50 Stile","M","U20","00:32.40","663.19"],
+["T2","11","RACE SALVATORE","2007","PLAY OFF SSD E DI TEMPO LIBERO A RL","50 Stile","M","U20","00:32.60","659.15"],
+["T2","12","ESPOSITO VITTORIO","2008","PLAY OFF SSD E DI TEMPO LIBERO A RL","50 Stile","M","U20","00:33.10","649.25"],
+["T2","13","CARUSO ANTONIO","2009","AS ACQUACHIARA","50 Stile","M","U20","00:34.90","615.95"],
+["T2","1","SCOLA CATELLO","2002","BLU TEAM CAMPANIA ASD","50 Stile","M","M20","00:26.50","809.74"],
+["T2","2","RAGUSEO FRANCESCO SAVERIO","2002","A.S. AEROACCADEMIA","50 Stile","M","M20","00:27.70","774.91"],
+["T2","3","SANTAGATA ANTONIO","2004","A.S. AEROACCADEMIA","50 Stile","M","M20","00:28.60","750.69"],
+["T2","4","RAPPOSELLI ENEA","2006","PLAY OFF SSD E DI TEMPO LIBERO A RL","50 Stile","M","M20","00:28.70","748.1"],
+["T2","5","RAPPOSELLI TARCISIO","2004","PLAY OFF SSD E DI TEMPO LIBERO A RL","50 Stile","M","M20","00:29.30","732.88"],
+["T2","6","MASSA MICHELE","2006","PLAY OFF SSD E DI TEMPO LIBERO A RL","50 Stile","M","M20","00:30.10","713.53"],
+["T2","7","PINTO FRANCESCO ALESSANDRO","2002","SSD OLIMPIA SPORT VILLAGE SRL","50 Stile","M","M20","00:30.30","708.85"],
+["T2","8","CHIERICHELLA PAOLO","2004","ASD IL DELFINO NUOTO","50 Stile","M","M20","00:31.30","686.35"],
+["T2","9","D'AIELLO ANTONIO","2002","SPORT LIFE SSD ARL","50 Stile","M","M20","00:31.60","679.87"],
+["T2","10","JABARIN ERNESTO","2005","ASD IL DELFINO NUOTO","50 Stile","M","M20","00:31.90","673.52"],
+["T2","11","RIZZO MARIO","2002","ASD IL DELFINO NUOTO","50 Stile","M","M20","00:32.10","669.35"],
+["T2","12","CRESPO RODRIGUEZ JON","2004","ASD IL DELFINO NUOTO","50 Stile","M","M20","00:32.30","665.23"],
+["T2","13","SCHETTINO CARMINE","2003","BLU TEAM CAMPANIA ASD","50 Stile","M","M20","00:33.20","647.31"],
+["T2","14","CERQUA LORENZO","2005","ASD NANTES CLUB MASTER","50 Stile","M","M20","00:34.30","626.67"],
+["T2","15","MANZO GIUSEPPE","2005","BLU TEAM CAMPANIA ASD","50 Stile","M","M20","00:36.10","595.59"],
+["T2","16","CHIROLLI GAETANO","2005","PLAY OFF SSD E DI TEMPO LIBERO A RL","50 Stile","M","M20","00:37.80","568.95"],
+["T2","1","VINCIGUERRA GIUSEPPE ALFREDO","1998","SPORT LIFE SSD ARL","50 Stile","M","M25","00:34.20","636.63"],
+["T2","2","IOVINE CIRO","1998","BLU TEAM CAMPANIA ASD","50 Stile","M","M25","00:38.40","567.36"],
+["T2","3","FASOLINO LORENZO","1998","SSD OLIMPIA SPORT VILLAGE SRL","50 Stile","M","M25","00:39.60","550.25"],
+["T2","4","PAGANO EMIDDIO","2000","SSD OLIMPIA SPORT VILLAGE SRL","50 Stile","M","M25","00:44.10","494.36"],
+["T2","5","BALDI ANTONIO","1998","ATLAS SPORT VILLAGE SSD","50 Stile","M","M25","00:51.00","427.73"],
+["T2","1","NAPPI DENIS","1996","ASD IL DELFINO NUOTO","50 Stile","M","M30","00:26.30","831.32"],
+["T2","2","TRONCONE ANDREA","1993","ASD NANTES CLUB MASTER","50 Stile","M","M30","00:33.40","655.65"],
+["T2","3","BOCCIA FELICE","1993","SPOR.CLUB POGGIOMARINO ASD","50 Stile","M","M30","00:35.90","610.25"],
+["T2","4","ANNARUMMA NICOLA","1994","SPOR.CLUB POGGIOMARINO ASD","50 Stile","M","M30","00:36.40","601.91"],
+["T2","5","SELLITTO STEFANO","1995","SSD OLIMPIA SPORT VILLAGE SRL","50 Stile","M","M30","00:37.00","592.2"],
+["T2","6","PIERRI VINCENZO","1996","ATLAS SPORT VILLAGE SSD","50 Stile","M","M30","00:39.90","549.38"],
+["T2","1","BALZANO MAURIZIO","1991","SPOR.CLUB POGGIOMARINO ASD","50 Stile","M","M35","00:30.00","740.07"],
+["T2","2","DE MARTINO DANIELE","1988","PLAY OFF SSD E DI TEMPO LIBERO A RL","50 Stile","M","M35","00:33.30","667.16"],
+["T2","3","GENIALE CHRISTIAN","1991","SSD OLIMPIA SPORT VILLAGE SRL","50 Stile","M","M35","00:37.10","599.2"],
+["T2","4","DI PACE STEFANO","1990","SSD OLIMPIA SPORT VILLAGE SRL","50 Stile","M","M35","00:37.90","586.61"],
+["T2","5","FURBATTO GIANLUCA","1987","ASD NANTES CLUB MASTER","50 Stile","M","M35","00:44.20","503.38"],
+["T2","1","CATANIA DARIO","1985","ASD NANTES CLUB MASTER","50 Stile","M","M40","00:30.20","750.0"],
+["T2","2","MILONE FERNANDO","1984","ASD IL DELFINO NUOTO","50 Stile","M","M40","00:32.30","701.54"],
+["T2","3","FORTE GIOVANNI","1986","SSD OLIMPIA SPORT VILLAGE SRL","50 Stile","M","M40","00:33.30","680.6"],
+["T2","4","COCCOS GIUSEPPE","1983","ASD EUROPA NUOTO CLUB","50 Stile","M","M40","00:38.80","584.62"],
+["T2","5","FIONDELLA MICHELE","1984","AQUA SSD SRL","50 Stile","M","M40","00:44.00","515.84"],
+["T2","1","SECCIA ADRIANO","1980","ASD NANTES CLUB MASTER","50 Stile","M","M45","00:31.40","744.3"],
+["T2","2","MASIELLO ERMANNO","1977","AQUA SSD SRL","50 Stile","M","M45","00:36.60","639.13"],
+["T2","3","DE PASCALE ALFONSO","1981","AQUA SSD SRL","50 Stile","M","M45","00:40.20","582.18"],
+["T2","4","SCOLA AGOSTINO","1979","SPORT LIFE SSD ARL","50 Stile","M","M45","00:41.50","564.03"],
+["T2","5","D'ANNA SALVATORE","1981","ASD IL DELFINO NUOTO","50 Stile","M","M45","00:41.60","562.68"],
+["T2","1","OTTIERI ALFREDO","1976","PLAY OFF SSD E DI TEMPO LIBERO A RL","50 Stile","M","M50","00:31.90","743.3"],
+["T2","2","D'ERRICO CRISTIANO","1974","CARAVAGGIO SPORTING VILLAGE","50 Stile","M","M50","00:35.60","666.48"],
+["T2","3","LIPARULO VINCENZO","1972","PLAY OFF SSD E DI TEMPO LIBERO A RL","50 Stile","M","M50","00:39.00","608.67"],
+["T2","4","CASTELLANO ANDREA","1973","AS ACQUACHIARA","50 Stile","M","M50","00:39.90","595.01"],
+["T2","1","MASTRORILLI GIOVANNI","1967","ASD NANTES CLUB MASTER","50 Stile","M","M55","00:30.50","807.17"],
+["T2","2","D'ARCANGELO ANDREA","1971","BLU TEAM CAMPANIA ASD","50 Stile","M","M55","00:31.80","774.38"],
+["T2","3","CANCELLO GENNARO","1969","ASD NANTES CLUB MASTER","50 Stile","M","M55","00:31.90","771.96"],
+["T2","4","SATARIANO CARLO","1967","ASD NANTES CLUB MASTER","50 Stile","M","M55","00:35.70","690.25"],
+["T2","5","CAPONE ARMANDO","1971","ASD EUROPA NUOTO CLUB","50 Stile","M","M55","00:37.00","666.13"],
+["T2","1","FORQUET ERALDO","1965","ASD NANTES CLUB MASTER","50 Stile","M","M60","00:30.70","824.6"],
+["T2","2","CAMMAROTA UMBERTO","1963","ASD NANTES CLUB MASTER","50 Stile","M","M60","00:32.60","776.83"],
+["T2","3","MARANGIO SERGIO","1964","ASD EUROPA NUOTO CLUB","50 Stile","M","M60","00:39.30","645.06"],
+["T2","1","DE VIVO NUNZIO","1956","SSD OLIMPIA SPORT VILLAGE SRL","50 Stile","M","M70","00:59.70","466.11"],
+["T2","1","CORDUA PASQUALE","1947","AQUA SSD SRL","50 Stile","M","M75","00:47.10","634.46"],
 ["T2","1","BRUSCO JASMINE","2010","ASD EUROPA NUOTO CLUB","100 Rana","F","U17","01:33.90","0"],
 ["T2","2","CARIELLO ALESSIA","2011","BLU TEAM CAMPANIA ASD","100 Rana","F","U17","01:38.70","0"],
 ["T2","1","CLEMENTE MARTA","2004","AS ACQUACHIARA","100 Rana","F","M20","01:37.20","701.85"],
@@ -840,9 +991,9 @@ const D=[
 ["T2","2","BENFIDI CLORINDA","1973","AQUA SSD SRL","100 Misti","F","M50","01:44.80","652.0"],
 ["T2","1","POLVERINO EMILIA","1968","AQUA SSD SRL","100 Misti","F","M55","01:57.10","612.79"],
 ["T2","1","CRISTIANO GIUSEPPINA","1961","ASD NANTES CLUB MASTER","100 Misti","F","M65","01:55.40","691.09"],
-["T2","1","VAIANO CRISTIAN","2010","BLU TEAM CAMPANIA ASD","100 Misti","M","U17","01:07.30","0"],
-["T2","2","CAVALLO ALBERTO","2011","ASD EUROPA NUOTO CLUB","100 Misti","M","U17","01:11.80","0"],
-["T2","3","GENOVESE SALVATORE","2010","BLU TEAM CAMPANIA ASD","100 Misti","M","U17","01:12.50","0"],
+["T2","1","VAIANO CRISTIAN","2010","BLU TEAM CAMPANIA ASD","100 Misti","M","U17","01:07.30","798.49"],
+["T2","2","CAVALLO ALBERTO","2011","ASD EUROPA NUOTO CLUB","100 Misti","M","U17","01:11.80","748.45"],
+["T2","3","GENOVESE SALVATORE","2010","BLU TEAM CAMPANIA ASD","100 Misti","M","U17","01:12.50","741.22"],
 ["T2","1","LONGOBARDI GIACOMO MARIA","2007","BLU TEAM CAMPANIA ASD","100 Misti","M","U20","01:20.50","667.53"],
 ["T2","2","NOTARO EMANUELE","2007","GAZZELLA TEAM ASD","100 Misti","M","U20","01:22.40","652.18"],
 ["T2","3","CASCIO MATTIA","2008","AS ACQUACHIARA","100 Misti","M","U20","01:22.50","651.39"],
@@ -1015,70 +1166,70 @@ const D=[
 ["T3","1","TARDIO ANTONIO","1977","SPOR.CLUB POGGIOMARINO ASD","50 Farfalla","M","M45","00:36.50","685.56"],
 ["T3","1","IMPERO GIOVANNI MAURIZIO","1966","ASD NANTES CLUB MASTER","50 Farfalla","M","M60","00:47.20","587.13"],
 ["T3","1","FARINA DOMENICO","1955","ASD IL DELFINO NUOTO","50 Farfalla","M","M70","00:37.00","824.19"],
-["T3","1","AMORETTI ALESSIA","2007","NEW WONDER SSD","50 SL","F","U20","00:36.80","671.35"],
-["T3","2","CAPASSO MARIELE","2008","SPORT LIFE SSD ARL","50 SL","F","U20","00:38.30","645.19"],
-["T3","3","FONTANA VITTORIA","2009","AS ACQUACHIARA","50 SL","F","U20","00:39.70","622.56"],
-["T3","4","PALMIERI PAPERA ARIANNA","2009","BLU TEAM CAMPANIA ASD","50 SL","F","U20","00:40.10","616.38"],
-["T3","1","TRINCHESE MARIA","2005","NEW WONDER SSD","50 SL","F","M20","00:35.70","691.92"],
-["T3","2","SALZANO MARIA LUCIA","2003","AS ACQUACHIARA","50 SL","F","M20","00:36.10","684.3"],
-["T3","3","DI VITTORIO CLAUDIA","2003","SPORT LIFE SSD ARL","50 SL","F","M20","00:36.80","671.35"],
-["T3","4","ORLANDO GIOVANNA","2006","ASD EUROPA NUOTO CLUB","50 SL","F","M20","00:37.50","658.89"],
-["T3","5","CAVALLARO ASIA EMANUELA","2005","NEW WONDER SSD","50 SL","F","M20","00:37.70","655.41"],
-["T3","6","CLEMENTE MARIA","2006","AS ACQUACHIARA","50 SL","F","M20","00:40.70","607.33"],
-["T3","7","MAFFUCCI ANGELA","2004","NEW WONDER SSD","50 SL","F","M20","00:41.00","602.91"],
-["T3","8","QUALTIERI ROBERTA","2005","SPORT LIFE SSD ARL","50 SL","F","M20","00:41.90","590.02"],
-["T3","9","CACCIAPUOTI MARIA","2004","ASD EUROPA NUOTO CLUB","50 SL","F","M20","00:44.30","558.2"],
-["T3","10","SELLITTO LIVIA","2002","SSD OLIMPIA SPORT VILLAGE SRL","50 SL","F","M20","00:49.60","498.8"],
-["T3","1","SIMONELLI NIKLA","1998","GIVA SSD ARL","50 SL","F","M25","00:47.20","531.01"],
-["T3","2","FABOZZI LUCIA","1999","GIVA SSD ARL","50 SL","F","M25","00:48.70","514.72"],
-["T3","1","RUSSO VENICE","1996","ASD NANTES CLUB MASTER","50 SL","F","M30","01:38.00","259.67"],
-["T3","1","PANARIELLO CINZIA","1974","SPOR.CLUB POGGIOMARINO ASD","50 SL","F","M50","00:37.70","718.21"],
-["T3","1","PALMA LUCIA","1969","ASD EUROPA NUOTO CLUB","50 SL","F","M55","01:01.40","456.49"],
-["T3","1","ACONE MATILDE","1961","BLU TEAM CAMPANIA ASD","50 SL","F","M65","00:54.60","556.2"],
-["T3","1","PIROZZI MATTEO","2007","AS ACQUACHIARA","50 SL","M","U20","00:27.20","789.05"],
-["T3","2","MERCADANTE ANDREA","2008","AQUA SSD SRL","50 SL","M","U20","00:28.20","761.27"],
-["T3","3","COMITI ANDREA","2009","AS ACQUACHIARA","50 SL","M","U20","00:29.00","740.41"],
-["T3","4","MANGANIELLO GIOVANNI","2007","NEW WONDER SSD","50 SL","M","U20","00:29.90","718.27"],
-["T3","5","MIELE ALESSANDRO","2009","NEW WONDER SSD","50 SL","M","U20","00:33.80","635.88"],
-["T3","6","DI MAIO SALVATORE","2008","BLU TEAM CAMPANIA ASD","50 SL","M","U20","00:54.20","397.43"],
-["T3","1","MANGANIELLO MARIO","2004","NEW WONDER SSD","50 SL","M","M20","00:26.20","818.94"],
-["T3","2","IMPINTO YURI","2005","SPORT LIFE SSD ARL","50 SL","M","M20","00:29.20","735.37"],
-["T3","3","TASSARI FRANCESCO","2004","AS ACQUACHIARA","50 SL","M","M20","00:33.20","647.31"],
-["T3","4","DI MATTEO VINCENZO","2005","SPOR.CLUB POGGIOMARINO ASD","50 SL","M","M20","00:36.00","597.24"],
-["T3","1","DEL GIUDICE FERDINANDO","2001","SPOR.CLUB POGGIOMARINO ASD","50 SL","M","M25","00:29.60","734.9"],
-["T3","2","ROMANO GIANLUCA","1999","NEW WONDER SSD","50 SL","M","M25","00:30.20","720.39"],
-["T3","3","MAFFUCCI BERNARDINO","1999","NEW WONDER SSD","50 SL","M","M25","00:32.00","680.12"],
-["T3","4","SCAFURO VINCENZO","1998","NEW WONDER SSD","50 SL","M","M25","00:33.50","649.85"],
-["T3","5","MOLINARO DANTE","1999","ASD LIFE SWIMMING","50 SL","M","M25","00:37.00","588.71"],
-["T3","6","PAGANO EMIDDIO","2000","SSD OLIMPIA SPORT VILLAGE SRL","50 SL","M","M25","00:37.80","576.32"],
-["T3","7","CASSESE LUIGI","1998","BLU TEAM CAMPANIA ASD","50 SL","M","M25","00:45.90","475.05"],
-["T3","1","COZZUTO GIORGIO","1994","PLAY OFF SSD E DI TEMPO LIBERO A RL","50 SL","M","M30","00:30.40","719.93"],
-["T3","2","CORDISCO VALERIO","1993","ASD LIFE SWIMMING","50 SL","M","M30","00:32.10","682.04"],
-["T3","3","AMBROSINO ALFONSO","1996","NEW WONDER SSD","50 SL","M","M30","00:32.50","673.7"],
-["T3","4","SELLITTO STEFANO","1995","SSD OLIMPIA SPORT VILLAGE SRL","50 SL","M","M30","00:34.60","633.05"],
-["T3","5","TURINO GABRIELE","1992","ASD NANTES CLUB MASTER","50 SL","M","M30","00:37.50","584.35"],
-["T3","1","BALZANO MAURIZIO","1991","SPOR.CLUB POGGIOMARINO ASD","50 SL","M","M35","00:29.90","742.52"],
-["T3","2","TEDESCO LUIGI","1989","SPOR.CLUB POGGIOMARINO ASD","50 SL","M","M35","00:32.80","677.27"],
-["T3","3","DE MARTINO DANIELE","1988","PLAY OFF SSD E DI TEMPO LIBERO A RL","50 SL","M","M35","00:32.90","675.23"],
-["T3","4","GENIALE CHRISTIAN","1991","SSD OLIMPIA SPORT VILLAGE SRL","50 SL","M","M35","00:36.70","605.69"],
-["T3","5","GIORDANO SERGIO","1990","ASD LIFE SWIMMING","50 SL","M","M35","00:42.50","523.42"],
-["T3","1","CIPOLLETTA DIEGO","1985","GAZZELLA TEAM ASD","50 SL","M","M40","00:30.10","752.48"],
-["T3","2","FORTE GIOVANNI","1986","SSD OLIMPIA SPORT VILLAGE SRL","50 SL","M","M40","00:34.10","664.72"],
-["T3","3","CORREA IACOPO","1985","SPOR.CLUB POGGIOMARINO ASD","50 SL","M","M40","00:36.20","626.37"],
-["T3","4","FIONDELLA MICHELE","1984","AQUA SSD SRL","50 SL","M","M40","00:42.60","532.71"],
-["T3","1","D'ALESSANDRO FULVIO","1981","PLAY OFF SSD E DI TEMPO LIBERO A RL","50 SL","M","M45","00:30.00","778.81"],
-["T3","2","MAZZEO GABRIELE","1978","NEW WONDER SSD","50 SL","M","M45","00:30.40","768.63"],
-["T3","3","MOSCA GIOVANNI","1977","SPORT LIFE SSD ARL","50 SL","M","M45","00:33.20","704.19"],
-["T3","4","DI MEO FABIO","1979","AQUA SSD SRL","50 SL","M","M45","00:39.00","600.0"],
-["T3","5","SENATORE VINCENZO","1978","SSD OLIMPIA SPORT VILLAGE SRL","50 SL","M","M45","00:39.30","595.44"],
-["T3","6","SCOLA AGOSTINO","1979","SPORT LIFE SSD ARL","50 SL","M","M45","00:44.80","522.67"],
-["T3","1","BUONAGURO SABATINO","1973","NEW WONDER SSD","50 SL","M","M50","00:40.10","592.06"],
-["T3","1","FEO LUCIANO","1965","SSD OLIMPIA SPORT VILLAGE SRL","50 SL","M","M60","00:33.10","765.17"],
-["T3","2","MARANGIO SERGIO","1964","ASD EUROPA NUOTO CLUB","50 SL","M","M60","00:38.60","656.7"],
-["T3","3","IMPERO GIOVANNI MAURIZIO","1966","ASD NANTES CLUB MASTER","50 SL","M","M60","00:38.70","655.01"],
-["T3","4","MANFREDONIA FRANCESCO","1962","BLU TEAM CAMPANIA ASD","50 SL","M","M60","00:42.00","603.79"],
-["T3","1","FARINA DOMENICO","1955","ASD IL DELFINO NUOTO","50 SL","M","M70","00:33.00","840.96"],
-["T3","2","DE VIVO NUNZIO","1956","SSD OLIMPIA SPORT VILLAGE SRL","50 SL","M","M70","01:06.40","419.22"],
+["T3","1","AMORETTI ALESSIA","2007","NEW WONDER SSD","50 Stile","F","U20","00:36.80","671.35"],
+["T3","2","CAPASSO MARIELE","2008","SPORT LIFE SSD ARL","50 Stile","F","U20","00:38.30","645.19"],
+["T3","3","FONTANA VITTORIA","2009","AS ACQUACHIARA","50 Stile","F","U20","00:39.70","622.56"],
+["T3","4","PALMIERI PAPERA ARIANNA","2009","BLU TEAM CAMPANIA ASD","50 Stile","F","U20","00:40.10","616.38"],
+["T3","1","TRINCHESE MARIA","2005","NEW WONDER SSD","50 Stile","F","M20","00:35.70","691.92"],
+["T3","2","SALZANO MARIA LUCIA","2003","AS ACQUACHIARA","50 Stile","F","M20","00:36.10","684.3"],
+["T3","3","DI VITTORIO CLAUDIA","2003","SPORT LIFE SSD ARL","50 Stile","F","M20","00:36.80","671.35"],
+["T3","4","ORLANDO GIOVANNA","2006","ASD EUROPA NUOTO CLUB","50 Stile","F","M20","00:37.50","658.89"],
+["T3","5","CAVALLARO ASIA EMANUELA","2005","NEW WONDER SSD","50 Stile","F","M20","00:37.70","655.41"],
+["T3","6","CLEMENTE MARIA","2006","AS ACQUACHIARA","50 Stile","F","M20","00:40.70","607.33"],
+["T3","7","MAFFUCCI ANGELA","2004","NEW WONDER SSD","50 Stile","F","M20","00:41.00","602.91"],
+["T3","8","QUALTIERI ROBERTA","2005","SPORT LIFE SSD ARL","50 Stile","F","M20","00:41.90","590.02"],
+["T3","9","CACCIAPUOTI MARIA","2004","ASD EUROPA NUOTO CLUB","50 Stile","F","M20","00:44.30","558.2"],
+["T3","10","SELLITTO LIVIA","2002","SSD OLIMPIA SPORT VILLAGE SRL","50 Stile","F","M20","00:49.60","498.8"],
+["T3","1","SIMONELLI NIKLA","1998","GIVA SSD ARL","50 Stile","F","M25","00:47.20","531.01"],
+["T3","2","FABOZZI LUCIA","1999","GIVA SSD ARL","50 Stile","F","M25","00:48.70","514.72"],
+["T3","1","RUSSO VENICE","1996","ASD NANTES CLUB MASTER","50 Stile","F","M30","01:38.00","259.67"],
+["T3","1","PANARIELLO CINZIA","1974","SPOR.CLUB POGGIOMARINO ASD","50 Stile","F","M50","00:37.70","718.21"],
+["T3","1","PALMA LUCIA","1969","ASD EUROPA NUOTO CLUB","50 Stile","F","M55","01:01.40","456.49"],
+["T3","1","ACONE MATILDE","1961","BLU TEAM CAMPANIA ASD","50 Stile","F","M65","00:54.60","556.2"],
+["T3","1","PIROZZI MATTEO","2007","AS ACQUACHIARA","50 Stile","M","U20","00:27.20","789.05"],
+["T3","2","MERCADANTE ANDREA","2008","AQUA SSD SRL","50 Stile","M","U20","00:28.20","761.27"],
+["T3","3","COMITI ANDREA","2009","AS ACQUACHIARA","50 Stile","M","U20","00:29.00","740.41"],
+["T3","4","MANGANIELLO GIOVANNI","2007","NEW WONDER SSD","50 Stile","M","U20","00:29.90","718.27"],
+["T3","5","MIELE ALESSANDRO","2009","NEW WONDER SSD","50 Stile","M","U20","00:33.80","635.88"],
+["T3","6","DI MAIO SALVATORE","2008","BLU TEAM CAMPANIA ASD","50 Stile","M","U20","00:54.20","397.43"],
+["T3","1","MANGANIELLO MARIO","2004","NEW WONDER SSD","50 Stile","M","M20","00:26.20","818.94"],
+["T3","2","IMPINTO YURI","2005","SPORT LIFE SSD ARL","50 Stile","M","M20","00:29.20","735.37"],
+["T3","3","TASSARI FRANCESCO","2004","AS ACQUACHIARA","50 Stile","M","M20","00:33.20","647.31"],
+["T3","4","DI MATTEO VINCENZO","2005","SPOR.CLUB POGGIOMARINO ASD","50 Stile","M","M20","00:36.00","597.24"],
+["T3","1","DEL GIUDICE FERDINANDO","2001","SPOR.CLUB POGGIOMARINO ASD","50 Stile","M","M25","00:29.60","734.9"],
+["T3","2","ROMANO GIANLUCA","1999","NEW WONDER SSD","50 Stile","M","M25","00:30.20","720.39"],
+["T3","3","MAFFUCCI BERNARDINO","1999","NEW WONDER SSD","50 Stile","M","M25","00:32.00","680.12"],
+["T3","4","SCAFURO VINCENZO","1998","NEW WONDER SSD","50 Stile","M","M25","00:33.50","649.85"],
+["T3","5","MOLINARO DANTE","1999","ASD LIFE SWIMMING","50 Stile","M","M25","00:37.00","588.71"],
+["T3","6","PAGANO EMIDDIO","2000","SSD OLIMPIA SPORT VILLAGE SRL","50 Stile","M","M25","00:37.80","576.32"],
+["T3","7","CASSESE LUIGI","1998","BLU TEAM CAMPANIA ASD","50 Stile","M","M25","00:45.90","475.05"],
+["T3","1","COZZUTO GIORGIO","1994","PLAY OFF SSD E DI TEMPO LIBERO A RL","50 Stile","M","M30","00:30.40","719.93"],
+["T3","2","CORDISCO VALERIO","1993","ASD LIFE SWIMMING","50 Stile","M","M30","00:32.10","682.04"],
+["T3","3","AMBROSINO ALFONSO","1996","NEW WONDER SSD","50 Stile","M","M30","00:32.50","673.7"],
+["T3","4","SELLITTO STEFANO","1995","SSD OLIMPIA SPORT VILLAGE SRL","50 Stile","M","M30","00:34.60","633.05"],
+["T3","5","TURINO GABRIELE","1992","ASD NANTES CLUB MASTER","50 Stile","M","M30","00:37.50","584.35"],
+["T3","1","BALZANO MAURIZIO","1991","SPOR.CLUB POGGIOMARINO ASD","50 Stile","M","M35","00:29.90","742.52"],
+["T3","2","TEDESCO LUIGI","1989","SPOR.CLUB POGGIOMARINO ASD","50 Stile","M","M35","00:32.80","677.27"],
+["T3","3","DE MARTINO DANIELE","1988","PLAY OFF SSD E DI TEMPO LIBERO A RL","50 Stile","M","M35","00:32.90","675.23"],
+["T3","4","GENIALE CHRISTIAN","1991","SSD OLIMPIA SPORT VILLAGE SRL","50 Stile","M","M35","00:36.70","605.69"],
+["T3","5","GIORDANO SERGIO","1990","ASD LIFE SWIMMING","50 Stile","M","M35","00:42.50","523.42"],
+["T3","1","CIPOLLETTA DIEGO","1985","GAZZELLA TEAM ASD","50 Stile","M","M40","00:30.10","752.48"],
+["T3","2","FORTE GIOVANNI","1986","SSD OLIMPIA SPORT VILLAGE SRL","50 Stile","M","M40","00:34.10","664.72"],
+["T3","3","CORREA IACOPO","1985","SPOR.CLUB POGGIOMARINO ASD","50 Stile","M","M40","00:36.20","626.37"],
+["T3","4","FIONDELLA MICHELE","1984","AQUA SSD SRL","50 Stile","M","M40","00:42.60","532.71"],
+["T3","1","D'ALESSANDRO FULVIO","1981","PLAY OFF SSD E DI TEMPO LIBERO A RL","50 Stile","M","M45","00:30.00","778.81"],
+["T3","2","MAZZEO GABRIELE","1978","NEW WONDER SSD","50 Stile","M","M45","00:30.40","768.63"],
+["T3","3","MOSCA GIOVANNI","1977","SPORT LIFE SSD ARL","50 Stile","M","M45","00:33.20","704.19"],
+["T3","4","DI MEO FABIO","1979","AQUA SSD SRL","50 Stile","M","M45","00:39.00","600.0"],
+["T3","5","SENATORE VINCENZO","1978","SSD OLIMPIA SPORT VILLAGE SRL","50 Stile","M","M45","00:39.30","595.44"],
+["T3","6","SCOLA AGOSTINO","1979","SPORT LIFE SSD ARL","50 Stile","M","M45","00:44.80","522.67"],
+["T3","1","BUONAGURO SABATINO","1973","NEW WONDER SSD","50 Stile","M","M50","00:40.10","592.06"],
+["T3","1","FEO LUCIANO","1965","SSD OLIMPIA SPORT VILLAGE SRL","50 Stile","M","M60","00:33.10","765.17"],
+["T3","2","MARANGIO SERGIO","1964","ASD EUROPA NUOTO CLUB","50 Stile","M","M60","00:38.60","656.7"],
+["T3","3","IMPERO GIOVANNI MAURIZIO","1966","ASD NANTES CLUB MASTER","50 Stile","M","M60","00:38.70","655.01"],
+["T3","4","MANFREDONIA FRANCESCO","1962","BLU TEAM CAMPANIA ASD","50 Stile","M","M60","00:42.00","603.79"],
+["T3","1","FARINA DOMENICO","1955","ASD IL DELFINO NUOTO","50 Stile","M","M70","00:33.00","840.96"],
+["T3","2","DE VIVO NUNZIO","1956","SSD OLIMPIA SPORT VILLAGE SRL","50 Stile","M","M70","01:06.40","419.22"],
 ["T3","1","NAPOLANO CONSIGLIA","2005","ASD EUROPA NUOTO CLUB","200 Rana","F","M20","03:29.00","709.7"],
 ["T3","2","CLEMENTE MARTA","2004","AS ACQUACHIARA","200 Rana","F","M20","03:29.10","709.36"],
 ["T3","1","TRONCONE DAVIDE","2007","AS ACQUACHIARA","200 Rana","M","U20","02:57.90","726.22"],
@@ -1099,77 +1250,476 @@ const D=[
 ["T3","1","CASTELLANO ANDREA","1973","AS ACQUACHIARA","200 Rana","M","M50","03:55.90","617.28"],
 ["T3","1","CAPOCCI MARCELLO","1968","ASD NANTES CLUB MASTER","200 Rana","M","M55","04:09.80","609.64"],
 ["T3","1","CORDUA PASQUALE","1947","AQUA SSD SRL","200 Rana","M","M75","04:47.20","684.41"],
-["T3","1","CASTELLANO CHIARA","2008","AS ACQUACHIARA","100 SL","F","U20","01:19.40","681.41"],
-["T3","1","MIRANTE SARA","2005","ASD EUROPA NUOTO CLUB","100 SL","F","M20","01:16.70","705.33"],
-["T3","2","TRINCHESE MARIA","2005","NEW WONDER SSD","100 SL","F","M20","01:18.90","685.71"],
-["T3","3","SALZANO MARIA LUCIA","2003","AS ACQUACHIARA","100 SL","F","M20","01:22.90","652.71"],
-["T3","4","VICIDOMINI MARIKA","2002","SSD OLIMPIA SPORT VILLAGE SRL","100 SL","F","M20","01:25.00","636.62"],
-["T3","5","PIROZZI MICHELA","2006","AS ACQUACHIARA","100 SL","F","M20","01:27.40","619.18"],
-["T3","6","MAFFUCCI ANGELA","2004","NEW WONDER SSD","100 SL","F","M20","01:35.30","567.96"],
-["T3","1","FABOZZI LUCIA","1999","GIVA SSD ARL","100 SL","F","M25","01:53.00","485.42"],
-["T3","1","PANARIELLO CINZIA","1974","SPOR.CLUB POGGIOMARINO ASD","100 SL","F","M50","01:25.70","703.73"],
-["T3","1","CALVINO DANIELA","1969","ASD NANTES CLUB MASTER","100 SL","F","M55","01:16.10","816.25"],
-["T3","1","ACONE MATILDE","1961","BLU TEAM CAMPANIA ASD","100 SL","F","M65","02:01.40","561.27"],
-["T3","1","MONGILLO STEFANO","2008","AQUA SSD SRL","100 SL","M","U20","01:00.60","788.16"],
-["T3","2","PIROZZI MATTEO","2007","AS ACQUACHIARA","100 SL","M","U20","01:02.00","770.42"],
-["T3","3","CERQUA ANDREA","2007","ASD NANTES CLUB MASTER","100 SL","M","U20","01:02.60","763.06"],
-["T3","4","MANNIELLO VINCENZO","2008","BLU TEAM CAMPANIA ASD","100 SL","M","U20","01:06.40","719.52"],
-["T3","5","SANNINO VINCENZO","2008","GAZZELLA TEAM ASD","100 SL","M","U20","01:06.60","717.37"],
-["T3","6","NOTARO EMANUELE","2007","GAZZELLA TEAM ASD","100 SL","M","U20","01:09.20","690.49"],
-["T3","7","CARUSO ANTONIO","2009","AS ACQUACHIARA","100 SL","M","U20","01:21.20","588.7"],
-["T3","1","RUOCCO GIUSEPPE","2006","BLU TEAM CAMPANIA ASD","100 SL","M","M20","01:06.40","719.52"],
-["T3","2","CAIAZZO DAVIDE","2005","BLU TEAM CAMPANIA ASD","100 SL","M","M20","01:07.30","709.93"],
-["T3","3","D'AIELLO ANTONIO","2002","SPORT LIFE SSD ARL","100 SL","M","M20","01:10.30","679.72"],
-["T3","4","TASSARI FRANCESCO","2004","AS ACQUACHIARA","100 SL","M","M20","01:18.00","612.79"],
-["T3","5","CERQUA LORENZO","2005","ASD NANTES CLUB MASTER","100 SL","M","M20","01:21.00","590.15"],
-["T3","1","ESPOSITO DONATO","1998","ASD EUROPA NUOTO CLUB","100 SL","M","M25","01:05.70","736.72"],
-["T3","2","LANGELLOTTO NICOLA FRANCESCO","2001","BLU TEAM CAMPANIA ASD","100 SL","M","M25","01:11.80","674.31"],
-["T3","3","VERDE VINCENZO","2001","ASD EUROPA NUOTO CLUB","100 SL","M","M25","01:17.00","628.89"],
-["T3","4","VINCIGUERRA GIUSEPPE ALFREDO","1998","SPORT LIFE SSD ARL","100 SL","M","M25","01:21.80","592.07"],
-["T3","5","IOVINE CIRO","1998","BLU TEAM CAMPANIA ASD","100 SL","M","M25","01:29.00","544.28"],
-["T3","6","PAGANO EMIDDIO","2000","SSD OLIMPIA SPORT VILLAGE SRL","100 SL","M","M25","01:36.00","504.68"],
-["T3","1","AURICCHIO GIUSEPPE DOMENICO","1993","SPOR.CLUB POGGIOMARINO ASD","100 SL","M","M30","01:08.80","711.74"],
-["T3","2","COZZUTO GIORGIO","1994","PLAY OFF SSD E DI TEMPO LIBERO A RL","100 SL","M","M30","01:09.10","708.66"],
-["T3","3","CASABURI RAFFAELE","1996","SSD OLIMPIA SPORT VILLAGE SRL","100 SL","M","M30","01:12.40","676.45"],
-["T3","4","TRONCONE ANDREA","1993","ASD NANTES CLUB MASTER","100 SL","M","M30","01:14.30","659.19"],
-["T3","5","D'AMBROSIO GIUSEPPE","1996","AQUA SSD SRL","100 SL","M","M30","01:16.00","644.49"],
-["T3","6","SELLITTO STEFANO","1995","SSD OLIMPIA SPORT VILLAGE SRL","100 SL","M","M30","01:20.50","608.55"],
-["T3","7","ANNARUMMA NICOLA","1994","SPOR.CLUB POGGIOMARINO ASD","100 SL","M","M30","01:27.70","558.7"],
-["T3","1","BALZANO MAURIZIO","1991","SPOR.CLUB POGGIOMARINO ASD","100 SL","M","M35","01:09.30","712.23"],
-["T3","2","GENIALE CHRISTIAN","1991","SSD OLIMPIA SPORT VILLAGE SRL","100 SL","M","M35","01:23.00","594.95"],
-["T3","1","CIPOLLETTA DIEGO","1985","GAZZELLA TEAM ASD","100 SL","M","M40","01:07.60","741.3"],
-["T3","2","ZARIGNO MICHELE","1985","SPORT LIFE SSD ARL","100 SL","M","M40","01:11.20","703.92"],
-["T3","3","CARPENTIERI GERARDO","1985","SSD OLIMPIA SPORT VILLAGE SRL","100 SL","M","M40","01:16.20","657.85"],
-["T3","4","FORTE GIOVANNI","1986","SSD OLIMPIA SPORT VILLAGE SRL","100 SL","M","M40","01:17.00","651.04"],
-["T3","5","D'AURIA ISIDORO","1985","BLU TEAM CAMPANIA ASD","100 SL","M","M40","01:21.70","613.68"],
-["T3","6","FIONDELLA MICHELE","1984","AQUA SSD SRL","100 SL","M","M40","01:31.20","549.89"],
-["T3","1","D'ALESSANDRO FULVIO","1981","PLAY OFF SSD E DI TEMPO LIBERO A RL","100 SL","M","M45","01:06.50","781.86"],
-["T3","2","MAZZEO GABRIELE","1978","NEW WONDER SSD","100 SL","M","M45","01:11.50","727.34"],
-["T3","3","MASIELLO ERMANNO","1977","AQUA SSD SRL","100 SL","M","M45","01:23.90","620.1"],
-["T3","4","SENATORE VINCENZO","1978","SSD OLIMPIA SPORT VILLAGE SRL","100 SL","M","M45","01:33.70","555.38"],
-["T3","1","OTTIERI ALFREDO","1976","PLAY OFF SSD E DI TEMPO LIBERO A RL","100 SL","M","M50","01:11.10","750.35"],
-["T3","2","CARBONE GIANNIGNAZIO","1972","SPOR.CLUB POGGIOMARINO ASD","100 SL","M","M50","01:19.50","671.27"],
-["T3","3","RINALDI GIOVANNI","1973","AQUA SSD SRL","100 SL","M","M50","01:25.00","627.93"],
-["T3","4","BUONAGURO SABATINO","1973","NEW WONDER SSD","100 SL","M","M50","01:37.20","549.28"],
-["T3","1","D'ARCANGELO ANDREA","1971","BLU TEAM CAMPANIA ASD","100 SL","M","M55","01:13.90","743.32"],
-["T3","2","CAPOCCI MARCELLO","1968","ASD NANTES CLUB MASTER","100 SL","M","M55","01:18.20","702.55"],
-["T3","1","FEO LUCIANO","1965","SSD OLIMPIA SPORT VILLAGE SRL","100 SL","M","M60","01:16.60","742.32"],
-["T3","2","MARANGIO SERGIO","1964","ASD EUROPA NUOTO CLUB","100 SL","M","M60","01:32.30","616.32"],
-["T3","1","DE VIVO NUNZIO","1956","SSD OLIMPIA SPORT VILLAGE SRL","100 SL","M","M70","02:10.00","488.48"],
+["T3","1","CASTELLANO CHIARA","2008","AS ACQUACHIARA","100 Stile","F","U20","01:19.40","681.41"],
+["T3","1","MIRANTE SARA","2005","ASD EUROPA NUOTO CLUB","100 Stile","F","M20","01:16.70","705.33"],
+["T3","2","TRINCHESE MARIA","2005","NEW WONDER SSD","100 Stile","F","M20","01:18.90","685.71"],
+["T3","3","SALZANO MARIA LUCIA","2003","AS ACQUACHIARA","100 Stile","F","M20","01:22.90","652.71"],
+["T3","4","VICIDOMINI MARIKA","2002","SSD OLIMPIA SPORT VILLAGE SRL","100 Stile","F","M20","01:25.00","636.62"],
+["T3","5","PIROZZI MICHELA","2006","AS ACQUACHIARA","100 Stile","F","M20","01:27.40","619.18"],
+["T3","6","MAFFUCCI ANGELA","2004","NEW WONDER SSD","100 Stile","F","M20","01:35.30","567.96"],
+["T3","1","FABOZZI LUCIA","1999","GIVA SSD ARL","100 Stile","F","M25","01:53.00","485.42"],
+["T3","1","PANARIELLO CINZIA","1974","SPOR.CLUB POGGIOMARINO ASD","100 Stile","F","M50","01:25.70","703.73"],
+["T3","1","CALVINO DANIELA","1969","ASD NANTES CLUB MASTER","100 Stile","F","M55","01:16.10","816.25"],
+["T3","1","ACONE MATILDE","1961","BLU TEAM CAMPANIA ASD","100 Stile","F","M65","02:01.40","561.27"],
+["T3","1","MONGILLO STEFANO","2008","AQUA SSD SRL","100 Stile","M","U20","01:00.60","788.16"],
+["T3","2","PIROZZI MATTEO","2007","AS ACQUACHIARA","100 Stile","M","U20","01:02.00","770.42"],
+["T3","3","CERQUA ANDREA","2007","ASD NANTES CLUB MASTER","100 Stile","M","U20","01:02.60","763.06"],
+["T3","4","MANNIELLO VINCENZO","2008","BLU TEAM CAMPANIA ASD","100 Stile","M","U20","01:06.40","719.52"],
+["T3","5","SANNINO VINCENZO","2008","GAZZELLA TEAM ASD","100 Stile","M","U20","01:06.60","717.37"],
+["T3","6","NOTARO EMANUELE","2007","GAZZELLA TEAM ASD","100 Stile","M","U20","01:09.20","690.49"],
+["T3","7","CARUSO ANTONIO","2009","AS ACQUACHIARA","100 Stile","M","U20","01:21.20","588.7"],
+["T3","1","RUOCCO GIUSEPPE","2006","BLU TEAM CAMPANIA ASD","100 Stile","M","M20","01:06.40","719.52"],
+["T3","2","CAIAZZO DAVIDE","2005","BLU TEAM CAMPANIA ASD","100 Stile","M","M20","01:07.30","709.93"],
+["T3","3","D'AIELLO ANTONIO","2002","SPORT LIFE SSD ARL","100 Stile","M","M20","01:10.30","679.72"],
+["T3","4","TASSARI FRANCESCO","2004","AS ACQUACHIARA","100 Stile","M","M20","01:18.00","612.79"],
+["T3","5","CERQUA LORENZO","2005","ASD NANTES CLUB MASTER","100 Stile","M","M20","01:21.00","590.15"],
+["T3","1","ESPOSITO DONATO","1998","ASD EUROPA NUOTO CLUB","100 Stile","M","M25","01:05.70","736.72"],
+["T3","2","LANGELLOTTO NICOLA FRANCESCO","2001","BLU TEAM CAMPANIA ASD","100 Stile","M","M25","01:11.80","674.31"],
+["T3","3","VERDE VINCENZO","2001","ASD EUROPA NUOTO CLUB","100 Stile","M","M25","01:17.00","628.89"],
+["T3","4","VINCIGUERRA GIUSEPPE ALFREDO","1998","SPORT LIFE SSD ARL","100 Stile","M","M25","01:21.80","592.07"],
+["T3","5","IOVINE CIRO","1998","BLU TEAM CAMPANIA ASD","100 Stile","M","M25","01:29.00","544.28"],
+["T3","6","PAGANO EMIDDIO","2000","SSD OLIMPIA SPORT VILLAGE SRL","100 Stile","M","M25","01:36.00","504.68"],
+["T3","1","AURICCHIO GIUSEPPE DOMENICO","1993","SPOR.CLUB POGGIOMARINO ASD","100 Stile","M","M30","01:08.80","711.74"],
+["T3","2","COZZUTO GIORGIO","1994","PLAY OFF SSD E DI TEMPO LIBERO A RL","100 Stile","M","M30","01:09.10","708.66"],
+["T3","3","CASABURI RAFFAELE","1996","SSD OLIMPIA SPORT VILLAGE SRL","100 Stile","M","M30","01:12.40","676.45"],
+["T3","4","TRONCONE ANDREA","1993","ASD NANTES CLUB MASTER","100 Stile","M","M30","01:14.30","659.19"],
+["T3","5","D'AMBROSIO GIUSEPPE","1996","AQUA SSD SRL","100 Stile","M","M30","01:16.00","644.49"],
+["T3","6","SELLITTO STEFANO","1995","SSD OLIMPIA SPORT VILLAGE SRL","100 Stile","M","M30","01:20.50","608.55"],
+["T3","7","ANNARUMMA NICOLA","1994","SPOR.CLUB POGGIOMARINO ASD","100 Stile","M","M30","01:27.70","558.7"],
+["T3","1","BALZANO MAURIZIO","1991","SPOR.CLUB POGGIOMARINO ASD","100 Stile","M","M35","01:09.30","712.23"],
+["T3","2","GENIALE CHRISTIAN","1991","SSD OLIMPIA SPORT VILLAGE SRL","100 Stile","M","M35","01:23.00","594.95"],
+["T3","1","CIPOLLETTA DIEGO","1985","GAZZELLA TEAM ASD","100 Stile","M","M40","01:07.60","741.3"],
+["T3","2","ZARIGNO MICHELE","1985","SPORT LIFE SSD ARL","100 Stile","M","M40","01:11.20","703.92"],
+["T3","3","CARPENTIERI GERARDO","1985","SSD OLIMPIA SPORT VILLAGE SRL","100 Stile","M","M40","01:16.20","657.85"],
+["T3","4","FORTE GIOVANNI","1986","SSD OLIMPIA SPORT VILLAGE SRL","100 Stile","M","M40","01:17.00","651.04"],
+["T3","5","D'AURIA ISIDORO","1985","BLU TEAM CAMPANIA ASD","100 Stile","M","M40","01:21.70","613.68"],
+["T3","6","FIONDELLA MICHELE","1984","AQUA SSD SRL","100 Stile","M","M40","01:31.20","549.89"],
+["T3","1","D'ALESSANDRO FULVIO","1981","PLAY OFF SSD E DI TEMPO LIBERO A RL","100 Stile","M","M45","01:06.50","781.86"],
+["T3","2","MAZZEO GABRIELE","1978","NEW WONDER SSD","100 Stile","M","M45","01:11.50","727.34"],
+["T3","3","MASIELLO ERMANNO","1977","AQUA SSD SRL","100 Stile","M","M45","01:23.90","620.1"],
+["T3","4","SENATORE VINCENZO","1978","SSD OLIMPIA SPORT VILLAGE SRL","100 Stile","M","M45","01:33.70","555.38"],
+["T3","1","OTTIERI ALFREDO","1976","PLAY OFF SSD E DI TEMPO LIBERO A RL","100 Stile","M","M50","01:11.10","750.35"],
+["T3","2","CARBONE GIANNIGNAZIO","1972","SPOR.CLUB POGGIOMARINO ASD","100 Stile","M","M50","01:19.50","671.27"],
+["T3","3","RINALDI GIOVANNI","1973","AQUA SSD SRL","100 Stile","M","M50","01:25.00","627.93"],
+["T3","4","BUONAGURO SABATINO","1973","NEW WONDER SSD","100 Stile","M","M50","01:37.20","549.28"],
+["T3","1","D'ARCANGELO ANDREA","1971","BLU TEAM CAMPANIA ASD","100 Stile","M","M55","01:13.90","743.32"],
+["T3","2","CAPOCCI MARCELLO","1968","ASD NANTES CLUB MASTER","100 Stile","M","M55","01:18.20","702.55"],
+["T3","1","FEO LUCIANO","1965","SSD OLIMPIA SPORT VILLAGE SRL","100 Stile","M","M60","01:16.60","742.32"],
+["T3","2","MARANGIO SERGIO","1964","ASD EUROPA NUOTO CLUB","100 Stile","M","M60","01:32.30","616.32"],
+["T3","1","DE VIVO NUNZIO","1956","SSD OLIMPIA SPORT VILLAGE SRL","100 Stile","M","M70","02:10.00","488.48"],
 ["T3","1","SCOLA CATELLO","2002","BLU TEAM CAMPANIA ASD","100 Farfalla","M","M20","01:03.70","813.15"],
 ["T3","1","D'AMBROSIO GIUSEPPE","1996","AQUA SSD SRL","100 Farfalla","M","M30","01:37.90","543.43"],
-["T3","1","DI MEO FABIO","1979","AQUA SSD SRL","100 Farfalla","M","M45","01:47.80","523.33"]
+["T3","1","DI MEO FABIO","1979","AQUA SSD SRL","100 Farfalla","M","M45","01:47.80","523.33"],
+["T4","1","GALLOTTI GIORGIA","2008","BLU TEAM CAMPANIA ASD","50 Dorso","F","U20","00:36.10","773.0"],
+["T4","2","CASTELLANO CHIARA","2008","AS ACQUACHIARA","50 Dorso","F","U20","00:40.90","682.73"],
+["T4","3","FONTANA VITTORIA","2009","AS ACQUACHIARA","50 Dorso","F","U20","00:45.30","616.7"],
+["T4","4","PALMIERI PAPERA ARIANNA","2009","BLU TEAM CAMPANIA ASD","50 Dorso","F","U20","00:50.40","554.55"],
+["T4","1","D'ANIELLO CARMEN","2006","BLU TEAM CAMPANIA ASD","50 Dorso","F","M20","00:38.70","721.34"],
+["T4","2","PIROZZI MICHELA","2006","AS ACQUACHIARA","50 Dorso","F","M20","00:42.40","658.69"],
+["T4","3","CAVALLARO ASIA EMANUELA","2005","NEW WONDER SSD","50 Dorso","F","M20","00:43.10","648.04"],
+["T4","1","GIAQUINTO ALESSIA","2000","ASD EUROPA NUOTO CLUB","50 Dorso","F","M25","00:44.20","640.32"],
+["T4","1","GRIPPA MARIA CRISTINA","1995","NEW WONDER SSD","50 Dorso","F","M30","00:38.60","747.94"],
+["T4","2","VARRIALE KATIA","1995","ASD EUROPA NUOTO CLUB","50 Dorso","F","M30","00:59.40","486.91"],
+["T4","1","COLUCCI MONICA","1986","ASD IL DELFINO NUOTO","50 Dorso","F","M40","00:49.20","611.13"],
+["T4","1","BENFIDI CLORINDA","1973","AQUA SSD SRL","50 Dorso","F","M50","00:53.30","587.29"],
+["T4","1","POLVERINO EMILIA","1968","AQUA SSD SRL","50 Dorso","F","M55","01:00.40","538.61"],
+["T4","1","VAIANO CRISTIAN","2010","BLU TEAM CAMPANIA ASD","50 Dorso","M","U17","00:31.90","748.68"],
+["T4","1","MONGILLO STEFANO","2008","AQUA SSD SRL","50 Dorso","M","U20","00:32.20","741.05"],
+["T4","2","MANNIELLO VINCENZO","2008","BLU TEAM CAMPANIA ASD","50 Dorso","M","U20","00:35.40","674.44"],
+["T4","3","NOTARO EMANUELE","2007","GAZZELLA TEAM ASD","50 Dorso","M","U20","00:35.50","672.55"],
+["T4","4","LONGOBARDI GIACOMO MARIA","2007","BLU TEAM CAMPANIA ASD","50 Dorso","M","U20","00:36.10","661.43"],
+["T4","5","CERQUA ANDREA","2007","ASD NANTES CLUB MASTER","50 Dorso","M","U20","00:37.50","636.87"],
+["T4","6","CASCIO MATTIA","2008","AS ACQUACHIARA","50 Dorso","M","U20","00:39.20","609.39"],
+["T4","7","CARUSO ANTONIO","2009","AS ACQUACHIARA","50 Dorso","M","U20","00:40.40","591.38"],
+["T4","8","SICIGNANO SIMONE","2008","BLU TEAM CAMPANIA ASD","50 Dorso","M","U20","00:48.30","495.05"],
+["T4","1","CARLINO DIEGO","2004","A.S. AEROACCADEMIA","50 Dorso","M","M20","00:30.90","772.03"],
+["T4","2","MASUCCI ALESSANDRO","2004","NEW WONDER SSD","50 Dorso","M","M20","00:34.20","697.97"],
+["T4","3","CAIAZZO DAVIDE","2005","BLU TEAM CAMPANIA ASD","50 Dorso","M","M20","00:38.20","625.26"],
+["T4","4","RIZZO MARIO","2002","ASD IL DELFINO NUOTO","50 Dorso","M","M20","00:39.70","601.75"],
+["T4","5","USSORIO ESPEDITO","2006","AS ACQUACHIARA","50 Dorso","M","M20","00:40.90","584.18"],
+["T4","1","IOVINE CIRO","1998","BLU TEAM CAMPANIA ASD","50 Dorso","M","M25","00:41.40","584.86"],
+["T4","2","PAGANO EMIDDIO","2000","SSD OLIMPIA SPORT VILLAGE SRL","50 Dorso","M","M25","00:44.80","540.67"],
+["T4","3","CASSESE LUIGI","1998","BLU TEAM CAMPANIA ASD","50 Dorso","M","M25","00:55.10","439.96"],
+["T4","4","STAIANO GIUSEPPE","1997","BLU TEAM CAMPANIA ASD","50 Dorso","M","M25","01:12.60","334.2"],
+["T4","1","NAPPI DENIS","1996","SPOR.CLUB POGGIOMARINO ASD","50 Dorso","M","M30","00:31.80","772.19"],
+["T4","2","D'AMBROSIO GIUSEPPE","1996","AQUA SSD SRL","50 Dorso","M","M30","00:35.90","684.49"],
+["T4","3","BOCCIA FELICE","1993","SPOR.CLUB POGGIOMARINO ASD","50 Dorso","M","M30","00:43.20","569.35"],
+["T4","1","CAROTENUTO ANTONIO","1987","AS ACQUACHIARA","50 Dorso","M","M35","00:46.50","538.54"],
+["T4","1","FORTE GIOVANNI","1986","SSD OLIMPIA SPORT VILLAGE SRL","50 Dorso","M","M40","00:39.90","650.12"],
+["T4","2","SICA GIAMPIERO","1984","ASD EUROPA NUOTO CLUB","50 Dorso","M","M40","00:41.50","625.18"],
+["T4","3","OTTONE RAFFAELE","1986","SPOR.CLUB POGGIOMARINO ASD","50 Dorso","M","M40","00:41.80","620.71"],
+["T4","4","CARPENTIERI GERARDO","1985","SSD OLIMPIA SPORT VILLAGE SRL","50 Dorso","M","M40","00:42.80","606.28"],
+["T4","1","MANGANARO ANDREA","1980","BLU TEAM CAMPANIA ASD","50 Dorso","M","M45","00:43.50","608.47"],
+["T4","2","D'ANNA SALVATORE","1981","ASD IL DELFINO NUOTO","50 Dorso","M","M45","00:50.10","528.63"],
+["T4","3","SENATORE VINCENZO","1978","SSD OLIMPIA SPORT VILLAGE SRL","50 Dorso","M","M45","00:51.20","517.32"],
+["T4","1","CAPRETTO BRUNO","1975","CARAVAGGIO SPORTING VILLAGE","50 Dorso","M","M50","00:46.70","578.25"],
+["T4","1","GUARINO FRANCESCO","1969","CARAVAGGIO SPORTING VILLAGE","50 Dorso","M","M55","00:48.00","595.64"],
+["T4","2","PATRONE LORENZO","1971","ASD EUROPA NUOTO CLUB","50 Dorso","M","M55","01:00.70","471.43"],
+["T4","3","CASCIO MARIANO","1968","AS ACQUACHIARA","50 Dorso","M","M55","01:06.10","433.03"],
+["T4","1","CAMMAROTA UMBERTO","1963","ASD NANTES CLUB MASTER","50 Dorso","M","M60","00:38.30","780.0"],
+["T4","2","IMPERO GIOVANNI MAURIZIO","1966","ASD NANTES CLUB MASTER","50 Dorso","M","M60","00:49.70","601.8"],
+["T4","1","DE VIVO NUNZIO","1956","SSD OLIMPIA SPORT VILLAGE SRL","50 Dorso","M","M70","01:21.20","412.41"],
+["T4","1","BRUSCO JASMINE","2010","ASD EUROPA NUOTO CLUB","50 Rana","F","U17","00:43.30","715.18"],
+["T4","2","MUSELLA ROSA","2012","BLU TEAM CAMPANIA ASD","50 Rana","F","U17","00:44.30","699.04"],
+["T4","3","TORTORELLI AURORA","2011","AQUA SSD SRL","50 Rana","F","U17","00:45.90","674.67"],
+["T4","1","MASUCCI RUBINA","2009","NEW WONDER SSD","50 Rana","F","U20","00:47.10","657.29"],
+["T4","2","MONTUORI MARIA NEVE","2007","BLU TEAM CAMPANIA ASD","50 Rana","F","U20","00:54.70","566.3"],
+["T4","1","ACUNZO ANASTASIA MARIA","2004","A.S. AEROACCADEMIA","50 Rana","F","M20","00:39.30","787.09"],
+["T4","2","LAMANNA STELLA","2004","A.S. AEROACCADEMIA","50 Rana","F","M20","00:40.60","762.01"],
+["T4","3","CLEMENTE MARTA","2004","AS ACQUACHIARA","50 Rana","F","M20","00:42.80","723.02"],
+["T4","4","DI PALMA VALENTINA","2005","SPOR.CLUB POGGIOMARINO ASD","50 Rana","F","M20","00:44.60","693.97"],
+["T4","5","NAPOLANO CONSIGLIA","2005","ASD EUROPA NUOTO CLUB","50 Rana","F","M20","00:46.00","672.94"],
+["T4","6","NICITA LAURA","2005","A.S. AEROACCADEMIA","50 Rana","F","M20","00:49.60","624.3"],
+["T4","7","CLEMENTE MARIA","2006","AS ACQUACHIARA","50 Rana","F","M20","00:49.80","621.8"],
+["T4","8","MAFFUCCI ANGELA","2004","NEW WONDER SSD","50 Rana","F","M20","00:50.60","612.01"],
+["T4","9","CACCIAPUOTI MARIA","2004","ASD EUROPA NUOTO CLUB","50 Rana","F","M20","00:53.00","584.4"],
+["T4","1","GIAQUINTO ALESSIA","2000","ASD EUROPA NUOTO CLUB","50 Rana","F","M25","00:48.40","647.94"],
+["T4","1","DELLE FEMINE FILOMENA","1993","GIVA SSD ARL","50 Rana","F","M30","00:48.50","652.36"],
+["T4","1","GALASSO FEDERICA","1987","ASD NANTES CLUB MASTER","50 Rana","F","M35","00:43.60","736.07"],
+["T4","1","AVALLONE FRANCESCA","1982","ASD IL DELFINO NUOTO","50 Rana","F","M40","00:53.50","615.46"],
+["T4","1","MILANO ALESSIA","1980","CARAVAGGIO SPORTING VILLAGE","50 Rana","F","M45","00:46.20","728.66"],
+["T4","2","PINNA TIZIANA","1977","NEW WONDER SSD","50 Rana","F","M45","00:49.60","678.92"],
+["T4","1","PESSETTI ROBERTA","1971","ASD NANTES CLUB MASTER","50 Rana","F","M55","00:46.20","783.41"],
+["T4","2","PALMA LUCIA","1969","ASD EUROPA NUOTO CLUB","50 Rana","F","M55","01:03.00","575.16"],
+["T4","1","CACCIAPUOTI ALESSANDRO","2011","ASD EUROPA NUOTO CLUB","50 Rana","M","U17","00:38.70","689.74"],
+["T4","2","MARINARO MARCELLO","2010","BLU TEAM CAMPANIA ASD","50 Rana","M","U17","00:44.30","602.55"],
+["T4","1","TRONCONE DAVIDE","2007","AS ACQUACHIARA","50 Rana","M","U20","00:33.90","786.22"],
+["T4","2","MIELE ALESSANDRO","2009","NEW WONDER SSD","50 Rana","M","U20","00:42.20","632.31"],
+["T4","3","DI MAIO SALVATORE","2008","BLU TEAM CAMPANIA ASD","50 Rana","M","U20","01:19.10","338.08"],
+["T4","1","SCHETTINO CARMINE","2003","BLU TEAM CAMPANIA ASD","50 Rana","M","M20","00:37.40","713.03"],
+["T4","2","IMPARATO FRANCESCO GIOVANNI","2003","AS ACQUACHIARA","50 Rana","M","M20","00:41.60","641.39"],
+["T4","3","PINTO FRANCESCO ALESSANDRO","2002","SSD OLIMPIA SPORT VILLAGE SRL","50 Rana","M","M20","00:45.40","587.94"],
+["T4","4","NOCERINO GIUSEPPE","2006","NEW WONDER SSD","50 Rana","M","M20","00:47.90","557.38"],
+["T4","5","CERQUA LORENZO","2005","ASD NANTES CLUB MASTER","50 Rana","M","M20","00:48.50","550.51"],
+["T4","6","DI MATTEO VINCENZO","2005","SPOR.CLUB POGGIOMARINO ASD","50 Rana","M","M20","00:49.30","541.62"],
+["T4","1","DEL GIUDICE FERDINANDO","2001","SPOR.CLUB POGGIOMARINO ASD","50 Rana","M","M25","00:37.10","728.15"],
+["T4","2","CAPACCHIONE FRANCESCO SAVERIO","1997","ASD NANTES CLUB MASTER","50 Rana","M","M25","00:37.70","716.62"],
+["T4","3","MAFFUCCI BERNARDINO","1999","NEW WONDER SSD","50 Rana","M","M25","00:38.60","700.0"],
+["T4","4","ESPOSITO DONATO","1998","ASD EUROPA NUOTO CLUB","50 Rana","M","M25","00:40.40","668.97"],
+["T4","1","AMBROSINO ALFONSO","1996","NEW WONDER SSD","50 Rana","M","M30","00:38.40","705.7"],
+["T4","2","SICIGNANO CARMINE","1994","BLU TEAM CAMPANIA ASD","50 Rana","M","M30","00:47.40","572.27"],
+["T4","1","FICCA LORENZO","1991","ASD EUROPA NUOTO CLUB","50 Rana","M","M35","00:37.00","749.19"],
+["T4","2","MONTANARO ANTONIO","1987","SSD OLIMPIA SPORT VILLAGE SRL","50 Rana","M","M35","00:44.50","623.49"],
+["T4","3","CAROTENUTO ANTONIO","1987","AS ACQUACHIARA","50 Rana","M","M35","00:49.20","564.17"],
+["T4","1","MANGONE MARCO","1985","ASD IL DELFINO NUOTO","50 Rana","M","M40","00:39.60","712.31"],
+["T4","2","SICA GIAMPIERO","1984","ASD EUROPA NUOTO CLUB","50 Rana","M","M40","00:43.70","645.79"],
+["T4","3","CORREA IACOPO","1985","SPOR.CLUB POGGIOMARINO ASD","50 Rana","M","M40","00:44.90","628.6"],
+["T4","4","D'AURIA ISIDORO","1985","BLU TEAM CAMPANIA ASD","50 Rana","M","M40","00:45.40","621.71"],
+["T4","5","CARUSO VINCENZO","1985","CARAVAGGIO SPORTING VILLAGE","50 Rana","M","M40","00:46.50","607.07"],
+["T4","6","SORRENTINO FELICE","1982","NEW WONDER SSD","50 Rana","M","M40","00:48.70","579.75"],
+["T4","7","FIONDELLA MICHELE","1984","AQUA SSD SRL","50 Rana","M","M40","00:56.60","499.12"],
+["T4","1","PANTALEO DARIO","1980","CARAVAGGIO SPORTING VILLAGE","50 Rana","M","M45","00:37.20","777.27"],
+["T4","2","FIENGO ALESSANDRO","1980","ASD NANTES CLUB MASTER","50 Rana","M","M45","00:41.50","697.12"],
+["T4","3","LETTIERI GENNARO","1979","ASD NANTES CLUB MASTER","50 Rana","M","M45","00:44.00","657.69"],
+["T4","4","CAROTENUTO ANTONIO","1978","SPOR.CLUB POGGIOMARINO ASD","50 Rana","M","M45","00:45.00","643.14"],
+["T4","5","D'ANNA SALVATORE","1981","ASD IL DELFINO NUOTO","50 Rana","M","M45","00:47.50","609.43"],
+["T4","6","SCOLA AGOSTINO","1979","SPORT LIFE SSD ARL","50 Rana","M","M45","00:53.90","537.34"],
+["T4","1","PACIFICO RAFFAELE","1973","CARAVAGGIO SPORTING VILLAGE","50 Rana","M","M50","00:42.20","701.65"],
+["T4","1","PASSARETTI GIANLUCA","1972","CARAVAGGIO SPORTING VILLAGE","50 Rana","M","M50","00:42.20","701.65"],
+["T4","3","DE ROSA NICOLA","1975","CARAVAGGIO SPORTING VILLAGE","50 Rana","M","M50","00:45.00","658.19"],
+["T4","4","CASTELLANO ANDREA","1973","AS ACQUACHIARA","50 Rana","M","M50","00:48.90","605.91"],
+["T4","5","BUONAGURO SABATINO","1973","NEW WONDER SSD","50 Rana","M","M50","00:49.80","595.0"],
+["T4","1","GUARINO FRANCESCO","1969","CARAVAGGIO SPORTING VILLAGE","50 Rana","M","M55","00:43.40","708.03"],
+["T4","2","CAPONE ARMANDO","1971","ASD EUROPA NUOTO CLUB","50 Rana","M","M55","00:47.70","644.47"],
+["T4","3","CASCIO MARIANO","1968","AS ACQUACHIARA","50 Rana","M","M55","00:55.20","557.22"],
+["T4","1","FEO LUCIANO","1965","SSD OLIMPIA SPORT VILLAGE SRL","50 Rana","M","M60","00:43.20","740.78"],
+["T4","2","MANFREDONIA FRANCESCO","1962","BLU TEAM CAMPANIA ASD","50 Rana","M","M60","00:50.20","637.9"],
+["T4","1","TUPPO GAETANO","1958","CARAVAGGIO SPORTING VILLAGE","50 Rana","M","M65","00:41.40","806.73"],
+["T4","2","VITIELLO SALVATORE","1958","CARAVAGGIO SPORTING VILLAGE","50 Rana","M","M65","00:51.20","652.92"],
+["T4","1","FARINA DOMENICO","1955","ASD IL DELFINO NUOTO","50 Rana","M","M70","00:44.10","810.16"],
+["T4","1","CORDUA PASQUALE","1947","AQUA SSD SRL","50 Rana","M","M75","00:58.60","663.1"],
+["T4","1","CARIELLO ALESSIA","2011","BLU TEAM CAMPANIA ASD","50 Farfalla","F","U17","00:40.70","0"],
+["T4","1","TRINCHESE MARIA","2005","NEW WONDER SSD","50 Farfalla","F","M20","00:37.30","708.53"],
+["T4","2","PIAZZESE MAIA","2005","ASD IL DELFINO NUOTO","50 Farfalla","F","M20","00:37.80","699.21"],
+["T4","3","ORLANDO GIOVANNA","2006","ASD EUROPA NUOTO CLUB","50 Farfalla","F","M20","00:41.30","640.24"],
+["T4","4","QUALTIERI ROBERTA","2005","SPORT LIFE SSD ARL","50 Farfalla","F","M20","00:48.90","541.14"],
+["T4","1","COLUCCI MONICA","1986","ASD IL DELFINO NUOTO","50 Farfalla","F","M40","00:45.00","631.42"],
+["T4","1","FIORE MONICA","1972","ASD NANTES CLUB MASTER","50 Farfalla","F","M50","00:46.90","624.63"],
+["T4","1","CRISTIANO GIUSEPPINA","1961","ASD NANTES CLUB MASTER","50 Farfalla","F","M65","00:49.60","688.55"],
+["T4","1","PICCOLO CLAUDIO","2010","BLU TEAM CAMPANIA ASD","50 Farfalla","M","U17","00:30.20","764.13"],
+["T4","2","GENOVESE SALVATORE","2010","BLU TEAM CAMPANIA ASD","50 Farfalla","M","U17","00:31.70","727.97"],
+["T4","1","NASTRO PIETRO","2009","ASD EUROPA NUOTO CLUB","50 Farfalla","M","U20","00:30.10","766.67"],
+["T4","1","GALIZIA MATTIA PIO","2005","BLU TEAM CAMPANIA ASD","50 Farfalla","M","M20","00:29.20","790.14"],
+["T4","2","SANTAGATA ANTONIO","2004","A.S. AEROACCADEMIA","50 Farfalla","M","M20","00:29.90","771.76"],
+["T4","3","RAGUSEO FRANCESCO SAVERIO","2002","A.S. AEROACCADEMIA","50 Farfalla","M","M20","00:31.40","735.13"],
+["T4","4","CHIERICHELLA PAOLO","2004","ASD IL DELFINO NUOTO","50 Farfalla","M","M20","00:35.00","659.94"],
+["T4","5","D'AIELLO ANTONIO","2002","SPORT LIFE SSD ARL","50 Farfalla","M","M20","00:35.50","650.7"],
+["T4","1","CAPACCHIONE FRANCESCO SAVERIO","1997","ASD NANTES CLUB MASTER","50 Farfalla","M","M25","00:32.80","713.33"],
+["T4","2","LANGELLOTTO NICOLA FRANCESCO","2001","BLU TEAM CAMPANIA ASD","50 Farfalla","M","M25","00:34.10","686.3"],
+["T4","3","ROMANO GIANLUCA","1999","NEW WONDER SSD","50 Farfalla","M","M25","00:36.20","646.7"],
+["T4","4","SCAFURO VINCENZO","1998","NEW WONDER SSD","50 Farfalla","M","M25","00:40.10","584.12"],
+["T4","1","CASABURI RAFFAELE","1996","SSD OLIMPIA SPORT VILLAGE SRL","50 Farfalla","M","M30","00:34.80","669.71"],
+["T4","2","D'AMBROSIO GIUSEPPE","1996","AQUA SSD SRL","50 Farfalla","M","M30","00:35.70","652.92"],
+["T4","1","ZARIGNO MICHELE","1985","SPORT LIFE SSD ARL","50 Farfalla","M","M40","00:33.40","731.25"],
+["T4","2","CAVA ANTONIO","1986","NEW WONDER SSD","50 Farfalla","M","M40","00:36.50","669.48"],
+["T4","3","OTTONE RAFFAELE","1986","SPOR.CLUB POGGIOMARINO ASD","50 Farfalla","M","M40","00:42.40","576.76"],
+["T4","1","SECCIA ADRIANO","1980","ASD NANTES CLUB MASTER","50 Farfalla","M","M45","00:36.10","693.11"],
+["T4","2","FIENGO ALESSANDRO","1980","ASD NANTES CLUB MASTER","50 Farfalla","M","M45","00:37.50","667.37"],
+["T4","3","MAZZEO GABRIELE","1978","NEW WONDER SSD","50 Farfalla","M","M45","00:37.60","665.61"],
+["T4","1","D'ERRICO CRISTIANO","1974","CARAVAGGIO SPORTING VILLAGE","50 Farfalla","M","M50","00:41.50","618.23"],
+["T4","1","CANCELLO GENNARO","1969","ASD NANTES CLUB MASTER","50 Farfalla","M","M55","00:34.90","758.69"],
+["T4","2","ABATE GUIDO","1967","CARAVAGGIO SPORTING VILLAGE","50 Farfalla","M","M55","00:44.20","599.77"],
+["T4","1","DI NAPOLI FIORENTINO","1962","CARAVAGGIO SPORTING VILLAGE","50 Farfalla","M","M60","00:59.60","465.38"],
+["T4","1","MUSELLA ROSA","2012","BLU TEAM CAMPANIA ASD","50 Stile","F","U17","00:40.30","613.28"],
+["T4","2","GUADAGNO SOFIA","2012","AQUA SSD SRL","50 Stile","F","U17","00:40.70","607.25"],
+["T4","1","MASUCCI RUBINA","2009","NEW WONDER SSD","50 Stile","F","U20","00:36.40","678.69"],
+["T4","2","FONTANA VITTORIA","2009","AS ACQUACHIARA","50 Stile","F","U20","00:39.20","630.46"],
+["T4","3","PALMIERI PAPERA ARIANNA","2009","BLU TEAM CAMPANIA ASD","50 Stile","F","U20","00:39.60","624.12"],
+["T4","4","MONTUORI MARIA NEVE","2007","BLU TEAM CAMPANIA ASD","50 Stile","F","U20","00:43.60","567.12"],
+["T4","1","ACUNZO ANASTASIA MARIA","2004","A.S. AEROACCADEMIA","50 Stile","F","M20","00:29.50","836.36"],
+["T4","2","ADAMI SARA","2004","SPOR.CLUB POGGIOMARINO ASD","50 Stile","F","M20","00:31.30","788.57"],
+["T4","3","ASTARITA MARTINA","2002","SPOR.CLUB POGGIOMARINO ASD","50 Stile","F","M20","00:32.30","764.31"],
+["T4","4","GALLOTTI FEDERICA","2005","BLU TEAM CAMPANIA ASD","50 Stile","F","M20","00:32.50","759.63"],
+["T4","5","LAMANNA STELLA","2004","A.S. AEROACCADEMIA","50 Stile","F","M20","00:32.60","757.32"],
+["T4","6","TRINCHESE MARIA","2005","NEW WONDER SSD","50 Stile","F","M20","00:34.60","713.79"],
+["T4","7","NICITA LAURA","2005","A.S. AEROACCADEMIA","50 Stile","F","M20","00:35.20","701.69"],
+["T4","8","DI PALMA VALENTINA","2005","SPOR.CLUB POGGIOMARINO ASD","50 Stile","F","M20","00:35.70","691.92"],
+["T4","9","VICIDOMINI MARIKA","2002","SSD OLIMPIA SPORT VILLAGE SRL","50 Stile","F","M20","00:36.50","676.84"],
+["T4","10","CAVALLARO ASIA EMANUELA","2005","NEW WONDER SSD","50 Stile","F","M20","00:36.60","675.0"],
+["T4","11","SALZANO MARIA LUCIA","2003","AS ACQUACHIARA","50 Stile","F","M20","00:38.10","648.56"],
+["T4","12","CLEMENTE MARIA","2006","AS ACQUACHIARA","50 Stile","F","M20","00:38.30","645.19"],
+["T4","13","QUALTIERI ROBERTA","2005","SPORT LIFE SSD ARL","50 Stile","F","M20","00:40.30","613.33"],
+["T4","14","MAFFUCCI ANGELA","2004","NEW WONDER SSD","50 Stile","F","M20","00:42.60","580.37"],
+["T4","1","GRIPPA MARIA CRISTINA","1995","NEW WONDER SSD","50 Stile","F","M30","00:33.50","756.68"],
+["T4","2","DELLE FEMINE FILOMENA","1993","GIVA SSD ARL","50 Stile","F","M30","00:44.40","571.75"],
+["T4","1","PINNA TIZIANA","1977","NEW WONDER SSD","50 Stile","F","M45","00:39.10","682.7"],
+["T4","2","CALVINO DANIELA","1969","ASD NANTES CLUB MASTER","50 Stile","F","M55","00:36.70","762.06"],
+["T4","1","ACONE MATILDE","1961","BLU TEAM CAMPANIA ASD","50 Stile","F","M65","00:53.60","566.54"],
+["T4","1","CAVALLO ALBERTO","2011","ASD EUROPA NUOTO CLUB","50 Stile","M","U17","00:28.90","743.49"],
+["T4","2","CUSANO GIOVANNI PAOLO","2011","AQUA SSD SRL","50 Stile","M","U17","00:32.80","655.08"],
+["T4","3","EREDITARIO DANIELE","2011","AQUA SSD SRL","50 Stile","M","U17","00:35.30","608.69"],
+["T4","4","MARINARO MARCELLO","2010","BLU TEAM CAMPANIA ASD","50 Stile","M","U17","00:37.50","572.98"],
+["T4","1","CERQUA ANDREA","2007","ASD NANTES CLUB MASTER","50 Stile","M","U20","00:28.60","750.69"],
+["T4","2","NASTRO PIETRO","2009","ASD EUROPA NUOTO CLUB","50 Stile","M","U20","00:28.80","745.52"],
+["T4","3","LONGOBARDI GIACOMO MARIA","2007","BLU TEAM CAMPANIA ASD","50 Stile","M","U20","00:29.10","737.88"],
+["T4","4","SANNINO VINCENZO","2008","GAZZELLA TEAM ASD","50 Stile","M","U20","00:29.60","725.5"],
+["T4","5","MIELE ALESSANDRO","2009","NEW WONDER SSD","50 Stile","M","U20","00:33.00","651.2"],
+["T4","6","DI MAIO SALVATORE","2008","BLU TEAM CAMPANIA ASD","50 Stile","M","U20","00:56.30","382.65"],
+["T4","1","BRUNO EMILIO","2006","SPOR.CLUB POGGIOMARINO ASD","50 Stile","M","M20","00:25.50","841.25"],
+["T4","2","MANGANIELLO MARIO","2004","NEW WONDER SSD","50 Stile","M","M20","00:26.20","818.94"],
+["T4","3","CARLINO DIEGO","2004","A.S. AEROACCADEMIA","50 Stile","M","M20","00:26.70","803.72"],
+["T4","4","RAGUSEO FRANCESCO SAVERIO","2002","A.S. AEROACCADEMIA","50 Stile","M","M20","00:27.70","774.91"],
+["T4","5","GIORDANO GERARDO","2005","ATLAS SPORT VILLAGE SSD","50 Stile","M","M20","00:28.00","766.67"],
+["T4","6","SANTAGATA ANTONIO","2004","A.S. AEROACCADEMIA","50 Stile","M","M20","00:28.40","755.94"],
+["T4","7","MORELLI FILIPPO","2004","A.S. AEROACCADEMIA","50 Stile","M","M20","00:28.70","748.1"],
+["T4","8","PINTO FRANCESCO ALESSANDRO","2002","SSD OLIMPIA SPORT VILLAGE SRL","50 Stile","M","M20","00:30.20","711.18"],
+["T4","9","CHIERICHELLA PAOLO","2004","ASD IL DELFINO NUOTO","50 Stile","M","M20","00:31.00","692.95"],
+["T4","10","JABARIN ERNESTO","2005","ASD IL DELFINO NUOTO","50 Stile","M","M20","00:31.70","677.74"],
+["T4","11","D'AIELLO ANTONIO","2002","SPORT LIFE SSD ARL","50 Stile","M","M20","00:32.30","665.23"],
+["T4","11","SCHETTINO CARMINE","2003","BLU TEAM CAMPANIA ASD","50 Stile","M","M20","00:32.30","665.23"],
+["T4","13","NOCERINO GIUSEPPE","2006","NEW WONDER SSD","50 Stile","M","M20","00:33.20","647.31"],
+["T4","14","CERQUA LORENZO","2005","ASD NANTES CLUB MASTER","50 Stile","M","M20","00:34.10","630.32"],
+["T4","15","DI MATTEO VINCENZO","2005","SPOR.CLUB POGGIOMARINO ASD","50 Stile","M","M20","00:35.90","598.89"],
+["T4","1","CASSESE PAOLINO","2000","SPOR.CLUB POGGIOMARINO ASD","50 Stile","M","M25","00:25.20","862.2"],
+["T4","2","MAFFUCCI BERNARDINO","1999","NEW WONDER SSD","50 Stile","M","M25","00:32.10","678.02"],
+["T4","3","SCAFURO VINCENZO","1998","NEW WONDER SSD","50 Stile","M","M25","00:34.90","623.93"],
+["T4","4","VINCIGUERRA GIUSEPPE ALFREDO","1998","SPORT LIFE SSD ARL","50 Stile","M","M25","00:36.10","603.31"],
+["T4","5","IOVINE CIRO","1998","BLU TEAM CAMPANIA ASD","50 Stile","M","M25","00:37.40","582.45"],
+["T4","6","CASSESE LUIGI","1998","BLU TEAM CAMPANIA ASD","50 Stile","M","M25","00:42.30","515.29"],
+["T4","7","STAIANO GIUSEPPE","1997","BLU TEAM CAMPANIA ASD","50 Stile","M","M25","01:05.00","335.89"],
+["T4","1","IANNUZZELLI FRANCESCO","1995","ASD NANTES CLUB MASTER","50 Stile","M","M30","00:28.00","781.21"],
+["T4","2","VECCHIONE ANTONIO","1992","NEW WONDER SSD","50 Stile","M","M30","00:30.30","722.3"],
+["T4","3","AURICCHIO GIUSEPPE DOMENICO","1993","SPOR.CLUB POGGIOMARINO ASD","50 Stile","M","M30","00:32.20","679.94"],
+["T4","4","BOCCIA FELICE","1993","SPOR.CLUB POGGIOMARINO ASD","50 Stile","M","M30","00:35.70","613.65"],
+["T4","5","DI VITO GIANFRANCO","1993","AQUA SSD SRL","50 Stile","M","M30","00:36.30","603.56"],
+["T4","1","GIARDINO GERARDO","1989","ASD NANTES CLUB MASTER","50 Stile","M","M35","00:27.20","815.69"],
+["T4","2","BALZANO MAURIZIO","1991","SPOR.CLUB POGGIOMARINO ASD","50 Stile","M","M35","00:30.40","730.39"],
+["T4","3","ALBANO GIOVANNI MARCO","1989","ASD NANTES CLUB MASTER","50 Stile","M","M35","00:30.90","718.65"],
+["T4","4","GENIALE CHRISTIAN","1991","SSD OLIMPIA SPORT VILLAGE SRL","50 Stile","M","M35","00:37.60","591.27"],
+["T4","5","FURBATTO GIANLUCA","1987","ASD NANTES CLUB MASTER","50 Stile","M","M35","00:42.60","522.2"],
+["T4","1","CAVA ANTONIO","1986","NEW WONDER SSD","50 Stile","M","M40","00:31.40","721.52"],
+["T4","2","AMBROSINO MICHELE","1985","NEW WONDER SSD","50 Stile","M","M40","00:33.40","678.57"],
+["T4","3","CARPENTIERI GERARDO","1985","SSD OLIMPIA SPORT VILLAGE SRL","50 Stile","M","M40","00:33.90","668.62"],
+["T4","4","CARUSO VINCENZO","1985","CARAVAGGIO SPORTING VILLAGE","50 Stile","M","M40","00:36.60","619.57"],
+["T4","1","SECCIA ADRIANO","1980","ASD NANTES CLUB MASTER","50 Stile","M","M45","00:29.60","789.26"],
+["T4","2","MAZZEO GABRIELE","1978","NEW WONDER SSD","50 Stile","M","M45","00:31.10","751.44"],
+["T4","3","VITIELLO ANTONIO","1977","CARAVAGGIO SPORTING VILLAGE","50 Stile","M","M45","00:31.60","739.62"],
+["T4","4","PAOLINO LIVIO","1979","NEW WONDER SSD","50 Stile","M","M45","00:32.90","710.57"],
+["T4","5","MOSCA GIOVANNI","1977","SPORT LIFE SSD ARL","50 Stile","M","M45","00:33.50","697.92"],
+["T4","6","CASTELLANO CLAUDIO","1977","CARAVAGGIO SPORTING VILLAGE","50 Stile","M","M45","00:33.90","689.74"],
+["T4","7","SCOLA AGOSTINO","1979","SPORT LIFE SSD ARL","50 Stile","M","M45","00:44.90","521.51"],
+["T4","1","PACIFICO RAFFAELE","1973","CARAVAGGIO SPORTING VILLAGE","50 Stile","M","M50","00:30.40","779.74"],
+["T4","2","FATTORUSO GIANPAOLO","1976","SPOR.CLUB POGGIOMARINO ASD","50 Stile","M","M50","00:35.90","660.94"],
+["T4","3","CAPRETTO BRUNO","1975","CARAVAGGIO SPORTING VILLAGE","50 Stile","M","M50","00:36.90","643.13"],
+["T4","4","BUONAGURO SABATINO","1973","NEW WONDER SSD","50 Stile","M","M50","00:38.40","618.13"],
+["T4","1","SATARIANO CARLO","1967","ASD NANTES CLUB MASTER","50 Stile","M","M55","00:36.40","677.05"],
+["T4","2","PATRONE LORENZO","1971","ASD EUROPA NUOTO CLUB","50 Stile","M","M55","00:48.10","513.04"],
+["T4","1","DI NAPOLI FIORENTINO","1962","CARAVAGGIO SPORTING VILLAGE","50 Stile","M","M60","00:38.70","655.01"],
+["T4","2","MANFREDONIA FRANCESCO","1962","BLU TEAM CAMPANIA ASD","50 Stile","M","M60","00:44.10","575.17"],
+["T4","1","VITIELLO SALVATORE","1958","CARAVAGGIO SPORTING VILLAGE","50 Stile","M","M65","00:38.30","687.53"],
+["T4","1","DE VIVO NUNZIO","1956","SSD OLIMPIA SPORT VILLAGE SRL","50 Stile","M","M70","01:10.60","394.35"],
+["T4","1","CORDUA PASQUALE","1947","AQUA SSD SRL","50 Stile","M","M75","00:47.30","631.79"],
+["T4","1","CLEMENTE MARTA","2004","AS ACQUACHIARA","100 Rana","F","M20","01:35.10","717.31"],
+["T4","2","NAPOLANO CONSIGLIA","2005","ASD EUROPA NUOTO CLUB","100 Rana","F","M20","01:37.30","701.13"],
+["T4","3","VICIDOMINI MARIKA","2002","SSD OLIMPIA SPORT VILLAGE SRL","100 Rana","F","M20","01:51.70","610.9"],
+["T4","1","GALASSO FEDERICA","1987","ASD NANTES CLUB MASTER","100 Rana","F","M35","01:38.60","711.03"],
+["T4","1","FIORE MONICA","1972","ASD NANTES CLUB MASTER","100 Rana","F","M50","01:53.60","671.0"],
+["T4","2","BENFIDI CLORINDA","1973","AQUA SSD SRL","100 Rana","F","M50","01:56.90","652.09"],
+["T4","1","PESSETTI ROBERTA","1971","ASD NANTES CLUB MASTER","100 Rana","F","M55","01:44.70","760.72"],
+["T4","2","PALMA LUCIA","1969","ASD EUROPA NUOTO CLUB","100 Rana","F","M55","02:18.80","574.1"],
+["T4","3","POLVERINO EMILIA","1968","AQUA SSD SRL","100 Rana","F","M55","02:21.10","564.76"],
+["T4","1","CRISTIANO GIUSEPPINA","1961","ASD NANTES CLUB MASTER","100 Rana","F","M65","02:02.30","731.18"],
+["T4","1","VAIANO CRISTIAN","2010","BLU TEAM CAMPANIA ASD","100 Rana","M","U17","01:16.10","767.84"],
+["T4","2","CACCIAPUOTI ALESSANDRO","2011","ASD EUROPA NUOTO CLUB","100 Rana","M","U17","01:26.30","677.09"],
+["T4","1","TRONCONE DAVIDE","2007","AS ACQUACHIARA","100 Rana","M","U20","01:16.70","761.64"],
+["T4","2","SICIGNANO SIMONE","2008","BLU TEAM CAMPANIA ASD","100 Rana","M","U20","01:36.10","608.2"],
+["T4","1","SCOLA CATELLO","2002","BLU TEAM CAMPANIA ASD","100 Rana","M","M20","01:12.00","811.22"],
+["T4","2","MORELLI FILIPPO","2004","A.S. AEROACCADEMIA","100 Rana","M","M20","01:17.20","756.72"],
+["T4","3","IMPARATO FRANCESCO GIOVANNI","2003","AS ACQUACHIARA","100 Rana","M","M20","01:30.70","644.33"],
+["T4","4","CAIAZZO DAVIDE","2005","BLU TEAM CAMPANIA ASD","100 Rana","M","M20","01:36.30","606.94"],
+["T4","1","CASSESE PAOLINO","2000","SPOR.CLUB POGGIOMARINO ASD","100 Rana","M","M25","01:12.90","811.9"],
+["T4","2","PAGANO EMIDDIO","2000","SSD OLIMPIA SPORT VILLAGE SRL","100 Rana","M","M25","01:48.10","548.01"],
+["T4","1","CASABURI RAFFAELE","1996","SSD OLIMPIA SPORT VILLAGE SRL","100 Rana","M","M30","01:28.80","675.39"],
+["T4","2","SICIGNANO CARMINE","1994","BLU TEAM CAMPANIA ASD","100 Rana","M","M30","01:42.00","588.16"],
+["T4","1","MONTANARO ANTONIO","1987","SSD OLIMPIA SPORT VILLAGE SRL","100 Rana","M","M35","01:39.80","610.8"],
+["T4","2","FURBATTO GIANLUCA","1987","ASD NANTES CLUB MASTER","100 Rana","M","M35","01:50.30","552.76"],
+["T4","3","GENIALE CHRISTIAN","1991","SSD OLIMPIA SPORT VILLAGE SRL","100 Rana","M","M35","02:09.40","471.3"],
+["T4","1","CIPOLLETTA DIEGO","1985","GAZZELLA TEAM ASD","100 Rana","M","M40","01:23.90","743.4"],
+["T4","2","CORREA IACOPO","1985","SPOR.CLUB POGGIOMARINO ASD","100 Rana","M","M40","01:38.40","634.08"],
+["T4","3","SORRENTINO FELICE","1982","NEW WONDER SSD","100 Rana","M","M40","01:42.20","610.55"],
+["T4","4","FORTE GIOVANNI","1986","SSD OLIMPIA SPORT VILLAGE SRL","100 Rana","M","M40","01:47.60","579.96"],
+["T4","1","FIENGO ALESSANDRO","1980","ASD NANTES CLUB MASTER","100 Rana","M","M45","01:33.90","682.78"],
+["T4","2","LETTIERI GENNARO","1979","ASD NANTES CLUB MASTER","100 Rana","M","M45","01:37.60","656.95"],
+["T4","3","MANGANARO ANDREA","1980","BLU TEAM CAMPANIA ASD","100 Rana","M","M45","01:42.10","628.05"],
+["T4","4","CASTELLANO CLAUDIO","1977","CARAVAGGIO SPORTING VILLAGE","100 Rana","M","M45","01:42.60","625.0"],
+["T4","4","MOSCA GIOVANNI","1977","SPORT LIFE SSD ARL","100 Rana","M","M45","01:42.60","625.0"],
+["T4","1","OTTIERI ALFREDO","1976","PLAY OFF SSD E DI TEMPO LIBERO A RL","100 Rana","M","M50","01:32.30","706.05"],
+["T4","2","PASSARETTI GIANLUCA","1972","CARAVAGGIO SPORTING VILLAGE","100 Rana","M","M50","01:33.90","694.05"],
+["T4","3","D'ERRICO CRISTIANO","1974","CARAVAGGIO SPORTING VILLAGE","100 Rana","M","M50","01:40.10","651.15"],
+["T4","4","CASTELLANO ANDREA","1973","AS ACQUACHIARA","100 Rana","M","M50","01:49.10","597.53"],
+["T4","1","GUARINO FRANCESCO","1969","CARAVAGGIO SPORTING VILLAGE","100 Rana","M","M55","01:38.10","694.61"],
+["T4","1","IMPERO GIOVANNI MAURIZIO","1966","ASD NANTES CLUB MASTER","100 Rana","M","M60","01:46.30","668.36"],
+["T4","1","TUPPO GAETANO","1958","CARAVAGGIO SPORTING VILLAGE","100 Rana","M","M65","01:34.80","794.21"],
+["T4","1","CASTELLANO CHIARA","2008","AS ACQUACHIARA","100 Dorso","F","U20","01:30.90","671.68"],
+["T4","1","ORLANDO GIOVANNA","2006","ASD EUROPA NUOTO CLUB","100 Dorso","F","M20","01:28.00","693.76"],
+["T4","2","PIROZZI MICHELA","2006","AS ACQUACHIARA","100 Dorso","F","M20","01:34.60","645.46"],
+["T4","1","VARRIALE KATIA","1995","ASD EUROPA NUOTO CLUB","100 Dorso","F","M30","02:30.00","417.31"],
+["T4","1","CALVINO DANIELA","1969","ASD NANTES CLUB MASTER","100 Dorso","F","M55","01:23.20","853.48"],
+["T4","1","CARUSO ANTONIO","2009","AS ACQUACHIARA","100 Dorso","M","U20","01:29.50","591.3"],
+["T4","1","RIZZO MARIO","2002","ASD IL DELFINO NUOTO","100 Dorso","M","M20","01:28.00","601.36"],
+["T4","1","VERDE VINCENZO","2001","ASD EUROPA NUOTO CLUB","100 Dorso","M","M25","01:26.20","621.99"],
+["T4","2","IOVINE CIRO","1998","BLU TEAM CAMPANIA ASD","100 Dorso","M","M25","01:31.00","589.25"],
+["T4","3","VINCIGUERRA GIUSEPPE ALFREDO","1998","SPORT LIFE SSD ARL","100 Dorso","M","M25","01:38.40","545.03"],
+["T4","1","TRONCONE ANDREA","1993","ASD NANTES CLUB MASTER","100 Dorso","M","M30","01:30.10","597.56"],
+["T4","1","CASTELLANO CLAUDIO","1977","CARAVAGGIO SPORTING VILLAGE","100 Dorso","M","M45","01:46.10","545.53"],
+["T4","2","SENATORE VINCENZO","1978","SSD OLIMPIA SPORT VILLAGE SRL","100 Dorso","M","M45","01:55.60","500.78"],
+["T4","1","D'ARCANGELO ANDREA","1971","BLU TEAM CAMPANIA ASD","100 Dorso","M","M55","01:30.50","691.07"],
+["T4","2","CAPOCCI MARCELLO","1968","ASD NANTES CLUB MASTER","100 Dorso","M","M55","01:55.90","539.88"],
+["T4","3","ABATE GUIDO","1967","CARAVAGGIO SPORTING VILLAGE","100 Dorso","M","M55","01:57.20","533.9"],
+["T4","1","CAMMAROTA UMBERTO","1963","ASD NANTES CLUB MASTER","100 Dorso","M","M60","01:20.80","812.96"],
+["T4","2","FEO LUCIANO","1965","SSD OLIMPIA SPORT VILLAGE SRL","100 Dorso","M","M60","01:30.40","726.82"],
+["T4","1","DE VIVO NUNZIO","1956","SSD OLIMPIA SPORT VILLAGE SRL","100 Dorso","M","M70","03:06.20","398.71"],
+["T4","1","ESPOSITO RAFFAELE","1951","BLU TEAM CAMPANIA ASD","100 Dorso","M","M75","01:51.80","715.45"],
+["T4","1","TORTORELLI AURORA","2011","AQUA SSD SRL","200 Stile","F","U17","02:46.30","722.11"],
+["T4","2","CARIELLO ALESSIA","2011","BLU TEAM CAMPANIA ASD","200 Stile","F","U17","02:48.80","711.42"],
+["T4","3","GUADAGNO SOFIA","2012","AQUA SSD SRL","200 Stile","F","U17","03:16.60","610.82"],
+["T4","1","GALLOTTI GIORGIA","2008","BLU TEAM CAMPANIA ASD","200 Stile","F","U20","02:36.60","766.84"],
+["T4","1","BORRELLI FRANCESCA","2006","SPOR.CLUB POGGIOMARINO ASD","200 Stile","F","M20","02:40.80","746.83"],
+["T4","2","GALLOTTI FEDERICA","2005","BLU TEAM CAMPANIA ASD","200 Stile","F","M20","02:44.80","728.73"],
+["T4","3","D'ANIELLO CARMEN","2006","BLU TEAM CAMPANIA ASD","200 Stile","F","M20","02:48.50","712.74"],
+["T4","4","SALZANO MARIA LUCIA","2003","AS ACQUACHIARA","200 Stile","F","M20","03:07.30","641.28"],
+["T4","5","VICIDOMINI MARIKA","2002","SSD OLIMPIA SPORT VILLAGE SRL","200 Stile","F","M20","03:07.50","640.6"],
+["T4","6","CACCIAPUOTI MARIA","2004","ASD EUROPA NUOTO CLUB","200 Stile","F","M20","03:48.30","526.21"],
+["T4","1","AVALLONE FRANCESCA","1982","ASD IL DELFINO NUOTO","200 Stile","F","M40","03:12.00","664.36"],
+["T4","2","COLUCCI MONICA","1986","ASD IL DELFINO NUOTO","200 Stile","F","M40","03:19.00","641.01"],
+["T4","1","PANARIELLO CINZIA","1974","SPOR.CLUB POGGIOMARINO ASD","200 Stile","F","M50","03:09.00","699.84"],
+["T4","1","CALVINO DANIELA","1969","ASD NANTES CLUB MASTER","200 Stile","F","M55","02:41.80","841.36"],
+["T4","2","POLVERINO EMILIA","1968","AQUA SSD SRL","200 Stile","F","M55","03:17.00","691.18"],
+["T4","1","CRISTIANO GIUSEPPINA","1961","ASD NANTES CLUB MASTER","200 Stile","F","M65","03:27.60","733.54"],
+["T4","2","ACONE MATILDE","1961","BLU TEAM CAMPANIA ASD","200 Stile","F","M65","04:09.30","610.94"],
+["T4","1","GENOVESE SALVATORE","2010","BLU TEAM CAMPANIA ASD","200 Stile","M","U17","02:26.40","731.28"],
+["T4","2","CAVALLO ALBERTO","2011","ASD EUROPA NUOTO CLUB","200 Stile","M","U17","02:27.10","727.8"],
+["T4","3","CUSANO GIOVANNI PAOLO","2011","AQUA SSD SRL","200 Stile","M","U17","02:43.90","653.2"],
+["T4","4","EREDITARIO DANIELE","2011","AQUA SSD SRL","200 Stile","M","U17","02:47.00","641.07"],
+["T4","1","MONGILLO STEFANO","2008","AQUA SSD SRL","200 Stile","M","U20","02:19.80","765.71"],
+["T4","2","SANNINO VINCENZO","2008","GAZZELLA TEAM ASD","200 Stile","M","U20","02:34.30","693.85"],
+["T4","3","CERQUA ANDREA","2007","ASD NANTES CLUB MASTER","200 Stile","M","U20","02:35.50","688.5"],
+["T4","4","NOTARO EMANUELE","2007","GAZZELLA TEAM ASD","200 Stile","M","U20","02:39.50","671.26"],
+["T4","1","GALIZIA MATTIA PIO","2005","BLU TEAM CAMPANIA ASD","200 Stile","M","M20","02:18.70","771.78"],
+["T4","2","MANGANIELLO MARIO","2004","NEW WONDER SSD","200 Stile","M","M20","02:24.40","741.36"],
+["T4","3","GIORDANO GERARDO","2005","ATLAS SPORT VILLAGE SSD","200 Stile","M","M20","02:25.20","737.28"],
+["T4","4","CAIAZZO DAVIDE","2005","BLU TEAM CAMPANIA ASD","200 Stile","M","M20","02:27.90","723.84"],
+["T4","5","PINTO FRANCESCO ALESSANDRO","2002","SSD OLIMPIA SPORT VILLAGE SRL","200 Stile","M","M20","02:39.40","671.68"],
+["T4","6","CHIERICHELLA PAOLO","2004","ASD IL DELFINO NUOTO","200 Stile","M","M20","02:41.50","662.96"],
+["T4","7","JABARIN ERNESTO","2005","ASD IL DELFINO NUOTO","200 Stile","M","M20","02:51.10","625.8"],
+["T4","8","CERQUA LORENZO","2005","ASD NANTES CLUB MASTER","200 Stile","M","M20","03:10.50","562.14"],
+["T4","1","CAPACCHIONE FRANCESCO SAVERIO","1997","ASD NANTES CLUB MASTER","200 Stile","M","M25","02:32.40","711.8"],
+["T4","2","ROMANO GIANLUCA","1999","NEW WONDER SSD","200 Stile","M","M25","02:33.30","707.62"],
+["T4","3","LANGELLOTTO NICOLA FRANCESCO","2001","BLU TEAM CAMPANIA ASD","200 Stile","M","M25","02:40.50","675.92"],
+["T4","4","VERDE VINCENZO","2001","ASD EUROPA NUOTO CLUB","200 Stile","M","M25","02:57.30","611.94"],
+["T4","5","PAGANO EMIDDIO","2000","SSD OLIMPIA SPORT VILLAGE SRL","200 Stile","M","M25","03:48.80","474.32"],
+["T4","1","NAPPI DENIS","1996","SPOR.CLUB POGGIOMARINO ASD","200 Stile","M","M30","02:15.20","804.21"],
+["T4","2","IANNUZZELLI FRANCESCO","1995","ASD NANTES CLUB MASTER","200 Stile","M","M30","02:26.80","740.75"],
+["T4","3","AURICCHIO GIUSEPPE DOMENICO","1993","SPOR.CLUB POGGIOMARINO ASD","200 Stile","M","M30","02:29.70","726.42"],
+["T4","4","VECCHIONE ANTONIO","1992","NEW WONDER SSD","200 Stile","M","M30","02:33.70","707.54"],
+["T4","5","AMBROSINO ALFONSO","1996","NEW WONDER SSD","200 Stile","M","M30","02:33.90","706.62"],
+["T4","6","D'AMBROSIO GIUSEPPE","1996","AQUA SSD SRL","200 Stile","M","M30","02:43.50","665.18"],
+["T4","7","TRONCONE ANDREA","1993","ASD NANTES CLUB MASTER","200 Stile","M","M30","02:45.70","656.36"],
+["T4","8","DI VITO GIANFRANCO","1993","AQUA SSD SRL","200 Stile","M","M30","03:13.80","561.29"],
+["T4","1","GIARDINO GERARDO","1989","ASD NANTES CLUB MASTER","200 Stile","M","M35","02:12.00","843.42"],
+["T4","2","ALBANO GIOVANNI MARCO","1989","ASD NANTES CLUB MASTER","200 Stile","M","M35","02:27.50","754.91"],
+["T4","3","BALZANO MAURIZIO","1991","SPOR.CLUB POGGIOMARINO ASD","200 Stile","M","M35","02:43.20","682.37"],
+["T4","4","GENIALE CHRISTIAN","1991","SSD OLIMPIA SPORT VILLAGE SRL","200 Stile","M","M35","03:00.40","617.39"],
+["T4","5","MONTANARO ANTONIO","1987","SSD OLIMPIA SPORT VILLAGE SRL","200 Stile","M","M35","03:14.30","573.26"],
+["T4","1","CIPOLLETTA DIEGO","1985","GAZZELLA TEAM ASD","200 Stile","M","M40","02:34.40","733.51"],
+["T4","2","MANGONE MARCO","1985","ASD IL DELFINO NUOTO","200 Stile","M","M40","02:34.80","731.61"],
+["T4","3","AMBROSINO MICHELE","1985","NEW WONDER SSD","200 Stile","M","M40","02:46.10","681.9"],
+["T4","4","D'AURIA ISIDORO","1985","BLU TEAM CAMPANIA ASD","200 Stile","M","M40","02:47.40","676.61"],
+["T4","5","CARPENTIERI GERARDO","1985","SSD OLIMPIA SPORT VILLAGE SRL","200 Stile","M","M40","02:52.00","658.54"],
+["T4","6","OTTONE RAFFAELE","1986","SPOR.CLUB POGGIOMARINO ASD","200 Stile","M","M40","02:57.20","639.23"],
+["T4","7","SICA GIAMPIERO","1984","ASD EUROPA NUOTO CLUB","200 Stile","M","M40","03:01.30","624.79"],
+["T4","8","FORTE GIOVANNI","1986","SSD OLIMPIA SPORT VILLAGE SRL","200 Stile","M","M40","03:06.70","606.74"],
+["T4","9","CORREA IACOPO","1985","SPOR.CLUB POGGIOMARINO ASD","200 Stile","M","M40","03:11.80","590.62"],
+["T4","10","FIONDELLA MICHELE","1984","AQUA SSD SRL","200 Stile","M","M40","03:21.90","561.11"],
+["T4","1","SECCIA ADRIANO","1980","ASD NANTES CLUB MASTER","200 Stile","M","M45","02:27.40","780.89"],
+["T4","2","PAOLINO LIVIO","1979","NEW WONDER SSD","200 Stile","M","M45","02:41.90","711.04"],
+["T4","3","CAROTENUTO ANTONIO","1978","SPOR.CLUB POGGIOMARINO ASD","200 Stile","M","M45","02:47.40","687.71"],
+["T4","4","SENATORE VINCENZO","1978","SSD OLIMPIA SPORT VILLAGE SRL","200 Stile","M","M45","03:29.60","549.38"],
+["T4","1","PACIFICO RAFFAELE","1973","CARAVAGGIO SPORTING VILLAGE","200 Stile","M","M50","02:39.10","740.99"],
+["T4","2","OTTIERI ALFREDO","1976","PLAY OFF SSD E DI TEMPO LIBERO A RL","200 Stile","M","M50","02:49.30","696.4"],
+["T4","3","D'ERRICO CRISTIANO","1974","CARAVAGGIO SPORTING VILLAGE","200 Stile","M","M50","02:55.50","671.83"],
+["T4","4","DE ROSA NICOLA","1975","CARAVAGGIO SPORTING VILLAGE","200 Stile","M","M50","03:03.20","643.62"],
+["T4","5","CAPRETTO BRUNO","1975","CARAVAGGIO SPORTING VILLAGE","200 Stile","M","M50","03:22.50","582.34"],
+["T4","1","CANCELLO GENNARO","1969","ASD NANTES CLUB MASTER","200 Stile","M","M55","02:32.60","804.32"],
+["T4","2","D'ARCANGELO ANDREA","1971","BLU TEAM CAMPANIA ASD","200 Stile","M","M55","02:48.70","727.65"],
+["T4","3","CAPOCCI MARCELLO","1968","ASD NANTES CLUB MASTER","200 Stile","M","M55","02:50.30","720.82"],
+["T4","4","CAPONE ARMANDO","1971","ASD EUROPA NUOTO CLUB","200 Stile","M","M55","03:13.40","634.81"],
+["T4","5","SATARIANO CARLO","1967","ASD NANTES CLUB MASTER","200 Stile","M","M55","03:14.80","630.26"],
+["T4","1","FEO LUCIANO","1965","SSD OLIMPIA SPORT VILLAGE SRL","200 Stile","M","M60","02:56.90","715.92"],
+["T4","2","IMPERO GIOVANNI MAURIZIO","1966","ASD NANTES CLUB MASTER","200 Stile","M","M60","03:16.00","646.23"],
+["T4","1","FARINA DOMENICO","1955","ASD IL DELFINO NUOTO","200 Stile","M","M70","03:08.60","758.85"],
+["T4","1","BRUSCO JASMINE","2010","ASD EUROPA NUOTO CLUB","200 Misti","F","U17","03:08.20","0"],
+["T4","1","PIAZZESE MAIA","2005","ASD IL DELFINO NUOTO","200 Misti","F","M20","03:18.00","691.02"],
+["T4","1","PANARIELLO CINZIA","1974","SPOR.CLUB POGGIOMARINO ASD","200 Misti","F","M50","03:39.80","687.68"],
+["T4","2","BENFIDI CLORINDA","1973","AQUA SSD SRL","200 Misti","F","M50","03:45.90","669.13"],
+["T4","1","VAIANO CRISTIAN","2010","BLU TEAM CAMPANIA ASD","200 Misti","M","U17","02:28.70","797.62"],
+["T4","2","PICCOLO CLAUDIO","2010","BLU TEAM CAMPANIA ASD","200 Misti","M","U17","02:35.60","762.25"],
+["T4","1","MANNIELLO VINCENZO","2008","BLU TEAM CAMPANIA ASD","200 Misti","M","U20","02:49.70","698.88"],
+["T4","2","CASCIO MATTIA","2008","AS ACQUACHIARA","200 Misti","M","U20","03:05.00","641.14"],
+["T4","1","SCOLA CATELLO","2002","BLU TEAM CAMPANIA ASD","200 Misti","M","M20","02:20.50","843.92"],
+["T4","2","BRUNO EMILIO","2006","SPOR.CLUB POGGIOMARINO ASD","200 Misti","M","M20","02:28.60","797.98"],
+["T4","3","MASUCCI ALESSANDRO","2004","NEW WONDER SSD","200 Misti","M","M20","02:42.90","728.02"],
+["T4","1","ESPOSITO DONATO","1998","ASD EUROPA NUOTO CLUB","200 Misti","M","M25","02:49.80","707.65"],
+["T4","1","TRONCONE ANDREA","1993","ASD NANTES CLUB MASTER","200 Misti","M","M30","02:58.00","675.98"],
+["T4","2","IANNUZZELLI FRANCESCO","1995","ASD NANTES CLUB MASTER","200 Misti","M","M30","02:59.40","670.71"],
+["T4","3","CASABURI RAFFAELE","1996","SSD OLIMPIA SPORT VILLAGE SRL","200 Misti","M","M30","03:04.80","651.14"],
+["T4","1","GIARDINO GERARDO","1989","ASD NANTES CLUB MASTER","200 Misti","M","M35","02:40.90","773.93"],
+["T4","2","FICCA LORENZO","1991","ASD EUROPA NUOTO CLUB","200 Misti","M","M35","02:55.10","711.24"],
+["T4","1","ZARIGNO MICHELE","1985","SPORT LIFE SSD ARL","200 Misti","M","M40","02:59.80","705.89"],
+["T4","1","PANTALEO DARIO","1980","CARAVAGGIO SPORTING VILLAGE","200 Misti","M","M45","02:47.80","779.29"],
+["T4","1","CAPOCCI MARCELLO","1968","ASD NANTES CLUB MASTER","200 Misti","M","M55","03:30.00","653.52"],
+["T4","1","ESPOSITO RAFFAELE","1951","BLU TEAM CAMPANIA ASD","200 Misti","M","M75","03:47.00","791.2"]
 ];
 
 const cats=[...new Set(D.map(r=>r[7]))].sort((a,b)=>{const o={U17:0,U20:1,M20:2,M25:3,M30:4,M35:5,M40:6,M45:7,M50:8,M55:9,M60:10,M65:11,M70:12,M75:13};return(o[a]??99)-(o[b]??99);});
 
 // DS: [tappa, pos, societa, tipo, categoria, componenti, punti, tempo]
 const DS=[
-["T1","1","A.S. AEROACCADEMIA","Mistaffetta 4x50 SL","80-119 (A)","SEMERIA FEDERICO PATRICK - REBECCA ALTISSIMI - CARUSO GLORIA - CARDIN ALBERTO","864.49","01:58.00"],
-["T1","2","ASD EUROPA NUOTO CLUB","Mistaffetta 4x50 SL","80-119 (A)","VERDE VINCENZO - NAPOLANO CONSIGLIA - PINTO CHIARA - ESPOSITO DONATO","723.48","02:21.00"],
-["T1","1","SSD OLIMPIA SPORT VILLAGE SRL","Mistaffetta 4x50 SL","120-159 (B)","CASABURI RAFFAELE - VICIDOMINI MARIKA - CANTISANI SABRINA - FEO LUCIANO","704.34","02:23.00"],
-["T1","1","ASD EUROPA NUOTO CLUB","Mistaffetta 4x50 SL","68-79 (U20)","CARRIERI LORENZO - CICCARELLI ANNA - MIRANTE SARA - NASTRO PIETRO","749.03","02:14.00"],
-["T1","1","ASD EUROPA NUOTO CLUB","Mistaffetta 4x50 SL","U17","CACCIAPUOTI ALESSANDRO - ORLANDO GIOVANNA - BRUSCO JASMINE - CAVALLO ALBERTO","0","02:07.00"],
+["T1","1","A.S. AEROACCADEMIA","Mistaffetta 4x50 Stile","80-119 (A)","SEMERIA FEDERICO PATRICK - REBECCA ALTISSIMI - CARUSO GLORIA - CARDIN ALBERTO","864.49","01:58.00"],
+["T1","2","ASD EUROPA NUOTO CLUB","Mistaffetta 4x50 Stile","80-119 (A)","VERDE VINCENZO - NAPOLANO CONSIGLIA - PINTO CHIARA - ESPOSITO DONATO","723.48","02:21.00"],
+["T1","1","SSD OLIMPIA SPORT VILLAGE SRL","Mistaffetta 4x50 Stile","120-159 (B)","CASABURI RAFFAELE - VICIDOMINI MARIKA - CANTISANI SABRINA - FEO LUCIANO","704.34","02:23.00"],
+["T1","1","ASD EUROPA NUOTO CLUB","Mistaffetta 4x50 Stile","68-79 (U20)","CARRIERI LORENZO - CICCARELLI ANNA - MIRANTE SARA - NASTRO PIETRO","749.03","02:14.00"],
+["T1","1","ASD EUROPA NUOTO CLUB","Mistaffetta 4x50 Stile","U17","CACCIAPUOTI ALESSANDRO - ORLANDO GIOVANNA - BRUSCO JASMINE - CAVALLO ALBERTO","0","02:07.00"],
 ["T2","1","BLU TEAM CAMPANIA ASD","Staff. 4x50 Misti F","U17","PALMIERI PAPERA ARIANNA - MONTUORI MARIA NEVE - CARIELLO ALESSIA - MUSELLA ROSA","0","03:01.40"],
 ["T2","1","ASD EUROPA NUOTO CLUB","Staff. 4x50 Misti F","68-79 (U20)","ORLANDO GIOVANNA - BRUSCO JASMINE - MIRANTE SARA - NAPOLANO CONSIGLIA","729.25","02:40.70"],
 ["T2","2","AS ACQUACHIARA","Staff. 4x50 Misti F","68-79 (U20)","FONTANA VITTORIA - DI VAIO MARIA LAURA - AVOSSA SOFIA - CASTELLANO CHIARA","670.42","02:54.80"],
@@ -1190,35 +1740,114 @@ const DS=[
 ["T2","3","AS ACQUACHIARA","Staff. 4x50 Misti M","160-199 (C)","CASTELLANO ANDREA - MEZZO GIOVANNI - USSORIO ESPEDITO - CASCIO MARIANO","603.04","02:51.20"],
 ["T2","4","BLU TEAM CAMPANIA ASD","Staff. 4x50 Misti M","160-199 (C)","IOVINE CIRO - MANFREDONIA FRANCESCO - MANGANARO ANDREA - CASSESE LUIGI","539.39","03:11.40"],
 ["T2","1","ASD NANTES CLUB MASTER","Staff. 4x50 Misti M","200-239 (D)","CAMMAROTA UMBERTO - TRONCONE ANDREA - CAPOCCI MARCELLO - IMPERO GIOVANNI MAURIZIO","724.77","02:33.00"],
-["T3","1","ASD EUROPA NUOTO CLUB","Staff. 4x50 SL F","68-79 (U20)","BRUSCO JASMINE - ORLANDO GIOVANNA - CACCIAPUOTI MARIA - MIRANTE SARA","711.91","02:31.10"],
-["T3","1","AS ACQUACHIARA","Staff. 4x50 SL F","80-119 (A)","CASTELLANO CHIARA - MICHELA PIROZZI - CLEMENTE MARTA - SALZANO MARIA LUCIA","729.27","02:29.30"],
-["T3","1","ASD EUROPA NUOTO CLUB","Staff. 4x50 SL F","120-159 (B)","NAPOLANO CONSIGLIA - PALMA LUCIA - GIAQUINTO ALESSIA - PINTO CHIARA","626.82","02:53.00"],
-["T3","1","ASD NANTES CLUB MASTER","Staff. 4x50 SL F","200-239 (D)","GALASSO FEDERICA - GRECO GAIA RAFFAELA - MAURIELLO ERMINIA - CRISTIANO GIUSEPPINA","681.35","02:51.60"],
-["T3","1","ASD EUROPA NUOTO CLUB","Staff. 4x50 SL M","U17","NASTRO PIETRO - CARRIERI LORENZO - CACCIAPUOTI ALESSANDRO - CAVALLO ALBERTO","0","01:57.30"],
-["T3","1","AS ACQUACHIARA","Staff. 4x50 SL M","68-79 (U20)","TRONCONE DAVIDE - CARUSO ANTONIO - CASCIO MATTIA - PIROZZI MATTEO","729.26","02:06.10"],
-["T3","1","PLAY OFF SSD E DI TEMPO LIBERO A RL","Staff. 4x50 SL M","80-119 (A)","MASSA MICHELE - FALCONE CHARLIE - RAPPOSELLI ENEA - RAPPOSELLI TARCISIO","803.53","01:56.20"],
-["T3","2","ASD IL DELFINO NUOTO","Staff. 4x50 SL M","80-119 (A)","CHIERICHELLA PAOLO - JABARIN ERNESTO - CRESPO RODRIGUEZ JON - RIZZO MARIO","728.32","02:08.20"],
-["T3","3","SSD OLIMPIA SPORT VILLAGE SRL","Staff. 4x50 SL M","80-119 (A)","SELLITTO STEFANO - PAGANO EMIDDIO - DI PACE STEFANO - PINTO FRANCESCO ALESSANDRO","636.47","02:26.70"],
-["T3","1","ASD IL DELFINO NUOTO","Staff. 4x50 SL M","120-159 (B)","MANGONE MARCO - MILONE FERNANDO - ROSSI ALESSANDRO - NAPPI DENIS","753.95","02:02.90"],
-["T3","2","AQUA SSD SRL","Staff. 4x50 SL M","120-159 (B)","MONGILLO STEFANO - D'AMBROSIO GIUSEPPE - MASIELLO ERMANNO - RINALDI GIOVANNI","731.91","02:06.60"],
-["T3","3","ASD NANTES CLUB MASTER","Staff. 4x50 SL M","120-159 (B)","SECCIA ADRIANO - CERQUA ANDREA - CERQUA LORENZO - SATARIANO CARLO","716.63","02:09.30"],
-["T3","4","ASD EUROPA NUOTO CLUB","Staff. 4x50 SL M","120-159 (B)","VERDE VINCENZO - CAPONE ARMANDO - CAMERLINGO DIEGO - ESPOSITO DONATO","697.22","02:12.90"],
-["T3","5","SPOR.CLUB POGGIOMARINO ASD","Staff. 4x50 SL M","120-159 (B)","BALZANO MAURIZIO - CORREA IACOPO - CASSESE PAOLINO - COZZOLINO DOMENICO","659.50","02:20.50"],
-["T3","6","SSD OLIMPIA SPORT VILLAGE SRL","Staff. 4x50 SL M","120-159 (B)","MONTANARO ANTONIO - SENATORE VINCENZO - FASOLINO LORENZO - FORTE GIOVANNI","590.19","02:37.00"],
-["T3","1","ASD NANTES CLUB MASTER","Staff. 4x50 SL M","160-199 (C)","FORQUET ERALDO - FIENGO ALESSANDRO - LETTIERI GENNARO - TRONCONE ANDREA","699.85","02:15.20"],
-["T3","2","AS ACQUACHIARA","Staff. 4x50 SL M","160-199 (C)","CASCIO MARIANO - CASTELLANO ANDREA - DI VAIO SAMUEL - IMPARATO FRANCESCO GIOVANNI","598.86","02:38.00"],
-["T3","1","ASD NANTES CLUB MASTER","Staff. 4x50 SL M","200-239 (D)","CAMMAROTA UMBERTO - CANCELLO GENNARO - CAPOCCI MARCELLO - MASTRORILLI GIOVANNI","759.75","02:09.70"],
-["T3","2","CARAVAGGIO SPORTING VILLAGE","Staff. 4x50 SL M","200-239 (D)","PACIFICO RAFFAELE - D'ERRICO CRISTIANO - PASSARETTI GIANLUCA - TUPPO GAETANO","719.27","02:17.00"],
-["T3","3","SSD OLIMPIA SPORT VILLAGE SRL","Staff. 4x50 SL M","200-239 (D)","DE VIVO NUNZIO - CARPENTIERI GERARDO - GENIALE CHRISTIAN - FEO LUCIANO","589.35","02:47.20"]
+["T3","1","ASD EUROPA NUOTO CLUB","Staff. 4x50 Stile F","68-79 (U20)","BRUSCO JASMINE - ORLANDO GIOVANNA - CACCIAPUOTI MARIA - MIRANTE SARA","711.91","02:31.10"],
+["T3","1","AS ACQUACHIARA","Staff. 4x50 Stile F","80-119 (A)","CASTELLANO CHIARA - MICHELA PIROZZI - CLEMENTE MARTA - SALZANO MARIA LUCIA","729.27","02:29.30"],
+["T3","1","ASD EUROPA NUOTO CLUB","Staff. 4x50 Stile F","120-159 (B)","NAPOLANO CONSIGLIA - PALMA LUCIA - GIAQUINTO ALESSIA - PINTO CHIARA","626.82","02:53.00"],
+["T3","1","ASD NANTES CLUB MASTER","Staff. 4x50 Stile F","200-239 (D)","GALASSO FEDERICA - GRECO GAIA RAFFAELA - MAURIELLO ERMINIA - CRISTIANO GIUSEPPINA","681.35","02:51.60"],
+["T3","1","ASD EUROPA NUOTO CLUB","Staff. 4x50 Stile M","U17","NASTRO PIETRO - CARRIERI LORENZO - CACCIAPUOTI ALESSANDRO - CAVALLO ALBERTO","0","01:57.30"],
+["T3","1","AS ACQUACHIARA","Staff. 4x50 Stile M","68-79 (U20)","TRONCONE DAVIDE - CARUSO ANTONIO - CASCIO MATTIA - PIROZZI MATTEO","729.26","02:06.10"],
+["T3","1","PLAY OFF SSD E DI TEMPO LIBERO A RL","Staff. 4x50 Stile M","80-119 (A)","MASSA MICHELE - FALCONE CHARLIE - RAPPOSELLI ENEA - RAPPOSELLI TARCISIO","803.53","01:56.20"],
+["T3","2","ASD IL DELFINO NUOTO","Staff. 4x50 Stile M","80-119 (A)","CHIERICHELLA PAOLO - JABARIN ERNESTO - CRESPO RODRIGUEZ JON - RIZZO MARIO","728.32","02:08.20"],
+["T3","3","SSD OLIMPIA SPORT VILLAGE SRL","Staff. 4x50 Stile M","80-119 (A)","SELLITTO STEFANO - PAGANO EMIDDIO - DI PACE STEFANO - PINTO FRANCESCO ALESSANDRO","636.47","02:26.70"],
+["T3","1","ASD IL DELFINO NUOTO","Staff. 4x50 Stile M","120-159 (B)","MANGONE MARCO - MILONE FERNANDO - ROSSI ALESSANDRO - NAPPI DENIS","753.95","02:02.90"],
+["T3","2","AQUA SSD SRL","Staff. 4x50 Stile M","120-159 (B)","MONGILLO STEFANO - D'AMBROSIO GIUSEPPE - MASIELLO ERMANNO - RINALDI GIOVANNI","731.91","02:06.60"],
+["T3","3","ASD NANTES CLUB MASTER","Staff. 4x50 Stile M","120-159 (B)","SECCIA ADRIANO - CERQUA ANDREA - CERQUA LORENZO - SATARIANO CARLO","716.63","02:09.30"],
+["T3","4","ASD EUROPA NUOTO CLUB","Staff. 4x50 Stile M","120-159 (B)","VERDE VINCENZO - CAPONE ARMANDO - CAMERLINGO DIEGO - ESPOSITO DONATO","697.22","02:12.90"],
+["T3","5","SPOR.CLUB POGGIOMARINO ASD","Staff. 4x50 Stile M","120-159 (B)","BALZANO MAURIZIO - CORREA IACOPO - CASSESE PAOLINO - COZZOLINO DOMENICO","659.50","02:20.50"],
+["T3","6","SSD OLIMPIA SPORT VILLAGE SRL","Staff. 4x50 Stile M","120-159 (B)","MONTANARO ANTONIO - SENATORE VINCENZO - FASOLINO LORENZO - FORTE GIOVANNI","590.19","02:37.00"],
+["T3","1","ASD NANTES CLUB MASTER","Staff. 4x50 Stile M","160-199 (C)","FORQUET ERALDO - FIENGO ALESSANDRO - LETTIERI GENNARO - TRONCONE ANDREA","699.85","02:15.20"],
+["T3","2","AS ACQUACHIARA","Staff. 4x50 Stile M","160-199 (C)","CASCIO MARIANO - CASTELLANO ANDREA - DI VAIO SAMUEL - IMPARATO FRANCESCO GIOVANNI","598.86","02:38.00"],
+["T3","1","ASD NANTES CLUB MASTER","Staff. 4x50 Stile M","200-239 (D)","CAMMAROTA UMBERTO - CANCELLO GENNARO - CAPOCCI MARCELLO - MASTRORILLI GIOVANNI","759.75","02:09.70"],
+["T3","2","CARAVAGGIO SPORTING VILLAGE","Staff. 4x50 Stile M","200-239 (D)","PACIFICO RAFFAELE - D'ERRICO CRISTIANO - PASSARETTI GIANLUCA - TUPPO GAETANO","719.27","02:17.00"],
+["T3","3","SSD OLIMPIA SPORT VILLAGE SRL","Staff. 4x50 Stile M","200-239 (D)","DE VIVO NUNZIO - CARPENTIERI GERARDO - GENIALE CHRISTIAN - FEO LUCIANO","589.35","02:47.20"],
+["T4","1","SPOR.CLUB POGGIOMARINO ASD","Staff. 4x100 Stile F","80-119 (A)","","801.63","04:54.10"],
+["T4","2","NEW WONDER SSD","Staff. 4x100 Stile F","80-119 (A)","TRINCHESE MARIA - GRIPPA MARIA CRISTINA - CAVALLARO ASIA EMANUELA - MASUCCI RUBINA","752.51","05:13.30"],
+["T4","3","AS ACQUACHIARA","Staff. 4x100 Stile F","80-119 (A)","CLEMENTE MARIA - MICHELA PIROZZI - SALZANO MARIA LUCIA - CASTELLANO CHIARA","713.34","05:30.50"],
+["T4","1","ASD NANTES CLUB MASTER","Staff. 4x100 Stile F","200-239 (D)","CRISTIANO GIUSEPPINA - PESSETTI ROBERTA - FIORE MONICA - GALASSO FEDERICA","1061.77","03:59.60"],
+["T4","1","SPOR.CLUB POGGIOMARINO ASD","Staff. 4x100 Stile M","80-119 (A)","","796.03","04:12.00"],
+["T4","2","ASD IL DELFINO NUOTO","Staff. 4x100 Stile M","80-119 (A)","RIZZO MARIO - ROSSI ALESSANDRO - JABARIN ERNESTO - CHIERICHELLA PAOLO","721.32","04:38.10"],
+["T4","3","NEW WONDER SSD","Staff. 4x100 Stile M","80-119 (A)","MIELE ALESSANDRO - ROMANO GIANLUCA - AMBROSINO MICHELE - SCAFURO VINCENZO","678.16","04:55.80"],
+["T4","4","AS ACQUACHIARA","Staff. 4x100 Stile M","80-119 (A)","IMPARATO FRANCESCO GIOVANNI - CARUSO ANTONIO - TASSARI FRANCESCO - CAROTENUTO ANTONIO","631.81","05:17.50"],
+["T4","1","NEW WONDER SSD","Staff. 4x100 Stile M","120-159 (B)","PAOLINO LIVIO - VECCHIONE ANTONIO - MAZZEO GABRIELE - MANGANIELLO MARIO","747.08","04:28.90"],
+["T4","2","ASD NANTES CLUB MASTER","Staff. 4x100 Stile M","120-159 (B)","CERQUA LORENZO - CERQUA ANDREA - TRONCONE ANDREA - LETTIERI GENNARO","678.68","04:56.00"],
+["T4","3","SSD OLIMPIA SPORT VILLAGE SRL","Staff. 4x100 Stile M","120-159 (B)","","672.1","04:58.90"],
+["T4","4","SPORT LIFE SSD ARL","Staff. 4x100 Stile M","120-159 (B)","VINCIGUERRA GIUSEPPE ALFREDO - SCOLA AGOSTINO - D'AIELLO ANTONIO - ZARIGNO MICHELE","614.72","05:26.80"],
+["T4","1","CARAVAGGIO SPORTING VILLAGE","Staff. 4x100 Stile M","160-199 (C)","","719.96","04:48.10"],
+["T4","2","ASD NANTES CLUB MASTER","Staff. 4x100 Stile M","160-199 (C)","FIENGO ALESSANDRO - IMPERO GIOVANNI MAURIZIO - SECCIA ADRIANO - ALBANO GIOVANNI MARCO","698.62","04:56.90"],
+["T4","1","ASD NANTES CLUB MASTER","Staff. 4x100 Stile M","200-239 (D)","SATARIANO CARLO - CAPOCCI MARCELLO - CANCELLO GENNARO - CAMMAROTA UMBERTO","706.2","05:09.80"],
+["T4","2","CARAVAGGIO SPORTING VILLAGE","Staff. 4x100 Stile M","200-239 (D)","","670.49","05:26.30"],
+["T4","1","SPOR.CLUB POGGIOMARINO ASD","Mistaffetta 4x50 Misti","80-119 (A)","","834.38","02:10.90"],
+["T4","2","A.S. AEROACCADEMIA","Mistaffetta 4x50 Misti","80-119 (A)","ACUNZO ANASTASIA MARIA - MORELLI FILIPPO - SANTAGATA ANTONIO - LAMANNA STELLA","823.06","02:12.70"],
+["T4","3","AS ACQUACHIARA","Mistaffetta 4x50 Misti","80-119 (A)","CASTELLANO CHIARA - PIROZZI MATTEO - DI VAIO SAMUEL - CLEMENTE MARIA","745.53","02:26.50"],
+["T4","4","ASD EUROPA NUOTO CLUB","Mistaffetta 4x50 Misti","80-119 (A)","MIRANTE SARA - NAPOLANO CONSIGLIA - ESPOSITO DONATO - VERDE VINCENZO","680.92","02:40.40"],
+["T4","5","NEW WONDER SSD","Mistaffetta 4x50 Misti","80-119 (A)","MASUCCI ALESSANDRO - SORRENTINO FELICE - TRINCHESE MARIA - MAFFUCCI ANGELA","670.47","02:42.90"],
+["T4","1","ASD IL DELFINO NUOTO","Mistaffetta 4x50 Misti","120-159 (B)","NAPPI DENIS - AVALLONE FRANCESCA - PIAZZESE MAIA - MANGONE MARCO","715.21","02:33.80"],
+["T4","2","SSD OLIMPIA SPORT VILLAGE SRL","Mistaffetta 4x50 Misti","120-159 (B)","","652.05","02:48.70"],
+["T4","3","NEW WONDER SSD","Mistaffetta 4x50 Misti","120-159 (B)","CAVALLARO ASIA EMANUELA - BUONAGURO SABATINO - AMBROSINO ALFONSO - PINNA TIZIANA","645.92","02:50.30"],
+["T4","4","AS ACQUACHIARA","Mistaffetta 4x50 Misti","120-159 (B)","FONTANA VITTORIA - CASCIO MARIANO - IMPARATO FRANCESCO GIOVANNI - CLEMENTE MARTA","613.15","02:59.40"],
+["T4","1","ASD NANTES CLUB MASTER","Mistaffetta 4x50 Misti","160-199 (C)","TRONCONE ANDREA - PESSETTI ROBERTA - FIORE MONICA - ALBANO GIOVANNI MARCO","678.33","02:48.00"],
+["T4","1","ASD NANTES CLUB MASTER","Mistaffetta 4x50 Misti","200-239 (D)","CALVINO DANIELA - GALASSO FEDERICA - SECCIA ADRIANO - IMPERO GIOVANNI MAURIZIO","754.4","02:39.20"]
 ];
 const gare=[...new Set(D.map(r=>r[5]))].sort();
 const fC=document.getElementById('fC'),fGa=document.getElementById('fGa');
 cats.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;fC.appendChild(o);});
 gare.forEach(g=>{const o=document.createElement('option');o.value=g;o.textContent=g;fGa.appendChild(o);});
 
+function fp(v){
+  const n=parseFloat(v);
+  if(!n&&n!==0)return'—';
+  const fixed=n.toFixed(2);
+  const parts=fixed.split('.');
+  parts[0]=parts[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+  return parts[0]+','+parts[1];
+}
 function pb(p){if(p==='1')return'<span class="pos-1">1°</span>';if(p==='2')return'<span class="pos-2">2°</span>';if(p==='3')return'<span class="pos-3">3°</span>';return'<span class="pos-x">'+p+'°</span>';}
 function gb(g){return g==='F'?'<span class="gf">F</span>':'<span class="gm">M</span>';}
-function tb(t){const m={T1:'<span class="tp-1">T1</span>',T2:'<span class="tp-2">T2</span>',T3:'<span class="tp-3">T3</span>'};return m[t]||t;}
+function tb(t){const m={T1:'<span class="tp-1">T1</span>',T2:'<span class="tp-2">T2</span>',T3:'<span class="tp-3">T3</span>',T4:'<span class="tp-4">T4</span>'};return m[t]||t;}
+
+
+// Sort state
+const sortState = { a: {col: null, dir: 1}, s: {col: null, dir: 1} };
+
+function sortBy(tbl, col, type) {
+  const st = sortState[tbl];
+  if (st.col === col) { st.dir *= -1; } else { st.col = col; st.dir = 1; }
+  // Update header indicators
+  document.querySelectorAll(`th[data-tbl="${tbl}"]`).forEach(th => {
+    th.classList.remove('sort-asc','sort-desc');
+    if (th.dataset.col === String(col)) th.classList.add(st.dir===1?'sort-asc':'sort-desc');
+  });
+  if (tbl === 'a') fa(); else fst();
+}
+
+function applySortA(arr) {
+  const {col, dir} = sortState.a;
+  if (col === null) return arr;
+  return [...arr].sort((a,b) => {
+    const va = col==='9'||col==='1' ? (parseFloat(a[col])||0) : a[col];
+    const vb = col==='9'||col==='1' ? (parseFloat(b[col])||0) : b[col];
+    return va < vb ? -dir : va > vb ? dir : 0;
+  });
+}
+
+function applySortS(arr) {
+  const {col, dir} = sortState.s;
+  if (col === null) return arr;
+  const catOrder = {'U17':0,'68-79 (U20)':1,'80-119 (A)':2,'120-159 (B)':3,'160-199 (C)':4,'200-239 (D)':5,'240+ (E)':6};
+  return [...arr].sort((a,b) => {
+    let va, vb;
+    if (col==='6'||col==='1') { va=parseFloat(a[col])||0; vb=parseFloat(b[col])||0; }
+    else if (col==='4') { va=catOrder[a[col]]??99; vb=catOrder[b[col]]??99; }
+    else { va=a[col]; vb=b[col]; }
+    return va < vb ? -dir : va > vb ? dir : 0;
+  });
+}
+
+document.addEventListener('click', e => {
+  const th = e.target.closest('th.sortable');
+  if (!th) return;
+  sortBy(th.dataset.tbl, th.dataset.col, th.dataset.type);
+});
 
 function fa(){
   const q=document.getElementById('sA').value.trim().toLowerCase();
@@ -1226,6 +1855,11 @@ function fa(){
   const fg=document.getElementById('fG').value;
   const fc=document.getElementById('fC').value;
   const fga=document.getElementById('fGa').value;
+  if(!q&&!ft&&!fg&&!fc&&!fga){
+    document.getElementById('cntA').textContent='Usa i filtri per cercare un atleta';
+    document.getElementById('tbA').innerHTML='';
+    return;
+  }
   const res=D.filter(r=>{
     if(ft&&r[0]!==ft)return false;
     if(fg&&r[6]!==fg)return false;
@@ -1234,8 +1868,9 @@ function fa(){
     if(q){const n=r[2].toLowerCase(),s=r[4].toLowerCase();if(!n.includes(q)&&!s.includes(q))return false;}
     return true;
   });
-  document.getElementById('cntA').textContent=res.length+' risultati';
-  document.getElementById('tbA').innerHTML=res.map(r=>`<tr>
+  const sorted_a = applySortA(res);
+  document.getElementById('cntA').textContent=sorted_a.length+' risultati';
+  document.getElementById('tbA').innerHTML=sorted_a.map(r=>`<tr>
     <td>${pb(r[1])}</td>
     <td class="nome-cell">${r[2]}</td>
     <td class="soc-cell">${r[4]}</td>
@@ -1243,7 +1878,7 @@ function fa(){
     <td>${gb(r[6])}</td>
     <td><span class="cat-badge">${r[7]}</span></td>
     <td class="tempo-cell">${r[8]}</td>
-    <td class="punti-cell">${parseFloat(r[9])||'—'}</td>
+    <td class="punti-cell">${fp(r[9])}</td>
     <td>${tb(r[0])}</td>
   </tr>`).join('');
 }
@@ -1256,14 +1891,14 @@ function fs(){
   const map={};
   srcI.forEach(r=>{
     const s=r[4];
-    if(!map[s])map[s]={nome:s,atleti:new Set(),gare:0,pt:0,v:0,podi:0,staffPt:0,staffV:0,staffGare:0};
+    if(!map[s])map[s]={nome:s,atleti:new Set(),gare:0,pt:0,v:0,podi:0,staffPt:0,staffV:0,staffGare:0,staffPodi:0};
     map[s].atleti.add(r[2]);map[s].gare++;map[s].pt+=parseFloat(r[9])||0;
     if(r[1]==='1')map[s].v++;
     if(['1','2','3'].includes(r[1]))map[s].podi++;
   });
   srcS.forEach(r=>{
     const s=r[2];
-    if(!map[s])map[s]={nome:s,atleti:new Set(),gare:0,pt:0,v:0,podi:0,staffPt:0,staffV:0,staffGare:0};
+    if(!map[s])map[s]={nome:s,atleti:new Set(),gare:0,pt:0,v:0,podi:0,staffPt:0,staffV:0,staffGare:0,staffPodi:0};
     map[s].staffPt+=parseFloat(r[6])||0;
     map[s].staffGare++;
     if(r[1]==='1')map[s].staffV++;
@@ -1279,13 +1914,13 @@ function fs(){
           <span>Atleti: <b>${s.atleti.size}</b></span>
           <span>Gare ind.: <b>${s.gare}</b></span>
           <span>Staffette: <b>${s.staffGare}</b></span>
-          <span>Vittorie: <b>${s.v+s.staffV}</b></span>
-          <span style="color:#1a5c2e">Ind.: <b>${Math.round(s.pt).toLocaleString('it-IT')}</b></span>
-          <span style="color:#267a3e">Staff.: <b>${Math.round(s.staffPt).toLocaleString('it-IT')}</b></span>
+          <span>Podi: <b>${s.podi+(s.staffPodi||0)}</b></span>
+          <span style="color:#1a5c2e">Ind.: <b>${fp(s.pt)}</b></span>
+          <span style="color:#267a3e">Staff.: <b>${fp(s.staffPt)}</b></span>
         </div>
       </div>
       <div style="text-align:right">
-        <div class="soc-punti">${Math.round(s.pt+s.staffPt).toLocaleString('it-IT')}</div>
+        <div class="soc-punti">${fp(s.pt+s.staffPt)}</div>
         <div class="soc-punti-label">punti totali</div>
       </div>
     </div>`).join('');
@@ -1296,6 +1931,11 @@ function fst(){
   const ft=document.getElementById('fTst').value;
   const ftipo=document.getElementById('fTipo').value;
   const fcat=document.getElementById('fCatSt').value;
+  if(!q&&!ft&&!ftipo&&!fcat){
+    document.getElementById('cntSt').textContent='Usa i filtri per cercare una staffetta';
+    document.getElementById('tbSt').innerHTML='';
+    return;
+  }
   const res=DS.filter(r=>{
     if(ft&&r[0]!==ft)return false;
     if(ftipo&&r[3]!==ftipo)return false;
@@ -1303,14 +1943,15 @@ function fst(){
     if(q&&!r[2].toLowerCase().includes(q))return false;
     return true;
   });
-  document.getElementById('cntSt').textContent=res.length+' staffette';
-  document.getElementById('tbSt').innerHTML=res.map(r=>`<tr>
+  const sorted_s = applySortS(res);
+  document.getElementById('cntSt').textContent=sorted_s.length+' staffette';
+  document.getElementById('tbSt').innerHTML=sorted_s.map(r=>`<tr>
     <td>${pb(r[1])}</td>
     <td class="nome-cell">${r[2]}</td>
     <td><span class="staff-tipo">${r[3]}</span></td>
     <td><span class="cat-badge">${r[4]}</span></td>
     <td class="tempo-cell">${r[7]}</td>
-    <td class="punti-cell">${parseFloat(r[6])||'—'}</td>
+    <td class="punti-cell">${fp(r[6])}</td>
     <td>${tb(r[0])}</td>
   </tr>`).join('');
 }
@@ -1320,18 +1961,300 @@ function fst(){
   const tipi=[...new Set(DS.map(r=>r[3]))].sort();
   const sel1=document.getElementById('fTipo');
   tipi.forEach(t=>{const o=document.createElement('option');o.value=t;o.textContent=t;sel1.appendChild(o);});
-  const catsSt=[...new Set(DS.map(r=>r[4]))].sort();
+  const catsSt=[...new Set(DS.map(r=>r[4]))].sort((a,b)=>{const o={'U17':0,'68-79 (U20)':1,'80-119 (A)':2,'120-159 (B)':3,'160-199 (C)':4,'200-239 (D)':5};return(o[a]??99)-(o[b]??99);});
   const sel2=document.getElementById('fCatSt');
   catsSt.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;sel2.appendChild(o);});
 })();
+
+
+
+// ---- SCHEDA ATLETA ----
+(function(){
+  // Build athlete index: nome → {gen, cat, soc, anno, gare: [{tappa,pos,gara,tempo,punti}]}
+  window.atletiIndex = {};
+  D.forEach(r=>{
+    const key = r[2]+'|'+r[6]+'|'+r[7];
+    if(!window.atletiIndex[key])
+      window.atletiIndex[key]={nome:r[2],gen:r[6],cat:r[7],soc:r[4],anno:r[3],gare:[]};
+    window.atletiIndex[key].gare.push({tappa:r[0],pos:r[1],gara:r[5],tempo:r[8],punti:parseFloat(r[9])||0});
+  });
+  window.atletiList = Object.values(window.atletiIndex).sort((a,b)=>a.nome.localeCompare(b.nome));
+})();
+
+function schedaSearch(){
+  const q = document.getElementById('schedaInput').value.trim().toLowerCase();
+  const drop = document.getElementById('schedaDrop');
+  if(q.length < 2){ drop.style.display='none'; return; }
+  const matches = window.atletiList.filter(a=>a.nome.toLowerCase().includes(q)).slice(0,10);
+  if(!matches.length){ drop.style.display='none'; return; }
+  drop.innerHTML = matches.map(a=>
+    `<div onclick="schedaShow('${a.nome.replace(/'/g,"\'")}','${a.gen}','${a.cat}')">${a.nome} <span style="color:var(--muted);font-size:0.8rem">${a.cat} · ${a.soc}</span></div>`
+  ).join('');
+  drop.style.display='block';
+}
+
+document.addEventListener('click', e=>{
+  if(!e.target.closest('.scheda-suggestions'))
+    document.getElementById('schedaDrop').style.display='none';
+});
+
+function schedaShow(nome, gen, cat){
+  document.getElementById('schedaDrop').style.display='none';
+  document.getElementById('schedaInput').value=nome;
+
+  const key = nome+'|'+gen+'|'+cat;
+  const a = window.atletiIndex[key];
+  if(!a) return;
+
+  // Group gare by tipo gara
+  const byGara = {};
+  a.gare.forEach(g=>{
+    if(!byGara[g.gara]) byGara[g.gara]=[];
+    byGara[g.gara].push(g);
+  });
+
+  // Stats
+  const allPunti = a.gare.map(g=>g.punti).filter(p=>p>0);
+  const bestPunti = allPunti.length ? Math.max(...allPunti) : 0;
+  const totGare = a.gare.length;
+  const nTappe = new Set(a.gare.map(g=>g.tappa)).size;
+  const oro_ind     = a.gare.filter(g=>g.pos==='1').length;
+  const argento_ind = a.gare.filter(g=>g.pos==='2').length;
+  const bronzo_ind  = a.gare.filter(g=>g.pos==='3').length;
+  // Staffette: controlla se il nome dell'atleta compare tra i componenti (r[5])
+  const staffAtleta = DS.filter(r=>r[5].toUpperCase().includes(nome.toUpperCase()));
+  const oro_staff     = staffAtleta.filter(r=>r[1]==='1').length;
+  const argento_staff = staffAtleta.filter(r=>r[1]==='2').length;
+  const bronzo_staff  = staffAtleta.filter(r=>r[1]==='3').length;
+  const oro     = oro_ind     + oro_staff;
+  const argento = argento_ind + argento_staff;
+  const bronzo  = bronzo_ind  + bronzo_staff;
+
+  // Initials avatar
+  const initials = nome.split(' ').slice(0,2).map(w=>w[0]).join('');
+
+  // Iron status
+  const iron8 = window.ironData.iron8.find(x=>x.nome===nome&&x.gen===gen&&x.cat===cat);
+  const iron4 = window.ironData.iron4.find(x=>x.nome===nome&&x.gen===gen&&x.cat===cat);
+  const ironLabel = iron8 ? `<span class="scheda-pill">IRON 8 · ${fp(iron8.tot)}</span>` :
+                    iron4 ? `<span class="scheda-pill">IRON 4 · ${fp(iron4.tot)}</span>` : '';
+
+  let html = `
+  <div class="scheda-header">
+    <div class="scheda-avatar">${initials}</div>
+    <div style="flex:1">
+      <div class="scheda-nome">${nome}</div>
+      <div class="scheda-meta">${a.soc} · ${a.cat} · ${a.gen==='F'?'Femmine':'Maschi'}</div>
+      <div class="scheda-pills">
+        <span class="scheda-pill">${nTappe} tapp${nTappe===1?'a':'e'}</span>
+        <span class="scheda-pill">${totGare} gar${totGare===1?'a':'e'}</span>
+        ${oro>0    ? `<span class="scheda-pill">🥇 ${oro}</span>` : ''}
+        ${argento>0 ? `<span class="scheda-pill">🥈 ${argento}</span>` : ''}
+        ${bronzo>0  ? `<span class="scheda-pill">🥉 ${bronzo}</span>` : ''}
+        ${ironLabel}
+      </div>
+    </div>
+  </div>
+  <div class="scheda-grid">
+    <div class="stat-card"><div class="stat-card-val">${fp(bestPunti)}</div><div class="stat-card-label">Miglior punteggio</div></div>
+    <div class="stat-card"><div class="stat-card-val">${allPunti.length ? fp(allPunti.reduce((s,p)=>s+p,0)/allPunti.length) : '—'}</div><div class="stat-card-label">Media punteggi</div></div>
+  </div>`;
+
+  // One block per gara type, sorted by best punti desc
+  const gareOrdered = Object.entries(byGara).sort((a,b)=>{
+    const bA = Math.max(...a[1].map(g=>g.punti));
+    const bB = Math.max(...b[1].map(g=>g.punti));
+    return bB-bA;
+  });
+
+  gareOrdered.forEach(([garaName, results])=>{
+    const sorted = results.sort((a,b)=>a.tappa.localeCompare(b.tappa));
+    const maxP = Math.max(...sorted.map(r=>r.punti).filter(p=>p>0));
+    // Best time = shortest time among results with valid punti
+    function toSec(t){const p=t.replace(':','.').split('.');return parseInt(p[0])*60+parseInt(p[1])+parseInt(p[2]||0)/100;}
+    const validTimes = sorted.filter(r=>r.punti>0).map(r=>r.tempo);
+    const bestTime = validTimes.length ? validTimes.reduce((b,t)=>toSec(t)<toSec(b)?t:b) : '';
+    const bestLabel = bestTime ? `Best: ${bestTime}` : '';
+
+    html += `<div class="gara-block">
+      <div class="gara-block-header"><span>${garaName}</span><span class="gara-best">${bestLabel}</span></div>
+      <div class="gara-rows">`;
+
+    sorted.forEach(r=>{
+      const pct = maxP>0 ? Math.round(r.punti/maxP*100) : 0;
+      const isBest = r.punti===maxP && maxP>0;
+      const tappaLabel = r.tappa==='T1'?'Tappa 1':r.tappa==='T2'?'Tappa 2':r.tappa==='T3'?'Tappa 3':'Tappa 4';
+      const tappaColor = r.tappa==='T1'?'#1a5c2e':r.tappa==='T2'?'#c8960a':r.tappa==='T3'?'#6b8299':'#5b21b6';
+      html += `<div class="gara-row">
+        <div class="tappa-dot"><span style="width:8px;height:8px;border-radius:50%;background:${tappaColor};display:inline-block;flex-shrink:0"></span>${tappaLabel}</div>
+        <div class="progress-bar-wrap"><div class="progress-bar-fill${isBest?' best':''}" style="width:${pct}%"></div></div>
+        <div class="gara-tempo-val">${r.tempo}</div>
+        <div class="gara-punti-val">${r.punti>0?fp(r.punti):'—'}</div>
+      </div>`;
+    });
+
+    html += `</div></div>`;
+  });
+
+  // Staffette
+  const staffList = DS.filter(r=>r[5].toUpperCase().includes(nome.toUpperCase()));
+  if(staffList.length){
+    html += `<div class="gara-block">
+      <div class="gara-block-header"><span>Staffette</span><span class="gara-best">${staffList.length} partecipazion${staffAtleta.length===1?'e':'i'}</span></div>
+      <div class="gara-rows">`;
+    staffList.sort((a,b)=>a[0].localeCompare(b[0])).forEach(r=>{
+      const tappaLabel = r[0]==='T1'?'Tappa 1':r[0]==='T2'?'Tappa 2':r[0]==='T3'?'Tappa 3':'Tappa 4';
+      const tappaColor = r[0]==='T1'?'#1a5c2e':r[0]==='T2'?'#c8960a':r[0]==='T3'?'#6b8299':'#5b21b6';
+      const posIcon = r[1]==='1'?'🥇 ':r[1]==='2'?'🥈 ':r[1]==='3'?'🥉 ':'';
+      html += `<div class="gara-row" style="grid-template-columns:80px 1fr auto auto">
+        <div class="tappa-dot"><span style="width:8px;height:8px;border-radius:50%;background:${tappaColor};display:inline-block;flex-shrink:0"></span>${tappaLabel}</div>
+        <div style="font-size:0.82rem;color:var(--text)">${posIcon}${r[3]} &middot; Cat. ${r[4]} &middot; <span style="color:var(--muted)">${r[2]}</span></div>
+        <div class="gara-tempo-val" style="padding-right:12px">${r[7]}</div>
+        <div class="gara-punti-val" style="min-width:80px;text-align:right">${fp(parseFloat(r[6])||0)}</div>
+      </div>`;
+    });
+    html += `</div></div>`;
+  }
+
+  // IRON block
+  const ironEntry = iron8 || iron4;
+  if(ironEntry){
+    const ironType = iron8 ? 'IRON 8' : 'IRON 4';
+    html += `<div class="gara-block">
+      <div class="gara-block-header" style="background:#f5f0e0">
+        <span style="color:#8a6a00">🏆 Classifica ${ironType}</span>
+        <span class="gara-best" style="color:#8a6a00">Totale: ${fp(ironEntry.tot)} pts</span>
+      </div>
+      <div class="gara-rows">`;
+    ironEntry.gare.forEach(([g,p],i)=>{
+      html += `<div class="gara-row" style="grid-template-columns:24px 1fr auto">
+        <div style="color:var(--muted);font-size:0.8rem;font-weight:600">${i+1}</div>
+        <div style="font-size:0.85rem">${g}</div>
+        <div class="gara-punti-val">${fp(p)}</div>
+      </div>`;
+    });
+    html += `<div class="gara-row" style="grid-template-columns:24px 1fr auto;background:var(--blue-pale);font-weight:700">
+      <div></div>
+      <div style="font-size:0.85rem;color:var(--blue)">Totale ${ironType}</div>
+      <div class="gara-punti-val" style="color:var(--blue)">${fp(ironEntry.tot)}</div>
+    </div>`;
+    html += `</div></div>`;
+  }
+
+  document.getElementById('schedaContent').innerHTML=html;
+}
+
+// ---- IRON CLASSIFICHE ----
+(function(){
+  function getDist(g){return g.split(' ')[0];}
+  function getStile(g){return g.split(' ').slice(1).join(' ');}
+
+  // Build best score per athlete per gara (across all tappe)
+  const bestPerGara = {};
+  D.forEach(r=>{
+    const key = r[2]+'|'+r[6]+'|'+r[7]; // nome|gen|cat
+    const p = parseFloat(r[9])||0;
+    if(p<=0) return;
+    if(!bestPerGara[key]) bestPerGara[key]={info:{nome:r[2],anno:r[3],soc:r[4],gen:r[6],cat:r[7]},gare:{}};
+    if(!bestPerGara[key].gare[r[5]] || p > bestPerGara[key].gare[r[5]])
+      bestPerGara[key].gare[r[5]] = p;
+  });
+
+  window.ironData = {iron8:[], iron4:[]};
+  const cats8 = new Set(), cats4 = new Set();
+
+  Object.entries(bestPerGara).forEach(([k,v])=>{
+    const {nome,anno,soc,gen,cat} = v.info;
+    const gare = Object.entries(v.gare).sort((a,b)=>b[1]-a[1]); // sorted desc
+    const distanze = new Set(gare.map(([g])=>getDist(g)));
+    const stili = new Set(gare.map(([g])=>getStile(g)));
+
+    // IRON 8
+    if(distanze.size>=3 && stili.size>=3 && gare.length>=8){
+      const top8 = gare.slice(0,8);
+      const tot = Math.round(top8.reduce((s,[,p])=>s+p,0)*100)/100;
+      window.ironData.iron8.push({nome,anno,soc,gen,cat,tot,gare:top8});
+      cats8.add(cat);
+      return; // excluded from iron4
+    }
+    // IRON 4
+    if(distanze.size>=3 && gare.length>=4){
+      const top4 = gare.slice(0,4);
+      const tot = Math.round(top4.reduce((s,[,p])=>s+p,0)*100)/100;
+      window.ironData.iron4.push({nome,anno,soc,gen,cat,tot,gare:top4});
+      cats4.add(cat);
+    }
+  });
+
+  // Populate category filter
+  const catOrder={U17:0,U20:1,M20:2,M25:3,M30:4,M35:5,M40:6,M45:7,M50:8,M55:9,M60:10,M65:11,M70:12,M75:13};
+  window._ironCats8 = [...cats8].sort((a,b)=>(catOrder[a]??99)-(catOrder[b]??99));
+  window._ironCats4 = [...cats4].sort((a,b)=>(catOrder[a]??99)-(catOrder[b]??99));
+})();
+
+function fi(){
+  const type = document.getElementById('fIronType').value;
+  const gen  = document.getElementById('fIronGen').value;
+  const cat  = document.getElementById('fIronCat').value;
+
+  if(!type){
+    document.getElementById('cntIron').textContent='Seleziona IRON 4 o IRON 8 per vedere la classifica';
+    document.getElementById('tbIron').innerHTML='';
+    return;
+  }
+
+  // Repopulate cat dropdown when type changes
+  const selCat = document.getElementById('fIronCat');
+  const prevCat = selCat.value;
+  selCat.innerHTML = '<option value="">Tutte le categorie</option>';
+  const cats = type==='iron8' ? window._ironCats8 : window._ironCats4;
+  cats.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;selCat.appendChild(o);});
+  if([...selCat.options].some(o=>o.value===prevCat)) selCat.value=prevCat;
+
+  let data = [...window.ironData[type]];
+  if(cat) data=data.filter(a=>a.cat===cat);
+  data.sort((a,b)=>b.tot-a.tot);
+
+  function buildRows(subset){
+    return subset.map((a,i)=>{
+      const gareStr = a.gare.map(([g,p])=>`${g} <b>${fp(p)}</b>`).join(' · ');
+      return `<tr>
+        <td>${pb(String(i+1))}</td>
+        <td class="nome-cell">${a.nome}</td>
+        <td class="soc-cell">${a.soc}</td>
+        <td>${gb(a.gen)}</td>
+        <td><span class="cat-badge">${a.cat}</span></td>
+        <td style="font-size:0.78rem;color:var(--muted)">${gareStr}</td>
+        <td class="punti-cell" style="font-size:1.05rem;font-weight:700;color:var(--blue)">${fp(a.tot)}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  const label = type.toUpperCase().replace('IRON','IRON ');
+  const dataF = data.filter(a=>a.gen==='F');
+  const dataM = data.filter(a=>a.gen==='M');
+  let html = '';
+  if(!gen || gen==='F') html += buildRows(dataF);
+  if(!gen || gen==='M') html += buildRows(dataM);
+
+  const tot = (!gen ? data : data.filter(a=>a.gen===gen)).length;
+  document.getElementById('cntIron').textContent=tot+' atleti in classifica '+label;
+  document.getElementById('tbIron').innerHTML=html;
+}
 
 function sw(name,btn){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
   document.querySelectorAll('.pane').forEach(p=>p.classList.remove('on'));
   btn.classList.add('on');document.getElementById(name).classList.add('on');
+  if(name==='iron')fi();
 }
 
 fa();fs();fst();
+// Init iron category dropdown with iron8 default
+(function(){
+  const selCat = document.getElementById('fIronCat');
+  window._ironCats8.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;selCat.appendChild(o);});
+})();
 </script>
 </body>
 </html>
