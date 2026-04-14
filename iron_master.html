@@ -1988,10 +1988,10 @@ function schedaSearch(){
   const q = document.getElementById('schedaInput').value.trim().toLowerCase();
   const drop = document.getElementById('schedaDrop');
   if(q.length < 2){ drop.style.display='none'; return; }
-  const matches = window.atletiList.filter(a=>a.nome.toLowerCase().includes(q)).slice(0,10);
+  const matches = window.atletiList.map((a,i)=>({...a,_idx:i})).filter(a=>a.nome.toLowerCase().includes(q)).slice(0,10);
   if(!matches.length){ drop.style.display='none'; return; }
   drop.innerHTML = matches.map(a=>
-    `<div onclick="schedaShow('${a.nome.replace(/'/g,"\'")}','${a.gen}','${a.cat}')">${a.nome} <span style="color:var(--muted);font-size:0.8rem">${a.cat} · ${a.soc}</span></div>`
+    `<div onclick="schedaShow(${a._idx})">${a.nome} <span style="color:var(--muted);font-size:0.8rem">${a.cat} · ${a.soc}</span></div>`
   ).join('');
   drop.style.display='block';
 }
@@ -2001,8 +2001,13 @@ document.addEventListener('click', e=>{
     document.getElementById('schedaDrop').style.display='none';
 });
 
-function schedaShow(nome, gen, cat){
+function schedaShow(idx){
   document.getElementById('schedaDrop').style.display='none';
+  const atletaRef = window.atletiList[idx];
+  if(!atletaRef) return;
+  const nome = atletaRef.nome;
+  const gen  = atletaRef.gen;
+  const cat  = atletaRef.cat;
   document.getElementById('schedaInput').value=nome;
 
   const key = nome+'|'+gen+'|'+cat;
