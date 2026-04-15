@@ -268,7 +268,7 @@ thead th.sort-desc::after { content: '▼'; opacity: 1; }
 .gara-block-header { background:var(--blue-pale); padding:10px 16px; font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:0.95rem; letter-spacing:0.04em; color:var(--blue); display:flex; justify-content:space-between; align-items:center; }
 .gara-best { font-size:0.78rem; color:var(--muted); font-family:'Barlow',sans-serif; font-weight:400; }
 .gara-rows { }
-.gara-row { display:grid; grid-template-columns:80px 1fr 100px 100px; padding:9px 16px; border-top:1px solid #f0f0f0; align-items:center; font-size:0.87rem; }
+.gara-row { display:grid; grid-template-columns:1fr auto auto; padding:9px 16px; border-top:1px solid #f0f0f0; align-items:center; font-size:0.87rem; gap:12px; }
 .gara-row:first-child { border-top:none; }
 .tappa-dot { display:inline-flex; align-items:center; gap:6px; }
 .progress-bar-wrap { background:#eef0f4; border-radius:4px; height:8px; position:relative; overflow:hidden; }
@@ -2090,14 +2090,14 @@ function schedaShow(idx){
       <div class="gara-rows">`;
 
     sorted.forEach(r=>{
-      const pct = maxP>0 ? Math.round(r.punti/maxP*100) : 0;
       const isBest = r.punti===maxP && maxP>0;
       const tappaLabel = r.tappa==='T1'?'Tappa 1':r.tappa==='T2'?'Tappa 2':r.tappa==='T3'?'Tappa 3':'Tappa 4';
       const tappaColor = r.tappa==='T1'?'#1a5c2e':r.tappa==='T2'?'#c8960a':r.tappa==='T3'?'#6b8299':'#5b21b6';
-      html += `<div class="gara-row">
+      const posIcon = r.pos==='1'?'🥇':r.pos==='2'?'🥈':r.pos==='3'?'🥉':r.pos+'°';
+      html += `<div class="gara-row" style="grid-template-columns:80px 1fr auto auto">
         <div class="tappa-dot"><span style="width:8px;height:8px;border-radius:50%;background:${tappaColor};display:inline-block;flex-shrink:0"></span>${tappaLabel}</div>
-        <div class="progress-bar-wrap"><div class="progress-bar-fill${isBest?' best':''}" style="width:${pct}%"></div></div>
-        <div class="gara-tempo-val">${r.tempo}</div>
+        <div style="font-size:0.82rem;color:var(--text)">${posIcon} ${a.cat}</div>
+        <div class="gara-tempo-val" style="padding-right:12px">${r.tempo}</div>
         <div class="gara-punti-val">${r.punti>0?fp(r.punti):'—'}</div>
       </div>`;
     });
@@ -2119,7 +2119,7 @@ function schedaShow(idx){
         <div class="tappa-dot"><span style="width:8px;height:8px;border-radius:50%;background:${tappaColor};display:inline-block;flex-shrink:0"></span>${tappaLabel}</div>
         <div style="font-size:0.82rem;color:var(--text)">${posIcon}${r[3]} &middot; Cat. ${r[4]} &middot; <span style="color:var(--muted)">${r[2]}</span></div>
         <div class="gara-tempo-val" style="padding-right:12px">${r[7]}</div>
-        <div class="gara-punti-val" style="min-width:80px;text-align:right">${fp(parseFloat(r[6])||0)}</div>
+        <div class="gara-punti-val" style="text-align:right">${fp(parseFloat(r[6])||0)}</div>
       </div>`;
     });
     html += `</div></div>`;
@@ -2129,10 +2129,18 @@ function schedaShow(idx){
   const ironEntry = iron8 || iron4;
   if(ironEntry){
     const ironType = iron8 ? 'IRON 8' : 'IRON 4';
+    const ironList = window.ironData[iron8 ? 'iron8' : 'iron4'];
+    // Rank overall within gender
+    const sameGen = ironList.filter(x=>x.gen===gen).sort((a,b)=>b.tot-a.tot);
+    const posGen = sameGen.findIndex(x=>x.nome===nome&&x.cat===cat) + 1;
+    // Rank within gender + category
+    const sameCat = sameGen.filter(x=>x.cat===cat);
+    const posCat = sameCat.findIndex(x=>x.nome===nome) + 1;
+    const genLabel = gen==='F' ? 'Femmine' : 'Maschi';
     html += `<div class="gara-block">
       <div class="gara-block-header" style="background:#f5f0e0">
         <span style="color:#8a6a00">🏆 Classifica ${ironType}</span>
-        <span class="gara-best" style="color:#8a6a00">Totale: ${fp(ironEntry.tot)} pts</span>
+        <span class="gara-best" style="color:#8a6a00">${posGen}° ${genLabel} · ${posCat}° ${cat}</span>
       </div>
       <div class="gara-rows">`;
     ironEntry.gare.forEach(([g,p],i)=>{
