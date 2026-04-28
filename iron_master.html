@@ -2193,6 +2193,11 @@ function schedaShow(idx){
 
 // ---- IRON CLASSIFICHE ----
 (function(){
+  // Override punteggi usati solo nel calcolo IRON (correzioni manuali)
+  const ironOverrides = {
+    'FORTE GIOVANNI|M|M40|100 Stile': 691.04,
+  };
+
   function getDist(g){return g.split(' ')[0];}
   function getStile(g){return g.split(' ').slice(1).join(' ');}
 
@@ -2200,11 +2205,18 @@ function schedaShow(idx){
   const bestPerGara = {};
   D.forEach(r=>{
     const key = r[2]+'|'+r[6]+'|'+r[7]; // nome|gen|cat
-    const p = parseFloat(r[9])||0;
+    let p = parseFloat(r[9])||0;
     if(p<=0) return;
     if(!bestPerGara[key]) bestPerGara[key]={info:{nome:r[2],anno:r[3],soc:r[4],gen:r[6],cat:r[7]},gare:{}};
     if(!bestPerGara[key].gare[r[5]] || p > bestPerGara[key].gare[r[5]])
       bestPerGara[key].gare[r[5]] = p;
+  });
+  // Apply IRON overrides
+  Object.entries(ironOverrides).forEach(([okey, oval])=>{
+    const [nome,gen,cat,gara] = okey.split('|');
+    const k = nome+'|'+gen+'|'+cat;
+    if(bestPerGara[k] && bestPerGara[k].gare[gara]!==undefined)
+      bestPerGara[k].gare[gara] = oval;
   });
 
   window.ironData = {iron8:[], iron4:[]};
