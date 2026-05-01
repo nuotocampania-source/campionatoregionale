@@ -321,6 +321,106 @@ thead th.sort-desc::after { content: '▼'; opacity: 1; }
     grid-column: auto;
   }
 }
+
+/* STAGIONE BAR */
+.stagione-bar {
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+.stagione-bar-header {
+  background: var(--blue);
+  padding: 7px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.stagione-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 0.88rem;
+  letter-spacing: 0.06em;
+  color: #fff;
+  text-transform: uppercase;
+}
+.stagione-bar-body {
+  background: #fff;
+  padding: 10px 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.stagione-pill {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--blue);
+  font-family: 'Barlow Condensed', sans-serif;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  height: 26px;
+  box-sizing: border-box;
+}
+
+/* NEWS TICKER */
+.ticker-wrap {
+  background: var(--blue);
+  overflow: hidden;
+  padding: 0;
+  margin-bottom: 1rem;
+  border-radius: var(--radius);
+}
+.ticker {
+  display: flex;
+  align-items: center;
+  height: 36px;
+}
+.ticker-label {
+  background: rgba(0,0,0,0.2);
+  color: #fff;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0 14px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.ticker-track {
+  overflow: hidden;
+  flex: 1;
+  position: relative;
+  height: 100%;
+}
+.ticker-text {
+  display: inline-block;
+  white-space: nowrap;
+  color: #fff;
+  font-family: 'Barlow', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  animation: ticker-scroll 35s linear infinite;
+  padding-left: 100%;
+  line-height: 36px;
+}
+.ticker-text:hover { animation-play-state: paused; }
+@keyframes ticker-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
 </style>
 </head>
 <body>
@@ -343,8 +443,16 @@ thead th.sort-desc::after { content: '▼'; opacity: 1; }
 </div>
 
 <div class="main">
+  <div class="ticker-wrap">
+    <div class="ticker">
+      <div class="ticker-label">📢 News</div>
+      <div class="ticker-track">
+        <span class="ticker-text">La finale del Trofeo IRON Master UISP 2025/2026 si svolgerà domenica 24 maggio 2026 &nbsp;&nbsp;&nbsp;⭐&nbsp;&nbsp;&nbsp; Consulta i tuoi risultati di questa stagione e i migliori tempi della stagione 24/25 nella Scheda Atleta. &nbsp;&nbsp;&nbsp;⭐&nbsp;&nbsp;&nbsp; La finale del Trofeo IRON Master UISP 2025/2026 si svolgerà domenica 24 maggio 2026 &nbsp;&nbsp;&nbsp;⭐&nbsp;&nbsp;&nbsp; Consulta i tuoi risultati di questa stagione e i migliori tempi della stagione 24/25 nella Scheda Atleta.</span>
+      </div>
+    </div>
+  </div>
   <div class="tabs">
-    <button class="tab on" onclick="sw('atleti',this)">Atleti</button>
+    <button class="tab on" onclick="sw('atleti',this)">Gare</button>
     <button class="tab" onclick="sw('staffette',this)">Staffette</button>
     <button class="tab" onclick="sw('societa',this)">Classifica Società</button>
     <button class="tab" onclick="sw('iron',this)">Classifiche Iron</button>
@@ -2055,6 +2163,8 @@ function schedaShow(idx){
   // Stats
   const allPunti = a.gare.map(g=>g.punti).filter(p=>p>0);
   const bestPunti = allPunti.length ? Math.max(...allPunti) : 0;
+  const bestGaraEntry = a.gare.find(g=>g.punti===bestPunti) || {};
+  const bestGara = bestGaraEntry.gara || '';
   const totGare = a.gare.length;
   const nTappe = new Set(a.gare.map(g=>g.tappa)).size;
   const oro_ind     = a.gare.filter(g=>g.pos==='1').length;
@@ -2078,115 +2188,160 @@ function schedaShow(idx){
   const ironLabel = iron8 ? `<span class="scheda-pill">IRON 8 · ${fp(iron8.tot)}</span>` :
                     iron4 ? `<span class="scheda-pill">IRON 4 · ${fp(iron4.tot)}</span>` : '';
 
-  let html = `
-  <div class="scheda-header">
-    <div class="scheda-avatar">${initials}</div>
-    <div style="flex:1">
-      <div class="scheda-nome">${nome}</div>
-      <div class="scheda-meta">${a.soc} · ${a.cat} · ${a.gen==='F'?'Femmine':'Maschi'}</div>
-      <div class="scheda-pills">
-        <span class="scheda-pill">${nTappe} tapp${nTappe===1?'a':'e'}</span>
-        <span class="scheda-pill">${totGare} gar${totGare===1?'a':'e'}</span>
-        ${oro>0    ? `<span class="scheda-pill">🥇 ${oro}</span>` : ''}
-        ${argento>0 ? `<span class="scheda-pill">🥈 ${argento}</span>` : ''}
-        ${bronzo>0  ? `<span class="scheda-pill">🥉 ${bronzo}</span>` : ''}
-        ${ironLabel}
-      </div>
-    </div>
-  </div>
-  <div class="scheda-grid">
-    <div class="stat-card"><div class="stat-card-val">${fp(bestPunti)}</div><div class="stat-card-label">Miglior punteggio</div></div>
-    <div class="stat-card"><div class="stat-card-val">${allPunti.length ? fp(allPunti.reduce((s,p)=>s+p,0)/allPunti.length) : '—'}</div><div class="stat-card-label">Media punteggi</div></div>
-  </div>`;
+  // TABELLA TEMPI PERSONALI
+  const distOrd={'50':0,'100':1,'200':2,'400':3};
+  const prevSeason = window.prevSeasonData || {};
+  const prevKey = nome+'|'+gen+'|'+cat;
+  const prevAtleta = prevSeason[prevKey] || {};
+  function toSecTP(t){const p=t.replace(':','.').split('.');return parseInt(p[0])*60+parseInt(p[1])+parseInt(p[2]||0)/100;}
+  // Include anche gare presenti solo nella stagione precedente
+  const allGareKeys = new Set([...Object.keys(byGara), ...Object.keys(prevAtleta)]);
+  const gareAtleta = [...allGareKeys].sort((a,b)=>{const da=distOrd[a.split(' ')[0]]??9,db=distOrd[b.split(' ')[0]]??9;return da!==db?da-db:a.localeCompare(b);});
+  let tempiHtml = '';
+  if(gareAtleta.length){
+    tempiHtml += `<div class="gara-block">
+      <div class="gara-block-header"><span>Tempi personali</span></div>
+      <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:0.82rem">
+        <thead><tr style="background:var(--blue)">
+          <th style="text-align:left;padding:7px 12px;font-family:'Barlow Condensed',sans-serif;font-size:0.8rem;letter-spacing:0.05em;color:#fff;font-weight:700;border-bottom:1.5px solid var(--border)">Gara</th>
+          <th style="text-align:center;padding:7px 10px;font-family:'Barlow Condensed',sans-serif;font-size:0.8rem;letter-spacing:0.05em;color:#fff;font-weight:700;border-bottom:1.5px solid var(--border)">Miglior assoluto</th>
+          <th style="text-align:center;padding:7px 10px;font-family:'Barlow Condensed',sans-serif;font-size:0.8rem;letter-spacing:0.05em;color:#fff;font-weight:700;border-bottom:1.5px solid var(--border)">Migliore Stagione 2025/26</th>
+          <th style="text-align:center;padding:7px 10px;font-family:'Barlow Condensed',sans-serif;font-size:0.8rem;letter-spacing:0.05em;color:#fff;font-weight:700;border-bottom:1.5px solid var(--border)">Migliore Stagione 2024/25</th>
+        </tr></thead><tbody>`;
+    gareAtleta.forEach((garaName,ri)=>{
+      const results = byGara[garaName] || [];
+      const bestCurr = results.length ? results.reduce((b,r)=>toSecTP(r.tempo)<toSecTP(b.tempo)?r:b, results[0]) : null;
+      const currTime = bestCurr ? bestCurr.tempo : '—';
+      const prevTime = prevAtleta[garaName] || '—';
+      let absTime = currTime;
+      if(prevTime!=='—'&&currTime!=='—') absTime=toSecTP(prevTime)<toSecTP(currTime)?prevTime:currTime;
+      else if(prevTime!=='—') absTime=prevTime;
+      const curBest = absTime===currTime&&currTime!=='—';
+      const prevBest = absTime===prevTime&&prevTime!=='—'&&!curBest;
+      const rowBg = ri%2===0?'':'background:#f8faf9;';
+      tempiHtml += `<tr style="${rowBg}border-bottom:1px solid #f0f0f0">
+        <td style="padding:7px 12px;font-weight:600;color:var(--text)">${garaName}</td>
+        <td style="text-align:center;padding:7px 10px;font-weight:700;color:var(--blue)">${absTime}</td>
+        <td style="text-align:center;padding:7px 10px;${curBest?'font-weight:700;color:var(--blue)':''}">${currTime}</td>
+        <td style="text-align:center;padding:7px 10px;color:var(--muted);${prevBest?'font-weight:700;color:var(--blue)':''}">${prevTime}</td>
+      </tr>`;
+    });
+    tempiHtml += `</tbody></table></div></div>`;
+  }
+
+  function toSec(t){const p=t.replace(':','.').split('.');return parseInt(p[0])*60+parseInt(p[1])+parseInt(p[2]||0)/100;}
 
   // One block per gara type, sorted by best punti desc
   const gareOrdered = Object.entries(byGara).sort((a,b)=>{
-    const bA = Math.max(...a[1].map(g=>g.punti));
-    const bB = Math.max(...b[1].map(g=>g.punti));
-    return bB-bA;
+    const da=distOrd[a[0].split(' ')[0]]??9, db=distOrd[b[0].split(' ')[0]]??9;
+    return da!==db ? da-db : a[0].localeCompare(b[0]);
   });
 
+  let gareHtml = '';
   gareOrdered.forEach(([garaName, results])=>{
     const sorted = results.sort((a,b)=>a.tappa.localeCompare(b.tappa));
     const maxP = Math.max(...sorted.map(r=>r.punti).filter(p=>p>0));
-    // Best time = shortest time among results with valid punti
-    function toSec(t){const p=t.replace(':','.').split('.');return parseInt(p[0])*60+parseInt(p[1])+parseInt(p[2]||0)/100;}
     const validTimes = sorted.filter(r=>r.punti>0).map(r=>r.tempo);
     const bestTime = validTimes.length ? validTimes.reduce((b,t)=>toSec(t)<toSec(b)?t:b) : '';
-    const bestLabel = bestTime ? `Best: ${bestTime}` : '';
 
-    html += `<div class="gara-block">
-      <div class="gara-block-header"><span>${garaName}</span><span class="gara-best">${bestLabel}</span></div>
-      <div class="gara-rows">`;
-
-    sorted.forEach(r=>{
-      const isBest = r.punti===maxP && maxP>0;
-      const tappaLabel = r.tappa==='T1'?'Tappa 1':r.tappa==='T2'?'Tappa 2':r.tappa==='T3'?'Tappa 3':'Tappa 4';
+    gareHtml += `<div style="border-top:1px solid #f0f0f0">
+      <div style="background:var(--blue-pale);padding:6px 16px;display:flex;justify-content:space-between;align-items:center">
+        <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.88rem;color:var(--blue);letter-spacing:0.04em;text-transform:uppercase">${garaName}</span>
+        ${bestTime?`<span class="gara-best">Best: ${bestTime}</span>`:''}
+      </div>`;
+    sorted.forEach((r,ri)=>{
       const tappaColor = r.tappa==='T1'?'#1a5c2e':r.tappa==='T2'?'#c8960a':r.tappa==='T3'?'#6b8299':'#5b21b6';
+      const tappaLabel = r.tappa==='T1'?'Tappa 1':r.tappa==='T2'?'Tappa 2':r.tappa==='T3'?'Tappa 3':'Tappa 4';
       const posIcon = r.pos==='1'?'🥇':r.pos==='2'?'🥈':r.pos==='3'?'🥉':r.pos+'°';
-      html += `<div class="gara-row" style="grid-template-columns:80px 1fr auto auto">
+      const rowBg = ri%2===0?'':'background:#f8faf9;';
+      gareHtml += `<div class="gara-row" style="grid-template-columns:80px 1fr auto auto;${rowBg}">
         <div class="tappa-dot"><span style="width:8px;height:8px;border-radius:50%;background:${tappaColor};display:inline-block;flex-shrink:0"></span>${tappaLabel}</div>
         <div style="font-size:0.82rem;color:var(--text)">${posIcon} ${a.cat}</div>
         <div class="gara-tempo-val" style="padding-right:12px">${r.tempo}</div>
         <div class="gara-punti-val">${r.punti>0?fp(r.punti):'—'}</div>
       </div>`;
     });
-
-    html += `</div></div>`;
+    gareHtml += `</div>`;
   });
 
-  // Staffette
+  // Staffette — incluse nella card principale
   const staffList = DS.filter(r=>r[5].toUpperCase().includes(nome.toUpperCase()));
   if(staffList.length){
-    html += `<div class="gara-block">
-      <div class="gara-block-header"><span>Staffette</span><span class="gara-best">${staffList.length} partecipazion${staffAtleta.length===1?'e':'i'}</span></div>
-      <div class="gara-rows">`;
-    staffList.sort((a,b)=>a[0].localeCompare(b[0])).forEach(r=>{
+    gareHtml += `<div style="border-top:1px solid #f0f0f0">
+      <div style="background:var(--blue-pale);padding:6px 16px;display:flex;justify-content:space-between;align-items:center">
+        <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.88rem;color:var(--blue);letter-spacing:0.04em;text-transform:uppercase">Staffette</span>
+        <span class="gara-best">${staffList.length} partecipazion${staffList.length===1?'e':'i'}</span>
+      </div>`;
+    staffList.sort((a,b)=>a[0].localeCompare(b[0])).forEach((r,ri)=>{
       const tappaLabel = r[0]==='T1'?'Tappa 1':r[0]==='T2'?'Tappa 2':r[0]==='T3'?'Tappa 3':'Tappa 4';
       const tappaColor = r[0]==='T1'?'#1a5c2e':r[0]==='T2'?'#c8960a':r[0]==='T3'?'#6b8299':'#5b21b6';
       const posIcon = r[1]==='1'?'🥇 ':r[1]==='2'?'🥈 ':r[1]==='3'?'🥉 ':'';
-      html += `<div class="gara-row" style="grid-template-columns:80px 1fr auto auto">
+      const rowBg = ri%2===0?'':'background:#f8faf9;';
+      gareHtml += `<div class="gara-row" style="grid-template-columns:80px 1fr auto auto;${rowBg}">
         <div class="tappa-dot"><span style="width:8px;height:8px;border-radius:50%;background:${tappaColor};display:inline-block;flex-shrink:0"></span>${tappaLabel}</div>
         <div style="font-size:0.82rem;color:var(--text)">${posIcon}${r[3]} &middot; Cat. ${r[4]} &middot; <span style="color:var(--muted)">${r[2]}</span></div>
         <div class="gara-tempo-val" style="padding-right:12px">${r[7]}</div>
         <div class="gara-punti-val" style="text-align:right">${fp(parseFloat(r[6])||0)}</div>
       </div>`;
     });
-    html += `</div></div>`;
+    gareHtml += `</div>`;
   }
 
-  // IRON block
+  // IRON block — incluso nella card principale
   const ironEntry = iron8 || iron4;
   if(ironEntry){
     const ironType = iron8 ? 'IRON 8' : 'IRON 4';
     const ironList = window.ironData[iron8 ? 'iron8' : 'iron4'];
-    // Rank overall within gender
     const sameGen = ironList.filter(x=>x.gen===gen).sort((a,b)=>b.tot-a.tot);
     const posGen = sameGen.findIndex(x=>x.nome===nome&&x.cat===cat) + 1;
-    // Rank within gender + category
     const sameCat = sameGen.filter(x=>x.cat===cat);
     const posCat = sameCat.findIndex(x=>x.nome===nome) + 1;
     const genLabel = gen==='F' ? 'Femmine' : 'Maschi';
-    html += `<div class="gara-block">
-      <div class="gara-block-header" style="background:#f5f0e0">
-        <span style="color:#8a6a00">🏆 Classifica ${ironType}</span>
-        <span class="gara-best" style="color:#8a6a00">${posGen}° ${genLabel} · ${posCat}° ${cat}</span>
-      </div>
-      <div class="gara-rows">`;
+    gareHtml += `<div style="border-top:1px solid #f0f0f0">
+      <div style="background:#fffbeb;padding:6px 16px;display:flex;justify-content:space-between;align-items:center">
+        <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.88rem;color:#92400e;letter-spacing:0.04em;text-transform:uppercase">🏆 Classifica ${ironType}</span>
+        <span class="gara-best" style="color:#92400e">${posGen}° ${genLabel} · ${posCat}° ${cat}</span>
+      </div>`;
     ironEntry.gare.forEach(([g,p],i)=>{
-      html += `<div class="gara-row" style="grid-template-columns:24px 1fr auto">
+      const rowBg = i%2===0?'':'background:#f8faf9;';
+      gareHtml += `<div class="gara-row" style="grid-template-columns:24px 1fr auto;${rowBg}">
         <div style="color:var(--muted);font-size:0.8rem;font-weight:600">${i+1}</div>
         <div style="font-size:0.85rem">${g}</div>
         <div class="gara-punti-val">${fp(p)}</div>
       </div>`;
     });
-    html += `<div class="gara-row" style="grid-template-columns:24px 1fr auto;background:var(--blue-pale);font-weight:700">
+    gareHtml += `<div class="gara-row" style="grid-template-columns:24px 1fr auto;background:var(--blue-pale);font-weight:700">
       <div></div>
-      <div style="font-size:0.85rem;color:var(--blue)">Totale ${ironType}</div>
+      <div style="font-size:0.85rem;color:var(--blue)">Totale punteggio ${ironType}</div>
       <div class="gara-punti-val" style="color:var(--blue)">${fp(ironEntry.tot)}</div>
-    </div>`;
-    html += `</div></div>`;
+    </div></div>`;
   }
+
+  let html = `
+  <div class="scheda-header">
+    <div class="scheda-avatar">${initials}</div>
+    <div style="flex:1">
+      <div class="scheda-nome">${nome}</div>
+      <div class="scheda-meta">${a.soc} · ${a.cat} · ${a.gen==='F'?'Femmine':'Maschi'}</div>
+    </div>
+  </div>
+  ${tempiHtml}
+  <div class="gara-block">
+    <div class="gara-block-header" style="flex-direction:column;align-items:flex-start;gap:8px">
+      <span>Trofeo Iron Master UISP Campania 2025/2026</span>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">
+        <span class="stagione-pill">${nTappe} tapp${nTappe===1?'a':'e'}</span>
+        <span class="stagione-pill">${totGare} gar${totGare===1?'a':'e'}</span>
+        ${oro>0    ? `<span class="stagione-pill">🥇 ${oro}</span>` : ''}
+        ${argento>0 ? `<span class="stagione-pill">🥈 ${argento}</span>` : ''}
+        ${bronzo>0  ? `<span class="stagione-pill">🥉 ${bronzo}</span>` : ''}
+        ${iron8||iron4 ? `<span class="stagione-pill" style="background:#fffbeb;border-color:#f59e0b;color:#92400e">${iron8?'IRON 8':'IRON 4'} · ${fp((iron8||iron4).tot)}</span>` : ''}
+        <span class="stagione-pill">Miglior punteggio ${fp(bestPunti)} · ${bestGara}</span>
+        <span class="stagione-pill">Media punteggio ${allPunti.length ? fp(allPunti.reduce((s,p)=>s+p,0)/allPunti.length) : '—'}</span>
+      </div>
+    </div>
+    ${gareHtml}
+  </div>`;
 
   document.getElementById('schedaContent').innerHTML=html;
 }
@@ -2323,6 +2478,7 @@ function sw(name,btn){
   if(name==='iron')fi();
 }
 
+window.prevSeasonData={"ABATE GUIDO|M|M55":{"50 Dorso":"00:52.20","50 Farfalla":"00:42.30","100 Misti":"01:44.30","100 Stile":"01:21.60","200 Stile":"03:12.70","50 Stile":"00:35.60"},"ALBANO GIOVANNI MARCO|M|M35":{"100 Dorso":"01:27.40","200 Dorso":"03:22.60","50 Dorso":"00:40.30","50 Farfalla":"00:34.20","100 Stile":"01:06.50","200 Stile":"02:23.90","400 Stile":"05:23.50","50 Stile":"00:30.20"},"ANNARUMMA NICOLA|M|M30":{"200 Rana":"04:15.90","50 Rana":"00:51.30","50 Stile":"00:40.10"},"AURICCHIO GIUSEPPE DOMENICO|M|M30":{"100 Misti":"01:20.70","200 Misti":"02:55.90","100 Rana":"01:31.10","50 Rana":"00:41.40","50 Stile":"00:33.90"},"BALZANO MAURIZIO|M|M30":{"50 Dorso":"00:44.20","50 Farfalla":"00:36.50","100 Stile":"01:12.60","200 Stile":"02:41.00","400 Stile":"06:31.30","50 Stile":"00:31.40"},"BENFIDI CLORINDA|F|M50":{"200 Misti":"03:40.80","400 Misti":"07:45.50","50 Rana":"00:52.40","100 Stile":"01:24.50","200 Stile":"03:04.00","400 Stile":"06:30.80","50 Stile":"00:39.30"},"BOCCIA FELICE|M|M30":{"50 Dorso":"00:42.40","50 Stile":"00:35.40"},"BORRELLI SABRINA|F|U17":{"50 Dorso":"00:43.20","50 Stile":"00:40.20"},"CACCIAPUOTI MARIA|F|M20":{"50 Rana":"00:54.90","200 Stile":"03:43.60"},"CAIAZZO DAVIDE|M|M20":{"50 Farfalla":"00:33.30","100 Misti":"01:22.30","200 Misti":"03:06.70","200 Stile":"02:34.70","50 Stile":"00:30.70"},"CALVINO DANIELA|F|M55":{"100 Dorso":"01:21.30","200 Dorso":"02:54.10","50 Dorso":"00:38.60","200 Farfalla":"03:33.20","50 Farfalla":"00:39.60","100 Misti":"01:27.20","200 Misti":"03:11.60","100 Stile":"01:16.30","200 Stile":"02:38.20","400 Stile":"05:42.80","50 Stile":"00:34.70"},"CAMERLINGO DIEGO|M|U20":{"50 Farfalla":"00:33.70","50 Stile":"00:31.30"},"CAMMAROTA UMBERTO|M|M60":{"100 Dorso":"01:21.10","200 Dorso":"02:58.30","50 Dorso":"00:38.20","100 Misti":"01:24.00","50 Stile":"00:31.90"},"CANCELLO GENNARO|M|M55":{"50 Farfalla":"00:34.50","200 Misti":"03:11.30","200 Stile":"02:30.30","400 Stile":"05:24.97","50 Stile":"00:31.60"},"CANTISANI SABRINA|F|M25":{"100 Misti":"01:35.80","50 Rana":"00:45.00","50 Stile":"00:36.60"},"CAPACCHIONE FRANCESCO SAVERIO|M|M25":{"50 Farfalla":"00:33.30","100 Misti":"01:20.80","100 Stile":"01:11.40","50 Stile":"00:30.80"},"CAPALDO ANTONIO PIO|M|M20":{"50 Farfalla":"00:34.10","100 Misti":"01:19.10","200 Misti":"03:07.60","100 Stile":"01:11.50","50 Stile":"00:29.60"},"CAPOCCI MARCELLO|M|M55":{"100 Dorso":"01:55.00","200 Dorso":"03:52.40","50 Dorso":"00:46.50","100 Farfalla":"01:36.60","50 Farfalla":"00:37.70","100 Misti":"01:32.20","200 Misti":"03:31.50","400 Misti":"07:23.90","100 Rana":"01:42.50","200 Rana":"03:50.00","50 Rana":"00:47.90","100 Stile":"01:16.70","200 Stile":"02:50.30","400 Stile":"05:58.70","50 Stile":"00:34.40"},"CAPONE ARMANDO|M|M50":{"50 Dorso":"00:48.10","50 Farfalla":"00:45.10","100 Rana":"01:48.80","50 Rana":"00:45.50","50 Stile":"00:35.50"},"CAPRETTO BRUNO|M|M50":{"50 Dorso":"00:47.70","50 Stile":"00:37.50"},"CARBONE GIANNIGNAZIO|M|M50":{"100 Dorso":"01:32.20","50 Dorso":"00:42.00","50 Farfalla":"00:39.30","100 Misti":"01:29.80","200 Misti":"03:21.80","100 Rana":"01:34.70","200 Rana":"03:34.60","50 Rana":"00:42.30","50 Stile":"00:32.70"},"CARIELLO ALESSIA|F|U17":{"50 Dorso":"00:42.50","100 Misti":"01:28.30","100 Rana":"01:36.10","50 Rana":"00:42.00","100 Stile":"01:19.30","50 Stile":"00:36.00"},"CARLINO DIEGO|M|M20":{"50 Dorso":"00:30.50","50 Stile":"00:26.50"},"CAROTENUTO ANTONIO|M|M45":{"200 Rana":"04:00.50","50 Rana":"00:44.60","100 Stile":"01:10.30","200 Stile":"02:42.30","400 Stile":"06:29.47","50 Stile":"00:31.60"},"CAROTENUTO ANTONIO|M|M35":{"50 Farfalla":"00:48.00","100 Misti":"01:35.50","200 Misti":"03:40.10"},"CARPENTIERI GERARDO|M|M40":{"100 Dorso":"01:32.60","200 Dorso":"03:39.80","50 Dorso":"00:43.10","50 Rana":"00:56.10","100 Stile":"01:13.30","200 Stile":"02:50.70","400 Stile":"06:27.70","50 Stile":"00:33.40"},"CARUSO ANTONIO|M|U17":{"50 Dorso":"00:42.80","50 Stile":"00:37.80"},"CASABURI RAFFAELE|M|M25":{"50 Dorso":"00:42.40","50 Farfalla":"00:38.70","100 Misti":"01:25.90","100 Rana":"01:32.50","200 Rana":"03:36.20","50 Rana":"00:39.70","100 Stile":"01:18.00","200 Stile":"02:52.30","50 Stile":"00:32.50"},"CASCIO MARIANO|M|M55":{"50 Dorso":"00:56.40","50 Stile":"00:45.10"},"CASCIO MATTIA|M|U20":{"50 Rana":"00:43.00"},"CASSESE PAOLINO|M|M25":{"50 Dorso":"00:29.30","100 Farfalla":"01:02.30","200 Farfalla":"02:17.60","50 Farfalla":"00:26.80","100 Misti":"01:05.10","200 Misti":"02:16.80","400 Misti":"04:59.00","200 Rana":"02:46.60","50 Rana":"00:35.50","100 Stile":"00:57.20","200 Stile":"02:08.20","50 Stile":"00:26.70"},"CASTELLANO ANDREA|M|M50":{"50 Rana":"00:48.00","50 Stile":"00:37.80"},"CASTELLANO CHIARA|F|U20":{"50 Dorso":"00:40.80","100 Misti":"01:30.80","50 Rana":"00:49.30","50 Stile":"00:36.80"},"CASTELLANO CLAUDIO|M|M45":{"100 Dorso":"01:43.00","50 Dorso":"00:44.20","100 Misti":"01:36.00","100 Rana":"01:42.30","200 Rana":"03:44.20","100 Stile":"01:21.70","50 Stile":"00:33.20"},"CATANIA DARIO|M|M40":{"50 Stile":"00:29.60"},"CERQUA ANDREA|M|U20":{"100 Dorso":"01:13.00","50 Dorso":"00:33.20","50 Farfalla":"00:31.40","100 Misti":"01:13.70","100 Stile":"00:59.50","200 Stile":"02:14.70","400 Stile":"05:26.30","50 Stile":"00:27.20"},"CERQUA LORENZO|M|M20":{"100 Dorso":"01:37.20","50 Dorso":"00:45.10","50 Farfalla":"00:36.70","100 Misti":"01:33.10","50 Rana":"00:46.30","100 Stile":"01:20.40","200 Stile":"03:04.30","50 Stile":"00:33.00"},"CICCARELLI ANNA|F|M20":{"50 Dorso":"00:43.80","50 Rana":"00:48.40"},"CIPOLLETTA DIEGO|M|M40":{"100 Dorso":"01:19.20","200 Dorso":"02:57.90","50 Dorso":"00:35.50","100 Farfalla":"01:32.00","50 Farfalla":"00:38.70","100 Misti":"01:17.80","200 Misti":"02:50.70","100 Rana":"01:26.50","200 Rana":"03:07.40","50 Rana":"00:37.70","100 Stile":"01:08.00","200 Stile":"02:32.50","50 Stile":"00:30.20"},"CLEMENTE MARTA|F|M20":{"100 Misti":"01:35.80","50 Rana":"00:43.40","50 Stile":"00:36.00"},"COLUCCI MONICA|F|M35":{"200 Dorso":"03:46.70","50 Dorso":"00:47.90","200 Farfalla":"03:41.20","50 Farfalla":"00:46.00","200 Misti":"03:39.60","100 Rana":"01:47.50","50 Rana":"00:48.30","100 Stile":"01:37.50","200 Stile":"03:29.50","50 Stile":"00:41.00"},"COMITI ANDREA|M|U17":{"50 Farfalla":"00:31.20","100 Misti":"01:13.90","200 Misti":"03:00.50"},"CORAGGIO FRANCESCO|M|U17":{"50 Dorso":"00:35.90","50 Farfalla":"00:34.10","50 Rana":"00:41.20","100 Stile":"01:15.20"},"CORDUA PASQUALE|M|M75":{"50 Dorso":"01:04.40","100 Rana":"02:13.90","50 Rana":"00:56.90","50 Stile":"00:47.90"},"COZZOLINO DOMENICO|M|M35":{"100 Misti":"01:36.60","200 Misti":"03:49.80","100 Rana":"01:41.10","200 Rana":"03:34.40","50 Rana":"00:45.90","100 Stile":"01:26.20","200 Stile":"03:08.30","400 Stile":"07:11.60","50 Stile":"00:35.70"},"CRISTIANO GIUSEPPINA|F|M60":{"100 Dorso":"02:01.50","50 Dorso":"00:54.60","50 Farfalla":"00:48.30","100 Misti":"01:49.50","200 Misti":"04:12.80","100 Rana":"01:59.60","50 Rana":"00:54.80","100 Stile":"01:34.30","200 Stile":"03:28.30","50 Stile":"00:41.30"},"D'AMBROSIO GIUSEPPE|M|M25":{"100 Dorso":"01:26.80","50 Farfalla":"00:36.50","100 Misti":"01:22.70","200 Misti":"02:56.30","100 Rana":"01:27.40","50 Rana":"00:39.80","200 Stile":"02:47.60","400 Stile":"06:27.80","50 Stile":"00:32.10"},"D'ANIELLO CARMEN|F|U20":{"100 Dorso":"01:25.70","200 Dorso":"03:01.50","50 Dorso":"00:37.90","50 Farfalla":"00:33.60","100 Misti":"01:26.40","50 Rana":"00:48.30","100 Stile":"01:12.10","50 Stile":"00:34.70"},"D'ANIELLO FEDERICA|F|M20":{"200 Misti":"03:51.50","50 Rana":"00:54.40"},"D'ARCANGELO ANDREA|M|M50":{"50 Dorso":"00:41.70","200 Stile":"02:44.80","50 Stile":"00:31.70"},"D'AURIA ISIDORO|M|M40":{"50 Rana":"00:42.90","50 Stile":"00:34.60"},"D'ERRICO CRISTIANO|M|M50":{"50 Farfalla":"00:40.30","100 Misti":"01:30.90","100 Rana":"01:36.70","200 Rana":"03:42.20","50 Rana":"00:41.80","100 Stile":"01:16.80","200 Stile":"02:48.40","50 Stile":"00:35.60"},"DE ROSA NICOLA|M|M50":{"50 Rana":"00:47.90","50 Stile":"00:31.40"},"DE VIVO NUNZIO|M|M65":{"100 Dorso":"02:36.40","50 Dorso":"01:08.60","50 Stile":"00:55.40"},"DEL GIUDICE FERDINANDO|M|M20":{"50 Rana":"00:39.50","50 Stile":"00:29.30"},"DI MEO FABIO|M|M45":{"50 Farfalla":"00:43.80","100 Misti":"01:44.10","200 Misti":"04:07.40"},"DI NAPOLI FIORENTINO|M|M60":{"50 Farfalla":"00:59.20","100 Misti":"01:58.40","50 Stile":"00:40.00"},"DI PALMA VALENTINA|F|M20":{"100 Misti":"01:34.40","50 Rana":"00:46.40","100 Stile":"01:22.80","50 Stile":"00:34.90"},"DI VAIO SAMUEL|M|M25":{"50 Dorso":"00:44.40","50 Rana":"00:46.80"},"ESPOSITO RAFFAELE|M|M70":{"50 Dorso":"00:52.20","100 Stile":"01:31.40","200 Stile":"03:15.80","50 Stile":"00:39.40"},"ESPOSITO VINCENZO|M|M65":{"50 Dorso":"00:53.20","50 Farfalla":"00:44.10","100 Misti":"01:34.10","200 Misti":"03:30.10","100 Rana":"01:37.20","200 Rana":"03:26.30","50 Rana":"00:44.70","100 Stile":"01:24.00","200 Stile":"02:58.50","400 Stile":"06:22.90","50 Stile":"00:37.70"},"FABOZZI LUCIA|F|M25":{"100 Dorso":"02:12.90","50 Dorso":"00:58.10","50 Farfalla":"00:59.40","100 Misti":"02:02.10","50 Rana":"01:05.60","200 Stile":"04:09.80","50 Stile":"00:47.50"},"FARINA DOMENICO|M|M70":{"100 Dorso":"01:37.10","200 Dorso":"03:40.20","50 Dorso":"00:40.00","100 Misti":"01:29.40","50 Rana":"00:43.30","100 Stile":"01:16.40","200 Stile":"03:08.50","50 Stile":"00:32.70","50 Farfalla":"00:37.60"},"FEO LUCIANO|M|M60":{"50 Dorso":"00:39.00","50 Farfalla":"00:42.70","50 Stile":"00:32.20"},"FICCA LORENZO|M|M30":{"50 Farfalla":"00:33.80","100 Misti":"01:17.30","200 Misti":"02:58.30","100 Rana":"01:23.50","200 Rana":"03:13.70","50 Rana":"00:37.20","50 Stile":"00:30.00"},"FIENGO ALESSANDRO|M|M45":{"50 Farfalla":"00:38.80","200 Rana":"03:44.80","50 Rana":"00:42.60","400 Stile":"06:16.41"},"FONTANELLA FELICIANA|F|M35":{"50 Dorso":"00:42.70","50 Farfalla":"00:36.00","100 Misti":"01:23.00","100 Rana":"01:32.30","50 Rana":"00:42.00","100 Stile":"01:13.10","200 Stile":"02:39.40","50 Stile":"00:31.80"},"FORQUET ERALDO|M|M60":{"100 Stile":"01:09.20","50 Stile":"00:30.50"},"FORTE GIOVANNI|M|M35":{"100 Dorso":"01:35.80","50 Dorso":"00:40.60","100 Stile":"01:17.30","50 Stile":"00:34.80"},"FURBATTO GIANLUCA|M|M35":{"50 Dorso":"01:07.00","100 Misti":"01:56.30","100 Rana":"01:52.80","200 Rana":"03:56.20","50 Rana":"00:50.80","200 Stile":"03:40.00","400 Stile":"08:07.10","50 Stile":"00:40.50"},"GALASSO FEDERICA|F|M35":{"50 Rana":"00:44.10","50 Stile":"00:37.00"},"GALIERO MARIA SOFIA|F|M55":{"50 Dorso":"00:49.20","100 Misti":"01:44.00","50 Rana":"00:48.50","400 Stile":"07:20.10","50 Stile":"00:38.40"},"GALIZIA MATTIA PIO|M|M20":{"50 Dorso":"00:32.50","100 Farfalla":"01:04.00","50 Farfalla":"00:28.30","100 Misti":"01:06.70","200 Misti":"02:45.90","50 Rana":"00:34.40","200 Stile":"02:11.30","50 Stile":"00:26.60"},"GALLOTTI FEDERICA|F|M20":{"100 Dorso":"01:18.10","50 Dorso":"00:35.30","100 Farfalla":"01:22.10","50 Farfalla":"00:35.60","100 Misti":"01:20.80","200 Misti":"03:04.30","200 Stile":"02:35.90","50 Stile":"00:31.80"},"GALLOTTI GIORGIA|F|U20":{"100 Dorso":"01:22.00","200 Dorso":"02:57.00","50 Dorso":"00:39.60","100 Farfalla":"01:21.40","50 Farfalla":"00:34.30","100 Misti":"01:23.30","200 Stile":"02:32.60","50 Stile":"00:30.40"},"GENIALE CHRISTIAN|M|M30":{"100 Dorso":"02:06.40","200 Dorso":"04:37.40","50 Dorso":"00:53.50","100 Rana":"02:10.40","200 Rana":"04:01.80","100 Stile":"01:22.20","200 Stile":"03:02.60","400 Stile":"07:00.60","50 Stile":"00:37.40"},"GENOVESE SALVATORE|M|U17":{"50 Dorso":"00:33.60","200 Farfalla":"02:33.80","50 Farfalla":"00:30.80","200 Stile":"02:24.60"},"GIAQUINTO ALESSIA|F|M25":{"50 Dorso":"00:43.80","50 Rana":"00:47.10","100 Stile":"01:18.10","200 Stile":"02:59.00"},"GIARDINO GERARDO|M|M35":{"50 Farfalla":"00:30.30","100 Misti":"01:09.40","200 Misti":"02:37.30","100 Stile":"00:59.40","50 Stile":"00:27.50"},"GRECO GAIA RAFFAELA|F|M45":{"50 Farfalla":"00:48.40","50 Stile":"00:39.00"},"GUARINO FRANCESCO|M|M55":{"50 Dorso":"00:47.40","100 Misti":"01:30.80","100 Rana":"01:35.60","200 Rana":"03:27.00","50 Rana":"00:42.30","50 Stile":"00:36.40"},"IMPARATO FRANCESCO GIOVANNI|M|M20":{"100 Misti":"01:25.30","100 Rana":"01:35.80","200 Rana":"03:32.70","50 Rana":"00:41.70"},"IMPERO GIOVANNI MAURIZIO|M|M55":{"50 Dorso":"00:48.70","50 Farfalla":"00:47.50","100 Misti":"01:41.70","100 Rana":"01:48.60","50 Rana":"00:47.60","100 Stile":"01:24.90","200 Stile":"03:19.30","50 Stile":"00:35.80"},"LAMANNA STELLA|F|M20":{"100 Dorso":"01:24.70","50 Stile":"00:33.30"},"LETTIERI GENNARO|M|M45":{"100 Misti":"01:31.40","200 Rana":"03:50.70","50 Rana":"00:43.90","100 Stile":"01:21.00","200 Stile":"02:55.80","50 Stile":"00:34.20"},"LONGOBARDI GIACOMO MARIA|M|U20":{"50 Dorso":"00:35.80","50 Farfalla":"00:31.20","100 Misti":"01:17.10","100 Stile":"01:07.10","50 Stile":"00:29.70"},"MAINOLFI GIULIA|F|U17":{"100 Dorso":"01:20.80","50 Dorso":"00:36.70","100 Stile":"01:08.50","50 Stile":"00:30.80"},"MANNIELLO VINCENZO|M|U20":{"50 Dorso":"00:37.10","100 Misti":"01:21.00","50 Stile":"00:28.60"},"MASIELLO ERMANNO|M|M45":{"100 Dorso":"01:39.70","50 Dorso":"00:43.80","50 Farfalla":"00:38.70","100 Misti":"01:28.80","100 Rana":"01:36.20","200 Rana":"03:39.80","50 Rana":"00:42.80","50 Stile":"00:32.80"},"MASTRORILLI GIOVANNI|M|M55":{"50 Rana":"00:38.50","100 Stile":"01:06.90","50 Stile":"00:30.00"},"MAURIELLO ERMINIA|F|M65":{"100 Stile":"01:51.80","50 Stile":"00:54.00"},"MIRANDA GAETANO|M|M30":{"100 Rana":"01:31.90","50 Rana":"00:39.40","50 Stile":"00:33.10"},"MIRANTE SARA|F|M20":{"50 Dorso":"00:39.80","50 Farfalla":"00:39.90","100 Stile":"01:17.10","200 Stile":"02:52.00"},"MONGILLO STEFANO|M|U20":{"100 Dorso":"01:13.00","50 Dorso":"00:32.60","50 Farfalla":"00:29.40","100 Misti":"01:10.50","50 Rana":"00:38.70","100 Stile":"00:59.60","50 Stile":"00:27.50"},"MONTANARO ANTONIO|M|M35":{"50 Farfalla":"00:41.70","100 Misti":"01:38.80","50 Rana":"00:45.10","200 Stile":"03:15.80"},"MONTUORI MARIA NEVE|F|U20":{"50 Dorso":"00:51.50","50 Rana":"00:50.20","50 Stile":"00:41.50"},"NAPOLANO CONSIGLIA|F|M20":{"50 Farfalla":"00:45.20","100 Misti":"01:30.90","100 Rana":"01:40.90","200 Rana":"03:34.40","50 Rana":"00:46.40","50 Stile":"00:37.90"},"NAPPI DENIS|M|M25":{"50 Farfalla":"00:28.70","50 Stile":"00:26.20"},"NICITA LAURA|F|M20":{"50 Rana":"00:51.00","50 Stile":"00:35.10"},"NOTARO EMANUELE|M|U20":{"100 Farfalla":"01:21.40","50 Farfalla":"00:36.10","100 Misti":"01:18.50","200 Misti":"02:55.60","200 Rana":"03:20.10","50 Rana":"00:42.40","100 Stile":"01:10.10","50 Stile":"00:30.90"},"NUMA EMMANUELA|F|M20":{"50 Dorso":"00:41.70","100 Stile":"01:26.10","50 Stile":"00:36.80"},"ORLANDO GIOVANNA|F|U20":{"100 Dorso":"01:31.60","200 Dorso":"03:18.90","50 Dorso":"00:41.30","50 Farfalla":"00:41.20","100 Stile":"01:22.90","200 Stile":"03:07.10"},"OTTIERI ALFREDO|M|M45":{"100 Dorso":"01:38.50","50 Dorso":"00:41.50","50 Farfalla":"00:40.50","100 Misti":"01:26.60","100 Rana":"01:33.30","200 Rana":"03:32.20","50 Rana":"00:40.20","100 Stile":"01:13.20","200 Stile":"02:45.40","50 Stile":"00:32.40"},"OTTONE RAFFAELE|M|M35":{"100 Dorso":"01:32.80","200 Dorso":"03:27.30","50 Dorso":"00:41.20","100 Misti":"01:28.10","50 Rana":"00:45.40","100 Stile":"01:15.90","50 Stile":"00:34.10"},"OZZELLA FEDERICA|F|M30":{"50 Farfalla":"00:39.80","100 Misti":"01:28.50"},"PACIFICO RAFFAELE|M|M50":{"100 Dorso":"01:21.40","200 Dorso":"03:19.00","50 Dorso":"00:37.60","50 Farfalla":"00:34.30","100 Misti":"01:21.00","100 Rana":"01:33.30","50 Rana":"00:41.20","100 Stile":"01:07.20","400 Stile":"05:44.23","50 Stile":"00:30.80"},"PALMA LUCIA|F|M55":{"200 Rana":"04:47.80","50 Rana":"01:02.30"},"PANARIELLO CINZIA|F|M50":{"50 Farfalla":"00:45.20","100 Stile":"01:28.10","50 Stile":"00:37.80"},"PANTALEO DARIO|M|M45":{"100 Misti":"01:16.20","200 Misti":"02:55.40","100 Rana":"01:21.50","200 Rana":"02:58.80","50 Rana":"00:38.50","200 Stile":"02:20.70","400 Stile":"05:09.80","50 Stile":"00:30.80"},"PASSARETTI GIANLUCA|M|M50":{"50 Dorso":"00:46.60","100 Misti":"01:31.20","50 Rana":"00:41.70","50 Stile":"00:36.80"},"PESSETTI ROBERTA|F|M50":{"50 Farfalla":"00:44.70","100 Misti":"01:35.50","100 Rana":"01:40.10","200 Rana":"03:43.90","50 Rana":"00:45.30","100 Stile":"01:25.90","200 Stile":"03:07.10","400 Stile":"06:43.90"},"PICCOLO CLAUDIO|M|U17":{"50 Dorso":"00:32.10","200 Farfalla":"02:41.90","50 Farfalla":"00:30.00","100 Misti":"01:21.80","200 Misti":"02:42.10","100 Stile":"01:01.10","200 Stile":"02:14.70","50 Stile":"00:27.90"},"PINTO CHIARA|F|M25":{"50 Dorso":"00:41.20","50 Farfalla":"00:37.80","100 Misti":"01:26.00","50 Rana":"00:45.90","100 Stile":"01:18.50"},"PINTO FRANCESCO ALESSANDRO|M|M20":{"50 Farfalla":"00:37.10","50 Rana":"00:46.60","200 Stile":"02:50.60","50 Stile":"00:30.30"},"PIROZZI MATTEO|M|U20":{"100 Misti":"01:19.30","50 Stile":"00:28.70"},"PIROZZI MICHELA|F|U20":{"50 Dorso":"00:42.10","100 Misti":"01:37.50"},"RICCIO VINCENZO|M|M40":{"50 Farfalla":"00:35.20","100 Stile":"01:09.40","50 Stile":"00:32.50"},"RIZZO MARIO|M|M20":{"50 Dorso":"00:36.10","100 Misti":"01:22.70","100 Stile":"01:11.10","50 Stile":"00:30.30"},"ROSSI ALESSANDRO|M|M30":{"50 Rana":"00:36.30","50 Stile":"00:30.60"},"RUOCCO GIUSEPPE|M|U20":{"50 Dorso":"00:37.30","50 Farfalla":"00:36.40","100 Misti":"01:20.80","100 Stile":"01:07.20","50 Stile":"00:29.50"},"SALZANO MARIA LUCIA|F|M20":{"200 Stile":"03:06.20","50 Stile":"00:40.60"},"SANNINO VINCENZO|M|U20":{"100 Misti":"01:23.90","50 Rana":"00:41.10","100 Stile":"01:13.80","50 Stile":"00:30.80"},"SANTAGATA ANTONIO|M|M20":{"50 Farfalla":"00:29.70","50 Stile":"00:29.70"},"SATARIANO CARLO|M|M55":{"200 Stile":"03:10.30","400 Stile":"07:01.20","50 Stile":"00:36.30"},"SCHETTINO CARMINE|M|M20":{"50 Rana":"00:41.30","50 Stile":"00:33.10"},"SCOLA CATELLO|M|M20":{"100 Dorso":"01:08.00","200 Farfalla":"02:28.50","50 Farfalla":"00:27.70","200 Misti":"02:30.40","400 Misti":"05:00.70","100 Rana":"01:12.20","200 Rana":"02:50.40","50 Rana":"00:32.60","200 Stile":"02:09.90","50 Stile":"00:27.20"},"SECCIA ADRIANO|M|M45":{"50 Dorso":"00:41.80","50 Farfalla":"00:40.00","100 Misti":"01:24.00","200 Misti":"03:01.30","100 Rana":"01:31.20","50 Rana":"00:39.90","100 Stile":"01:09.50","200 Stile":"02:37.20","50 Stile":"00:31.80"},"SEMERIA FEDERICO PATRICK|M|M20":{"50 Farfalla":"00:29.90","50 Stile":"00:26.40"},"SICA GIAMPIERO|M|M40":{"50 Dorso":"00:40.30","200 Rana":"03:44.50","50 Rana":"00:42.30","200 Stile":"03:00.80"},"SICIGNANO CARMINE|M|M30":{"50 Rana":"00:44.20","50 Stile":"00:40.10"},"SICIGNANO SIMONE|M|U20":{"50 Dorso":"00:48.30","100 Misti":"01:41.40","100 Rana":"01:38.20","50 Rana":"00:42.20","50 Stile":"00:41.90"},"SIMONELLI NIKLA|F|M25":{"50 Rana":"00:51.70","50 Stile":"00:45.50"},"STAIANO GIUSEPPE|M|M25":{"50 Dorso":"01:12.60","50 Stile":"01:02.00"},"TARDIO ANTONIO|M|M45":{"50 Dorso":"00:40.70","50 Farfalla":"00:34.90","50 Stile":"00:35.20"},"TEDESCO LUIGI|M|M35":{"50 Dorso":"00:42.10","50 Rana":"00:42.20","50 Stile":"00:32.90"},"TRONCONE ANDREA|M|M30":{"100 Dorso":"01:32.80","50 Dorso":"00:40.30","50 Farfalla":"00:37.30","100 Misti":"01:24.00","200 Misti":"03:01.00","100 Rana":"01:27.30","200 Rana":"03:28.00","50 Rana":"00:39.00","100 Stile":"01:13.00","200 Stile":"02:40.90","50 Stile":"00:32.30"},"TUPPO GAETANO|M|M65":{"100 Farfalla":"01:25.50","50 Farfalla":"00:36.90","100 Misti":"01:30.80","100 Rana":"01:34.80","200 Rana":"03:31.60","50 Rana":"00:40.20"},"VAIANO CRISTIAN|M|U17":{"200 Farfalla":"02:44.20","50 Farfalla":"00:29.80","100 Misti":"01:13.30","200 Misti":"02:32.90","50 Rana":"00:32.50","100 Stile":"00:59.70","200 Stile":"02:15.60","50 Stile":"00:27.40"},"VERDE VINCENZO|M|M20":{"100 Dorso":"01:25.90","200 Dorso":"03:15.90","50 Dorso":"00:38.20","200 Misti":"03:00.60","100 Rana":"01:33.60","200 Rana":"03:27.50","50 Rana":"00:43.40","200 Stile":"02:45.40"}};
 fa();fs();fst();
 // Init iron category dropdown with iron8 default
 (function(){
