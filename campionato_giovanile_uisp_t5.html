@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Campionato Regionale Giovanile UISP Campania 2025/26</title>
+<title>Campionato Regionale Giovanile UISP Campania 2025/26 + Finale</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -367,6 +367,19 @@
   .scheda-table-wrap { overflow-x: auto; }
   .scheda-table-wrap table { width: 100%; }
   .scheda-table-wrap th { background: #f4f8fc; }
+  .scheda-sections { padding: 18px 22px 22px; display: flex; flex-direction: column; gap: 18px; }
+  .scheda-section { border: 1px solid #dde6ef; border-radius: 8px; overflow: hidden; background: #fff; }
+  .scheda-section-header { background: #f4f8fc; border-bottom: 1px solid #dde6ef; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .scheda-section-title { font-family: 'Barlow Condensed', sans-serif; font-size: 17px; font-weight: 700; color: #1a2a3a; letter-spacing: 0.3px; text-transform: uppercase; }
+  .scheda-section-count { font-size: 11px; color: #6a8aaa; text-transform: uppercase; letter-spacing: 0.5px; }
+  .scheda-section-empty { padding: 16px 14px; color: #6a8aaa; font-size: 13px; }
+  .scheda-table-compact th, .scheda-table-compact td { padding-top: 6px; padding-bottom: 6px; }
+  .staffetta-tag { font-size: 10px; color: #8aaacc; text-transform: uppercase; letter-spacing: 0.4px; }
+  @media (max-width: 700px) {
+    .scheda-sections { padding: 14px; }
+    .scheda-section-header { padding: 10px 12px; }
+    .scheda-section-title { font-size: 15px; }
+  }
 </style>
 </head>
 <body>
@@ -385,6 +398,7 @@
       <span class="badge badge-tappa">Tappa 3 — 1 feb 2026</span>
       <span class="badge badge-tappa">Tappa 4 — 1 mar 2026</span>
       <span class="badge badge-tappa">Tappa 5 — 12 apr 2026</span>
+      <span class="badge badge-tappa">Finale — 24 mag 2026</span>
       <span class="badge badge-info">ES-B · ES-A · ES-C · Ragazzi · Juniores · Cadetti · Assoluti</span>
       <div class="header-notice">⚠️ Piattaforma sperimentale — I dati potrebbero contenere errori o imprecisioni. Per segnalazioni scrivere a <a href="mailto:nuoto.campania@uisp.it">nuoto.campania@uisp.it</a></div>
     </div>
@@ -410,6 +424,7 @@
         <option value="T3">Tappa 3</option>
         <option value="T4">Tappa 4</option>
         <option value="T5">Tappa 5</option>
+        <option value="T6">Finale</option>
       </select>
       <select id="filtroSoc" onchange="filterAtleti()"><option value="">Tutte le società</option></select>
       <select id="filtroGara" onchange="filterAtleti()"><option value="">Tutte le gare</option></select>
@@ -462,6 +477,7 @@
         <option value="T3">Tappa 3</option>
         <option value="T4">Tappa 4</option>
         <option value="T5">Tappa 5</option>
+        <option value="T6">Finale</option>
       </select>
     </div>
     <div class="result-count" id="countSoc"></div>
@@ -493,6 +509,7 @@
         <option value="T3">Tappa 3</option>
         <option value="T4">Tappa 4</option>
         <option value="T5">Tappa 5</option>
+        <option value="T6">Finale</option>
       </select>
       <select id="filtroStaffSoc" onchange="filterStaffette()"><option value="">Tutte le società</option></select>
       <select id="filtroStaffSesso" onchange="filterStaffette()">
@@ -3745,6 +3762,543 @@ const RAW = [
 ["11","MASULLO GABRIELE","2015","NAPOLI NUOTO","100 Misti","ES-B","01:44.30","1","M",false,"T5"],
 ["12","GUARDASCIONE EMANUELE","2015","NAPOLI NUOTO","100 Misti","ES-B","01:44.50","1","M",false,"T5"],
 ["13","MORTILLI GIOVANNI FRANCESCO","2016","NAPOLI NUOTO","100 Misti","ES-B","02:14.90","1","M",false,"T5"],
+
+// ===== FINALE - 24 MAG 2026 =====
+["1","FRATTOLILLO GIORGIA","2018","ASD ONDA NUOTO","25 Stile Libero","ES-C","00:17.00","14","F",false,"T6"],
+["2","ALBERICO ALICE","2018","GIVA SSD ARL","25 Stile Libero","ES-C","00:17.60","12","F",false,"T6"],
+["3","DELLI GATTI SOFIA","2018","SELE NUOTO","25 Stile Libero","ES-C","00:18.90","10","F",false,"T6"],
+["4","ASCIONE ANNA","2018","CS NUOTO QUATTROVENTI","25 Stile Libero","ES-C","00:20.40","8","F",false,"T6"],
+["5","IMPERATI ANGELICA","2018","BLU TEAM CAMPANIA ASD","25 Stile Libero","ES-C","00:20.70","6","F",false,"T6"],
+["6","BORRELLI KIIRA","2018","AZURRA SSD SRL","25 Stile Libero","ES-C","00:23.00","4","F",false,"T6"],
+["7","VALLEFUOCO ELEONORA","2018","NAPOLI NUOTO","25 Stile Libero","ES-C","00:24.00","2","F",false,"T6"],
+["8","EGGER SOFIA","2019","CS NUOTO QUATTROVENTI","25 Stile Libero","ES-C","00:25.40","1","F",false,"T6"],
+["9","OLIVIERO GIORGIA","2018","CS NUOTO QUATTROVENTI","25 Stile Libero","ES-C","00:27.00","1","F",false,"T6"],
+["10","MERONE DARIA","2018","NAPOLI NUOTO","25 Stile Libero","ES-C","00:29.00","1","F",false,"T6"],
+["11","SIMEONE MARIA FRANCESCA","2018","CS NUOTO QUATTROVENTI","25 Stile Libero","ES-C","00:29.10","1","F",false,"T6"],
+["12","OLIVIERO MIA","2020","CS NUOTO QUATTROVENTI","25 Stile Libero","ES-C","00:30.50","1","F",false,"T6"],
+["13","BRACCIALE GIOVANNA","2018","GIVA SSD ARL","25 Stile Libero","ES-C","00:33.30","1","F",false,"T6"],
+["14","FORMICOLA ARIANNA","2018","CS NUOTO QUATTROVENTI","25 Stile Libero","ES-C","00:38.70","1","F",false,"T6"],
+["1","SAVIANO ANTONIO","2017","ACCADUEO","25 Stile Libero","ES-C","00:17.70","14","M",false,"T6"],
+["2","TUCCI GIOELE","2018","CS NUOTO QUATTROVENTI","25 Stile Libero","ES-C","00:18.60","12","M",false,"T6"],
+["3","ASTENGO RAFFAELE","2018","CS NUOTO QUATTROVENTI","25 Stile Libero","ES-C","00:18.70","10","M",false,"T6"],
+["4","COZZOLINO LUIGI","2017","CS NUOTO QUATTROVENTI","25 Stile Libero","ES-C","00:19.00","8","M",false,"T6"],
+["5","SIMIOLI FRANCESCO","2017","ATLAS SPORT VILLAGE SSD","25 Stile Libero","ES-C","00:19.20","6","M",false,"T6"],
+["6","CARELLA ALESSANDRO","2017","CS NUOTO QUATTROVENTI","25 Stile Libero","ES-C","00:19.70","4","M",false,"T6"],
+["6","DEL POLITO ANDREA","2017","SELE NUOTO","25 Stile Libero","ES-C","00:19.70","4","M",false,"T6"],
+["8","SALVATORE ANDREA","2017","SELE NUOTO","25 Stile Libero","ES-C","00:19.80","1","M",false,"T6"],
+["9","D'ANIELLO DIEGO","2018","BLU TEAM CAMPANIA ASD","25 Stile Libero","ES-C","00:20.00","1","M",false,"T6"],
+["10","PALLADINO FEDERICO","2017","BLU TEAM CAMPANIA ASD","25 Stile Libero","ES-C","00:20.10","1","M",false,"T6"],
+["11","ROBUSTELLI FRANCESCO","2018","AZURRA SSD SRL","25 Stile Libero","ES-C","00:20.50","1","M",false,"T6"],
+["12","CASTELLONE VINCENZO","2018","NAPOLI NUOTO","25 Stile Libero","ES-C","00:20.90","1","M",false,"T6"],
+["13","CROCETTO SAMUELE","2017","NAPOLI NUOTO","25 Stile Libero","ES-C","00:21.40","1","M",false,"T6"],
+["14","MARI GABRIELE","2018","CS NUOTO QUATTROVENTI","25 Stile Libero","ES-C","00:21.70","1","M",false,"T6"],
+["14","OLIVIERO SAMUEL","2018","CS NUOTO QUATTROVENTI","25 Stile Libero","ES-C","00:21.70","1","M",false,"T6"],
+["16","IULIANO MASSIMO","2018","NAPOLI NUOTO","25 Stile Libero","ES-C","00:22.20","1","M",false,"T6"],
+["17","RAFFONE LUIGI","2017","BLU TEAM CAMPANIA ASD","25 Stile Libero","ES-C","00:22.40","1","M",false,"T6"],
+["18","SAMSONOV RENATO","2018","NAPOLI NUOTO","25 Stile Libero","ES-C","00:23.90","1","M",false,"T6"],
+["19","SICIGNANO GENNARO","2018","CS NUOTO QUATTROVENTI","25 Stile Libero","ES-C","00:24.90","1","M",false,"T6"],
+["20","BARBATO RAFFAELE","2018","BLU TEAM CAMPANIA ASD","25 Stile Libero","ES-C","00:25.40","1","M",false,"T6"],
+["20","CIRINO DANIELE","2018","CS NUOTO QUATTROVENTI","25 Stile Libero","ES-C","00:25.40","1","M",false,"T6"],
+["22","PELUSO UMBERTO","2017","NAPOLI NUOTO","25 Stile Libero","ES-C","00:25.80","1","M",false,"T6"],
+["23","SICIGNANO ANTONIO","2018","BLU TEAM CAMPANIA ASD","25 Stile Libero","ES-C","00:27.30","1","M",false,"T6"],
+["24","CASTALDO RAFFAELE","2018","NAPOLI NUOTO","25 Stile Libero","ES-C","00:28.20","1","M",false,"T6"],
+["25","VERDILLI NICHOLAS","2018","CS NUOTO QUATTROVENTI","25 Stile Libero","ES-C","00:29.10","1","M",false,"T6"],
+["26","DI ILIO TOMMASO","2018","NAPOLI NUOTO","25 Stile Libero","ES-C","00:32.30","1","M",false,"T6"],
+["1","FRATTOLILLO GIORGIA","2018","ASD ONDA NUOTO","25 Rana","ES-C","00:24.50","14","F",false,"T6"],
+["2","IMPERATI ANGELICA","2018","BLU TEAM CAMPANIA ASD","25 Rana","ES-C","00:27.40","12","F",false,"T6"],
+["1","TUCCI GIOELE","2018","CS NUOTO QUATTROVENTI","25 Rana","ES-C","00:24.90","14","M",false,"T6"],
+["2","SALVATORE ANDREA","2017","SELE NUOTO","25 Rana","ES-C","00:26.10","12","M",false,"T6"],
+["3","MAIONE LUIGI","2018","AZURRA SSD SRL","25 Rana","ES-C","00:29.10","10","M",false,"T6"],
+["4","BAIANO RAFFAELE","2017","NAPOLI NUOTO","25 Rana","ES-C","00:29.70","8","M",false,"T6"],
+["5","DE CRESCENZO FRANCESCO","2018","CS NUOTO QUATTROVENTI","25 Rana","ES-C","00:32.00","6","M",false,"T6"],
+["6","MARI GABRIELE","2018","CS NUOTO QUATTROVENTI","25 Rana","ES-C","00:32.60","4","M",false,"T6"],
+["7","CIRINO DANIELE","2018","CS NUOTO QUATTROVENTI","25 Rana","ES-C","00:37.80","2","M",false,"T6"],
+["8","LANGELLA MATTIA","2017","CS NUOTO QUATTROVENTI","25 Rana","ES-C","00:38.20","1","M",false,"T6"],
+["1","FALANGA MATILDE","2018","CS NUOTO QUATTROVENTI","25 Farfalla","ES-C","00:18.20","14","F",false,"T6"],
+["2","ASCIONE ANNA","2018","CS NUOTO QUATTROVENTI","25 Farfalla","ES-C","00:25.60","12","F",false,"T6"],
+["1","SPINA MARIO","2017","ACCADUEO","25 Farfalla","ES-C","00:17.60","14","M",false,"T6"],
+["2","DEL POLITO ANDREA","2017","SELE NUOTO","25 Farfalla","ES-C","00:21.90","12","M",false,"T6"],
+["3","CHIANESE GIUSEPPE","2017","ACCADUEO","25 Farfalla","ES-C","00:22.80","10","M",false,"T6"],
+["4","PALLADINO FEDERICO","2017","BLU TEAM CAMPANIA ASD","25 Farfalla","ES-C","00:23.60","8","M",false,"T6"],
+["5","RAFFONE LUIGI","2017","BLU TEAM CAMPANIA ASD","25 Farfalla","ES-C","00:24.00","6","M",false,"T6"],
+["6","COZZOLINO LUIGI","2017","CS NUOTO QUATTROVENTI","25 Farfalla","ES-C","00:24.60","4","M",false,"T6"],
+["7","CARELLA ALESSANDRO","2017","CS NUOTO QUATTROVENTI","25 Farfalla","ES-C","00:25.60","2","M",false,"T6"],
+["8","DI SARNO BRANDO","2017","NAPOLI NUOTO","25 Farfalla","ES-C","00:26.20","1","M",false,"T6"],
+["9","COZZOLINO PASQUALE","2017","CS NUOTO QUATTROVENTI","25 Farfalla","ES-C","00:31.50","1","M",false,"T6"],
+["10","OLIVIERO SAMUEL","2018","CS NUOTO QUATTROVENTI","25 Farfalla","ES-C","00:31.80","1","M",false,"T6"],
+["1","FALANGA MATILDE","2018","CS NUOTO QUATTROVENTI","25 Dorso","ES-C","00:20.60","14","F",false,"T6"],
+["2","ALBERICO ALICE","2018","GIVA SSD ARL","25 Dorso","ES-C","00:21.20","12","F",false,"T6"],
+["3","DELLI GATTI SOFIA","2018","SELE NUOTO","25 Dorso","ES-C","00:25.30","10","F",false,"T6"],
+["4","BORRELLI KIIRA","2018","AZURRA SSD SRL","25 Dorso","ES-C","00:26.80","8","F",false,"T6"],
+["5","ASCIONE ANNA","2018","CS NUOTO QUATTROVENTI","25 Dorso","ES-C","00:26.90","6","F",false,"T6"],
+["6","OLIVIERO GIORGIA","2018","CS NUOTO QUATTROVENTI","25 Dorso","ES-C","00:27.10","4","F",false,"T6"],
+["7","VALLEFUOCO ELEONORA","2018","NAPOLI NUOTO","25 Dorso","ES-C","00:27.20","2","F",false,"T6"],
+["8","MERONE DARIA","2018","NAPOLI NUOTO","25 Dorso","ES-C","00:27.50","1","F",false,"T6"],
+["9","SIMEONE MARIA FRANCESCA","2018","CS NUOTO QUATTROVENTI","25 Dorso","ES-C","00:28.50","1","F",false,"T6"],
+["10","EGGER SOFIA","2019","CS NUOTO QUATTROVENTI","25 Dorso","ES-C","00:28.60","1","F",false,"T6"],
+["11","TOLINO NICOLE","2018","ATLAS SPORT VILLAGE SSD","25 Dorso","ES-C","00:29.00","1","F",false,"T6"],
+["12","OLIVIERO MIA","2020","CS NUOTO QUATTROVENTI","25 Dorso","ES-C","00:29.70","1","F",false,"T6"],
+["13","BRACCIALE GIOVANNA","2018","GIVA SSD ARL","25 Dorso","ES-C","00:33.90","1","F",false,"T6"],
+["14","FORMICOLA ARIANNA","2018","CS NUOTO QUATTROVENTI","25 Dorso","ES-C","00:37.40","1","F",false,"T6"],
+["15","D'ANTONIO BEATRICE","2020","ATLAS SPORT VILLAGE SSD","25 Dorso","ES-C","00:48.40","1","F",false,"T6"],
+["1","SPINA MARIO","2017","ACCADUEO","25 Dorso","ES-C","00:19.70","14","M",false,"T6"],
+["2","SAVIANO ANTONIO","2017","ACCADUEO","25 Dorso","ES-C","00:21.70","12","M",false,"T6"],
+["3","ASTENGO RAFFAELE","2018","CS NUOTO QUATTROVENTI","25 Dorso","ES-C","00:22.50","10","M",false,"T6"],
+["4","CHIANESE GIUSEPPE","2017","ACCADUEO","25 Dorso","ES-C","00:22.70","8","M",false,"T6"],
+["5","ALINEI CLAUDIO","2019","NAPOLI NUOTO","25 Dorso","ES-C","00:22.80","6","M",false,"T6"],
+["6","ROBUSTELLI FRANCESCO","2018","AZURRA SSD SRL","25 Dorso","ES-C","00:23.70","4","M",false,"T6"],
+["7","SAMSONOV RENATO","2018","NAPOLI NUOTO","25 Dorso","ES-C","00:25.00","2","M",false,"T6"],
+["8","SICIGNANO GENNARO","2018","CS NUOTO QUATTROVENTI","25 Dorso","ES-C","00:25.70","1","M",false,"T6"],
+["9","CASTELLONE VINCENZO","2018","NAPOLI NUOTO","25 Dorso","ES-C","00:26.00","1","M",false,"T6"],
+["10","COZZOLINO PASQUALE","2017","CS NUOTO QUATTROVENTI","25 Dorso","ES-C","00:26.30","1","M",false,"T6"],
+["10","SIMIOLI FRANCESCO","2017","ATLAS SPORT VILLAGE SSD","25 Dorso","ES-C","00:26.30","1","M",false,"T6"],
+["12","CROCETTO SAMUELE","2017","NAPOLI NUOTO","25 Dorso","ES-C","00:26.60","1","M",false,"T6"],
+["13","IULIANO MASSIMO","2018","NAPOLI NUOTO","25 Dorso","ES-C","00:26.70","1","M",false,"T6"],
+["14","MAIONE LUIGI","2018","AZURRA SSD SRL","25 Dorso","ES-C","00:27.40","1","M",false,"T6"],
+["15","SICIGNANO ANTONIO","2018","BLU TEAM CAMPANIA ASD","25 Dorso","ES-C","00:27.50","1","M",false,"T6"],
+["16","TURKMENOGLU METE","2017","NAPOLI NUOTO","25 Dorso","ES-C","00:27.70","1","M",false,"T6"],
+["17","DE CRESCENZO FRANCESCO","2018","CS NUOTO QUATTROVENTI","25 Dorso","ES-C","00:28.00","1","M",false,"T6"],
+["18","D'ANIELLO DIEGO","2018","BLU TEAM CAMPANIA ASD","25 Dorso","ES-C","00:28.40","1","M",false,"T6"],
+["19","BARBATO RAFFAELE","2018","BLU TEAM CAMPANIA ASD","25 Dorso","ES-C","00:29.40","1","M",false,"T6"],
+["20","MAZZOCCA ANTONIO","2017","AZURRA SSD SRL","25 Dorso","ES-C","00:29.90","1","M",false,"T6"],
+["21","VERDILLI NICHOLAS","2018","CS NUOTO QUATTROVENTI","25 Dorso","ES-C","00:30.10","1","M",false,"T6"],
+["22","CASTALDO RAFFAELE","2018","NAPOLI NUOTO","25 Dorso","ES-C","00:30.60","1","M",false,"T6"],
+["23","LANGELLA MATTIA","2017","CS NUOTO QUATTROVENTI","25 Dorso","ES-C","00:30.80","1","M",false,"T6"],
+["24","CIRINO DANIELE","2018","CS NUOTO QUATTROVENTI","25 Dorso","ES-C","00:31.20","1","M",false,"T6"],
+["25","DI ILIO TOMMASO","2018","NAPOLI NUOTO","25 Dorso","ES-C","00:33.50","1","M",false,"T6"],
+["1","FALANGA MATILDE","2018","CS NUOTO QUATTROVENTI","50 Stile Libero","ES-C","00:40.20","14","F",false,"T6"],
+["2","DELLI GATTI SOFIA","2018","SELE NUOTO","50 Stile Libero","ES-C","00:49.10","12","F",false,"T6"],
+["1","SPINA MARIO","2017","ACCADUEO","50 Stile Libero","ES-C","00:36.70","14","M",false,"T6"],
+["2","TUCCI GIOELE","2018","CS NUOTO QUATTROVENTI","50 Stile Libero","ES-C","00:41.80","12","M",false,"T6"],
+["3","DEL POLITO ANDREA","2017","SELE NUOTO","50 Stile Libero","ES-C","00:42.10","10","M",false,"T6"],
+["4","COZZOLINO LUIGI","2017","CS NUOTO QUATTROVENTI","50 Stile Libero","ES-C","00:42.70","8","M",false,"T6"],
+["5","CHIANESE GIUSEPPE","2017","ACCADUEO","50 Stile Libero","ES-C","00:43.30","6","M",false,"T6"],
+["6","DI SARNO BRANDO","2017","NAPOLI NUOTO","50 Stile Libero","ES-C","00:43.60","4","M",false,"T6"],
+["7","SALVATORE ANDREA","2017","SELE NUOTO","50 Stile Libero","ES-C","00:44.70","2","M",false,"T6"],
+["8","BAIANO RAFFAELE","2017","NAPOLI NUOTO","50 Stile Libero","ES-C","00:45.10","1","M",false,"T6"],
+["9","ALINEI CLAUDIO","2019","NAPOLI NUOTO","50 Stile Libero","ES-C","00:45.30","1","M",false,"T6"],
+["10","ASTENGO RAFFAELE","2018","CS NUOTO QUATTROVENTI","50 Stile Libero","ES-C","00:47.00","1","M",false,"T6"],
+["11","CARELLA ALESSANDRO","2017","CS NUOTO QUATTROVENTI","50 Stile Libero","ES-C","00:47.30","1","M",false,"T6"],
+["12","TURKMENOGLU METE","2017","NAPOLI NUOTO","50 Stile Libero","ES-C","00:51.70","1","M",false,"T6"],
+["13","MARI GABRIELE","2018","CS NUOTO QUATTROVENTI","50 Stile Libero","ES-C","00:51.80","1","M",false,"T6"],
+["14","DE CRESCENZO FRANCESCO","2018","CS NUOTO QUATTROVENTI","50 Stile Libero","ES-C","00:54.30","1","M",false,"T6"],
+["15","COZZOLINO PASQUALE","2017","CS NUOTO QUATTROVENTI","50 Stile Libero","ES-C","00:54.60","1","M",false,"T6"],
+["1","CECERE ALESSIA","2016","ACCADUEO","50 Dorso","ES-B","00:44.30","14","F",false,"T6"],
+["2","AVITABILE RITA","2016","BLU TEAM CAMPANIA ASD","50 Dorso","ES-B","00:48.70","12","F",false,"T6"],
+["3","SALERNO MARTINA","2017","SELE NUOTO","50 Dorso","ES-B","00:49.60","10","F",false,"T6"],
+["4","PASCALE DIANA MICHELA","2017","SELE NUOTO","50 Dorso","ES-B","00:50.00","8","F",false,"T6"],
+["5","MIRABELLA LUCIA","2017","NAPOLI NUOTO","50 Dorso","ES-B","00:51.70","6","F",false,"T6"],
+["6","CHIANESE MAYRA","2017","ACCADUEO","50 Dorso","ES-B","00:52.10","4","F",false,"T6"],
+["7","BERTINI BENEDETTA","2017","NAPOLI NUOTO","50 Dorso","ES-B","00:53.80","2","F",false,"T6"],
+["7","MARIOSA ASIA","2017","ACCADUEO","50 Dorso","ES-B","00:53.80","2","F",false,"T6"],
+["9","FORMISANO ELISA","2017","CS NUOTO QUATTROVENTI","50 Dorso","ES-B","00:56.00","1","F",false,"T6"],
+["1","DE SIMONE ANDREA","2015","SELE NUOTO","50 Dorso","ES-B","00:37.20","14","M",false,"T6"],
+["2","SILVESTRE GIANLUCA","2015","ACCADUEO","50 Dorso","ES-B","00:37.60","12","M",false,"T6"],
+["3","INNOCENTE SIMONE","2015","NAPOLI NUOTO","50 Dorso","ES-B","00:39.90","10","M",false,"T6"],
+["4","CICCARELLI VINCENZO","2015","CS NUOTO QUATTROVENTI","50 Dorso","ES-B","00:42.00","8","M",false,"T6"],
+["5","ALBERICO PASQUALE","2015","GIVA SSD ARL","50 Dorso","ES-B","00:42.70","6","M",false,"T6"],
+["6","SCALZO MATTIA","2015","NAPOLI NUOTO","50 Dorso","ES-B","00:44.00","4","M",false,"T6"],
+["7","MASULLO GABRIELE","2015","NAPOLI NUOTO","50 Dorso","ES-B","00:44.10","2","M",false,"T6"],
+["8","BOCCIA ALESSANDRO","2015","BLU TEAM CAMPANIA ASD","50 Dorso","ES-B","00:44.60","1","M",false,"T6"],
+["9","MARAGAS GABRIEL","2016","BLU TEAM CAMPANIA ASD","50 Dorso","ES-B","00:44.90","1","M",false,"T6"],
+["10","IOVINO FRANCESCO","2016","BLU TEAM CAMPANIA ASD","50 Dorso","ES-B","00:45.50","1","M",false,"T6"],
+["11","TORTORA DOMENICO","2015","NAPOLI NUOTO","50 Dorso","ES-B","00:45.60","1","M",false,"T6"],
+["12","FERRARA UMBERTO","2015","ACCADUEO","50 Dorso","ES-B","00:45.80","1","M",false,"T6"],
+["13","MASI FRANCESCO","2015","SPORT LIFE SSD ARL","50 Dorso","ES-B","00:46.00","1","M",false,"T6"],
+["14","DEL GAUDIO GABRIELE","2015","BLU TEAM CAMPANIA ASD","50 Dorso","ES-B","00:46.20","1","M",false,"T6"],
+["15","PANDISCIA ALBERTO","2016","CS NUOTO QUATTROVENTI","50 Dorso","ES-B","00:46.40","1","M",false,"T6"],
+["16","ASCIONE MATTIA","2015","CS NUOTO QUATTROVENTI","50 Dorso","ES-B","00:46.50","1","M",false,"T6"],
+["17","SEPE GIOVANNI","2016","AZURRA SSD SRL","50 Dorso","ES-B","00:47.00","1","M",false,"T6"],
+["18","RAIA LIBERATO","2015","CS NUOTO QUATTROVENTI","50 Dorso","ES-B","00:47.20","1","M",false,"T6"],
+["19","SENATORE CARMINE","2015","ATLAS SPORT VILLAGE SSD","50 Dorso","ES-B","00:49.90","1","M",false,"T6"],
+["20","FLAUTO GIUSEPPE","2015","ATLAS SPORT VILLAGE SSD","50 Dorso","ES-B","00:51.70","1","M",false,"T6"],
+["21","CHIRICO EDOARDO","2015","ASD ONDA NUOTO","50 Dorso","ES-B","00:52.20","1","M",false,"T6"],
+["22","NOCERINO DIEGO","2016","CS NUOTO QUATTROVENTI","50 Dorso","ES-B","00:54.80","1","M",false,"T6"],
+["23","ARDOLINO MICHELE","2016","AZURRA SSD SRL","50 Dorso","ES-B","00:55.20","1","M",false,"T6"],
+["24","CASTALDO GIUSEPPE","2016","NEW WONDER SSD","50 Dorso","ES-B","00:57.00","1","M",false,"T6"],
+["1","DI CICCO MALIKA","2017","ACCADUEO","50 Rana","ES-B","00:42.60","14","F",false,"T6"],
+["2","BUONOCORE BEATRICE","2016","NAPOLI NUOTO","50 Rana","ES-B","00:44.20","12","F",false,"T6"],
+["3","COPPOLA IDA","2016","BLU TEAM CAMPANIA ASD","50 Rana","ES-B","00:47.00","10","F",false,"T6"],
+["4","CECERE ALESSIA","2016","ACCADUEO","50 Rana","ES-B","00:52.80","8","F",false,"T6"],
+["5","GALLIANO GRETA","2016","NAPOLI NUOTO","50 Rana","ES-B","00:54.20","6","F",false,"T6"],
+["6","SCUDELLARO AURORA","2016","NAPOLI NUOTO","50 Rana","ES-B","00:54.30","4","F",false,"T6"],
+["7","PASCALE DIANA MICHELA","2017","SELE NUOTO","50 Rana","ES-B","00:56.70","2","F",false,"T6"],
+["8","SALERNO MARTINA","2017","SELE NUOTO","50 Rana","ES-B","00:58.70","1","F",false,"T6"],
+["9","CHIANESE MAYRA","2017","ACCADUEO","50 Rana","ES-B","01:04.50","1","F",false,"T6"],
+["10","MIRABELLA CARLA","2017","NAPOLI NUOTO","50 Rana","ES-B","01:09.70","1","F",false,"T6"],
+["1","NUGNES DANIELE","2015","ACCADUEO","50 Rana","ES-B","00:39.50","14","M",false,"T6"],
+["2","SILVESTRE GIANLUCA","2015","ACCADUEO","50 Rana","ES-B","00:42.60","12","M",false,"T6"],
+["3","FERRARA UMBERTO","2015","ACCADUEO","50 Rana","ES-B","00:47.70","10","M",false,"T6"],
+["4","DI BONITO VINCENZO","2015","NAPOLI NUOTO","50 Rana","ES-B","00:48.20","8","M",false,"T6"],
+["5","GHERARDI ARCANGELO","2015","NEW WONDER SSD","50 Rana","ES-B","00:48.30","6","M",false,"T6"],
+["6","SCARICA GIOVANNI","2016","BLU TEAM CAMPANIA ASD","50 Rana","ES-B","00:50.10","4","M",false,"T6"],
+["7","ASCIONE MATTIA","2015","CS NUOTO QUATTROVENTI","50 Rana","ES-B","00:50.80","2","M",false,"T6"],
+["8","RAIA LIBERATO","2015","CS NUOTO QUATTROVENTI","50 Rana","ES-B","00:52.70","1","M",false,"T6"],
+["9","DEL GAUDIO GABRIELE","2015","BLU TEAM CAMPANIA ASD","50 Rana","ES-B","00:52.80","1","M",false,"T6"],
+["10","SCAMARDELLA RAFFAELE","2015","NAPOLI NUOTO","50 Rana","ES-B","00:56.20","1","M",false,"T6"],
+["1","DI CICCO MALIKA","2017","ACCADUEO","50 Farfalla","ES-B","00:36.70","14","F",false,"T6"],
+["2","BUONOCORE BEATRICE","2016","NAPOLI NUOTO","50 Farfalla","ES-B","00:36.90","12","F",false,"T6"],
+["3","COPPOLA IDA","2016","BLU TEAM CAMPANIA ASD","50 Farfalla","ES-B","00:43.70","10","F",false,"T6"],
+["4","BERTINI BENEDETTA","2017","NAPOLI NUOTO","50 Farfalla","ES-B","00:53.50","8","F",false,"T6"],
+["5","MARIOSA ASIA","2017","ACCADUEO","50 Farfalla","ES-B","01:01.80","6","F",false,"T6"],
+["1","NUGNES DANIELE","2015","ACCADUEO","50 Farfalla","ES-B","00:33.30","14","M",false,"T6"],
+["2","ESPOSITO PASQUALE E","2015","SORRENTO INFINITY","50 Farfalla","ES-B","00:34.10","12","M",false,"T6"],
+["3","DE ROSA SAMUELE","2016","NAPOLI NUOTO","50 Farfalla","ES-B","00:39.40","10","M",false,"T6"],
+["4","BOCCIA ALESSANDRO","2015","BLU TEAM CAMPANIA ASD","50 Farfalla","ES-B","00:40.30","8","M",false,"T6"],
+["5","INNOCENTE SIMONE","2015","NAPOLI NUOTO","50 Farfalla","ES-B","00:42.70","6","M",false,"T6"],
+["6","IOVINO FRANCESCO","2016","BLU TEAM CAMPANIA ASD","50 Farfalla","ES-B","00:43.80","4","M",false,"T6"],
+["7","MARAGAS GABRIEL","2016","BLU TEAM CAMPANIA ASD","50 Farfalla","ES-B","00:44.70","2","M",false,"T6"],
+["8","TORTORA DOMENICO","2015","NAPOLI NUOTO","50 Farfalla","ES-B","00:47.00","1","M",false,"T6"],
+["9","RUOCCO NUNZIO","2016","BLU TEAM CAMPANIA ASD","50 Farfalla","ES-B","00:48.30","1","M",false,"T6"],
+["1","DI CICCO MALIKA","2017","ACCADUEO","50 Stile Libero","ES-B","00:37.30","14","F",false,"T6"],
+["2","AVITABILE RITA","2016","BLU TEAM CAMPANIA ASD","50 Stile Libero","ES-B","00:42.60","12","F",false,"T6"],
+["3","PASCALE DIANA MICHELA","2017","SELE NUOTO","50 Stile Libero","ES-B","00:42.90","10","F",false,"T6"],
+["4","SCUDELLARO AURORA","2016","NAPOLI NUOTO","50 Stile Libero","ES-B","00:43.80","8","F",false,"T6"],
+["5","CECERE ALESSIA","2016","ACCADUEO","50 Stile Libero","ES-B","00:44.40","6","F",false,"T6"],
+["6","SALERNO MARTINA","2017","SELE NUOTO","50 Stile Libero","ES-B","00:45.70","4","F",false,"T6"],
+["7","CHIANESE MAYRA","2017","ACCADUEO","50 Stile Libero","ES-B","00:45.80","2","F",false,"T6"],
+["8","MIRABELLA LUCIA","2017","NAPOLI NUOTO","50 Stile Libero","ES-B","00:47.30","1","F",false,"T6"],
+["9","FORMISANO ELISA","2017","CS NUOTO QUATTROVENTI","50 Stile Libero","ES-B","00:48.20","1","F",false,"T6"],
+["10","BRANCALEONE FEDERICA","2016","ACCADUEO","50 Stile Libero","ES-B","00:49.00","1","F",false,"T6"],
+["11","VERDE ANGELA MARIA","2016","ACCADUEO","50 Stile Libero","ES-B","00:49.30","1","F",false,"T6"],
+["12","MICILLO LUDOVICA","2017","ACCADUEO","50 Stile Libero","ES-B","00:51.70","1","F",false,"T6"],
+["13","MARIOSA ASIA","2017","ACCADUEO","50 Stile Libero","ES-B","00:51.80","1","F",false,"T6"],
+["14","MIRABELLA CARLA","2017","NAPOLI NUOTO","50 Stile Libero","ES-B","00:56.40","1","F",false,"T6"],
+["1","NUGNES DANIELE","2015","ACCADUEO","50 Stile Libero","ES-B","00:31.00","14","M",false,"T6"],
+["2","ESPOSITO PASQUALE E","2015","SORRENTO INFINITY","50 Stile Libero","ES-B","00:31.30","12","M",false,"T6"],
+["3","SILVESTRE GIANLUCA","2015","ACCADUEO","50 Stile Libero","ES-B","00:32.70","10","M",false,"T6"],
+["4","DE SIMONE ANDREA","2015","SELE NUOTO","50 Stile Libero","ES-B","00:33.10","8","M",false,"T6"],
+["5","DI BONITO VINCENZO","2015","NAPOLI NUOTO","50 Stile Libero","ES-B","00:34.60","6","M",false,"T6"],
+["6","CICCARELLI VINCENZO","2015","CS NUOTO QUATTROVENTI","50 Stile Libero","ES-B","00:36.40","4","M",false,"T6"],
+["7","MASI FRANCESCO","2015","SPORT LIFE SSD ARL","50 Stile Libero","ES-B","00:37.00","2","M",false,"T6"],
+["8","SCARICA GIOVANNI","2016","BLU TEAM CAMPANIA ASD","50 Stile Libero","ES-B","00:37.60","1","M",false,"T6"],
+["9","GHERARDI ARCANGELO","2015","NEW WONDER SSD","50 Stile Libero","ES-B","00:38.00","1","M",false,"T6"],
+["10","SEPE GIOVANNI","2016","AZURRA SSD SRL","50 Stile Libero","ES-B","00:38.10","1","M",false,"T6"],
+["11","ALBERICO PASQUALE","2015","GIVA SSD ARL","50 Stile Libero","ES-B","00:38.30","1","M",false,"T6"],
+["12","SCALZO MATTIA","2015","NAPOLI NUOTO","50 Stile Libero","ES-B","00:38.50","1","M",false,"T6"],
+["13","MASULLO GABRIELE","2015","NAPOLI NUOTO","50 Stile Libero","ES-B","00:38.60","1","M",false,"T6"],
+["14","RAIA LIBERATO","2015","CS NUOTO QUATTROVENTI","50 Stile Libero","ES-B","00:38.80","1","M",false,"T6"],
+["15","FERRARA UMBERTO","2015","ACCADUEO","50 Stile Libero","ES-B","00:39.30","1","M",false,"T6"],
+["16","PANDISCIA ALBERTO","2016","CS NUOTO QUATTROVENTI","50 Stile Libero","ES-B","00:40.50","1","M",false,"T6"],
+["17","ASCIONE MATTIA","2015","CS NUOTO QUATTROVENTI","50 Stile Libero","ES-B","00:40.70","1","M",false,"T6"],
+["18","SCAMARDELLA RAFFAELE","2015","NAPOLI NUOTO","50 Stile Libero","ES-B","00:41.70","1","M",false,"T6"],
+["19","CHIRICO EDOARDO","2015","ASD ONDA NUOTO","50 Stile Libero","ES-B","00:42.30","1","M",false,"T6"],
+["20","RUOCCO NUNZIO","2016","BLU TEAM CAMPANIA ASD","50 Stile Libero","ES-B","00:42.90","1","M",false,"T6"],
+["21","FLAUTO GIUSEPPE","2015","ATLAS SPORT VILLAGE SSD","50 Stile Libero","ES-B","00:43.40","1","M",false,"T6"],
+["22","SENATORE CARMINE","2015","ATLAS SPORT VILLAGE SSD","50 Stile Libero","ES-B","00:46.40","1","M",false,"T6"],
+["23","NOCERINO DIEGO","2016","CS NUOTO QUATTROVENTI","50 Stile Libero","ES-B","00:48.20","1","M",false,"T6"],
+["24","CASTALDO GIUSEPPE","2016","NEW WONDER SSD","50 Stile Libero","ES-B","00:50.50","1","M",false,"T6"],
+["25","ARDOLINO MICHELE","2016","AZURRA SSD SRL","50 Stile Libero","ES-B","01:03.00","1","M",false,"T6"],
+["1","GALLIANO GRETA","2016","NAPOLI NUOTO","100 Dorso","ES-B","01:44.60","14","F",false,"T6"],
+["2","FORMISANO ELISA","2017","CS NUOTO QUATTROVENTI","100 Dorso","ES-B","02:02.90","12","F",false,"T6"],
+["1","ESPOSITO PASQUALE E","2015","SORRENTO INFINITY","100 Dorso","ES-B","01:26.20","14","M",false,"T6"],
+["2","DE SIMONE ANDREA","2015","SELE NUOTO","100 Dorso","ES-B","01:28.40","12","M",false,"T6"],
+["3","DE ROSA SAMUELE","2016","NAPOLI NUOTO","100 Dorso","ES-B","01:33.90","10","M",false,"T6"],
+["4","PANDISCIA ALBERTO","2016","CS NUOTO QUATTROVENTI","100 Dorso","ES-B","01:39.80","8","M",false,"T6"],
+["5","CICCARELLI VINCENZO","2015","CS NUOTO QUATTROVENTI","100 Dorso","ES-B","01:40.60","6","M",false,"T6"],
+["6","NOCERINO DIEGO","2016","CS NUOTO QUATTROVENTI","100 Dorso","ES-B","01:57.50","4","M",false,"T6"],
+["1","DONNARUMMA SIRYA","2014","BLU TEAM CAMPANIA ASD","100 Stile Libero","ES-A","01:14.60","14","F",false,"T6"],
+["2","DE FRANCHIS CHIARA","2014","NAPOLI NUOTO","100 Stile Libero","ES-A","01:15.20","12","F",false,"T6"],
+["3","OLIVIERO NOEMI","2014","CS NUOTO QUATTROVENTI","100 Stile Libero","ES-A","01:16.20","10","F",false,"T6"],
+["4","EGGER COLOMBA","2014","CS NUOTO QUATTROVENTI","100 Stile Libero","ES-A","01:17.60","8","F",false,"T6"],
+["5","APREA ELENA SOFIA","2015","CS NUOTO QUATTROVENTI","100 Stile Libero","ES-A","01:19.60","6","F",false,"T6"],
+["6","PERSICO GRETA","2014","SORRENTO INFINITY","100 Stile Libero","ES-A","01:21.40","4","F",false,"T6"],
+["7","IMPARATO REBECCA","2015","CS NUOTO QUATTROVENTI","100 Stile Libero","ES-A","01:22.50","2","F",false,"T6"],
+["8","DE LUCA MELANIA","2014","NEW WONDER SSD","100 Stile Libero","ES-A","01:24.50","1","F",false,"T6"],
+["9","CILENTO ELENA","2014","CS NUOTO QUATTROVENTI","100 Stile Libero","ES-A","01:24.70","1","F",false,"T6"],
+["10","IMPARATO FRANCESCA","2015","CS NUOTO QUATTROVENTI","100 Stile Libero","ES-A","01:29.20","1","F",false,"T6"],
+["11","PERSICO CAMILLA","2015","BLU TEAM CAMPANIA ASD","100 Stile Libero","ES-A","01:30.60","1","F",false,"T6"],
+["12","BIRRA ANJA","2014","CS NUOTO QUATTROVENTI","100 Stile Libero","ES-A","01:30.80","1","F",false,"T6"],
+["13","DI CRISTO GIADA","2014","CS NUOTO QUATTROVENTI","100 Stile Libero","ES-A","01:37.70","1","F",false,"T6"],
+["14","PORCEDDU SOPIA","2014","NAPOLI NUOTO","100 Stile Libero","ES-A","01:37.80","1","F",false,"T6"],
+["1","MANNIELLO ALISIA","2013","SORRENTO INFINITY","100 Stile Libero","Ragazzi","01:07.50","14","F",false,"T6"],
+["2","RICCIO GRACE","2013","CS NUOTO QUATTROVENTI","100 Stile Libero","Ragazzi","01:12.50","12","F",false,"T6"],
+["3","RENZULLO ALESSANDRA","2013","AZURRA SSD SRL","100 Stile Libero","Ragazzi","01:15.00","10","F",false,"T6"],
+["4","ARVONIO FEDERICA","2012","NEW WONDER SSD","100 Stile Libero","Ragazzi","01:18.30","8","F",false,"T6"],
+["5","GIORNO IRENE","2013","CS NUOTO QUATTROVENTI","100 Stile Libero","Ragazzi","01:18.80","6","F",false,"T6"],
+["6","ANNUNZIATA CRISTINA","2012","CS NUOTO QUATTROVENTI","100 Stile Libero","Ragazzi","01:19.10","4","F",false,"T6"],
+["7","DE MARIA MARTA","2012","NAPOLI NUOTO","100 Stile Libero","Ragazzi","01:29.30","2","F",false,"T6"],
+["8","RUSSO FRANCESCA","2013","GIVA SSD ARL","100 Stile Libero","Ragazzi","01:31.50","1","F",false,"T6"],
+["1","SCHIRRIPA LUDOVICA","2011","NAPOLI NUOTO","100 Stile Libero","Juniores","01:27.70","14","F",false,"T6"],
+["1","DI PIERNO ALICE","2009","NAPOLI NUOTO","100 Stile Libero","Cadetti","01:24.70","14","F",false,"T6"],
+["2","SALVATI MARTINA","2009","NAPOLI NUOTO","100 Stile Libero","Cadetti","01:29.90","12","F",false,"T6"],
+["3","CAMMENATELLI FRANCESCA","2009","NAPOLI NUOTO","100 Stile Libero","Cadetti","01:32.30","10","F",false,"T6"],
+["4","STILETTI SARA","2009","NAPOLI NUOTO","100 Stile Libero","Cadetti","01:37.10","8","F",false,"T6"],
+["1","SIMERI SARA","2007","NAPOLI NUOTO","100 Stile Libero","Senior","01:16.60","14","F",false,"T6"],
+["1","KNOWLTON SAMUELE","2013","NAPOLI NUOTO","100 Stile Libero","ES-A","01:08.10","14","M",false,"T6"],
+["2","TERRACCIANO BRYAN","2013","NAPOLI NUOTO","100 Stile Libero","ES-A","01:09.00","12","M",false,"T6"],
+["3","BELFIORE LUIGI","2014","ACCADUEO","100 Stile Libero","ES-A","01:09.90","10","M",false,"T6"],
+["4","D'ANTONIO EMANUELE","2014","CS NUOTO QUATTROVENTI","100 Stile Libero","ES-A","01:11.40","8","M",false,"T6"],
+["5","MARTINO RAFFAELE","2014","ACCADUEO","100 Stile Libero","ES-A","01:13.00","6","M",false,"T6"],
+["6","GUIDA LUIGI","2013","BLU TEAM CAMPANIA ASD","100 Stile Libero","ES-A","01:15.70","4","M",false,"T6"],
+["7","MANGONE MICHELE","2014","CS NUOTO QUATTROVENTI","100 Stile Libero","ES-A","01:17.80","2","M",false,"T6"],
+["8","DELLE DONNE MICHELE","2013","CS NUOTO QUATTROVENTI","100 Stile Libero","ES-A","01:24.00","1","M",false,"T6"],
+["9","FORMISANO GIULIO","2014","NEW WONDER SSD","100 Stile Libero","ES-A","01:26.20","1","M",false,"T6"],
+["10","PISCOPO MATTIA","2014","NAPOLI NUOTO","100 Stile Libero","ES-A","01:31.00","1","M",false,"T6"],
+["1","DE MARTINO EMANUELE","2010","CS NUOTO QUATTROVENTI","100 Stile Libero Masch I","Ragazzi","00:56.80","14","",false,"T6"],
+["2","STAIANO GIUSEPPE","2010","SORRENTO INFINITY","100 Stile Libero Masch I","Ragazzi","00:58.50","12","",false,"T6"],
+["3","BABO DARIO","2010","NAPOLI NUOTO","100 Stile Libero Masch I","Ragazzi","00:59.20","10","",false,"T6"],
+["4","DI LUCA ANTONIO","2011","CS NUOTO QUATTROVENTI","100 Stile Libero Masch I","Ragazzi","01:00.60","8","",false,"T6"],
+["5","CUCCARO LUIGI","2012","SORRENTO INFINITY","100 Stile Libero Masch I","Ragazzi","01:01.40","6","",false,"T6"],
+["6","DE SIMONE GIUSEPPE","2010","AZURRA SSD SRL","100 Stile Libero Masch I","Ragazzi","01:01.50","4","",false,"T6"],
+["6","STAIANO RAFFAELE","2012","SORRENTO INFINITY","100 Stile Libero Masch I","Ragazzi","01:01.50","4","",false,"T6"],
+["8","ESPOSITO LUIGI","2011","CS NUOTO QUATTROVENTI","100 Stile Libero Masch I","Ragazzi","01:06.00","1","",false,"T6"],
+["9","GIGLIO GIOSUE","2010","CS NUOTO QUATTROVENTI","100 Stile Libero Masch I","Ragazzi","01:06.50","1","",false,"T6"],
+["10","FONTANAROSA ANTONIO","2012","AZURRA SSD SRL","100 Stile Libero Masch I","Ragazzi","01:08.90","1","",false,"T6"],
+["11","DI MARINO SALVATORE","2010","NAPOLI NUOTO","100 Stile Libero Masch I","Ragazzi","01:11.20","1","",false,"T6"],
+["12","IMPARATO NICOLA","2012","BLU TEAM CAMPANIA ASD","100 Stile Libero Masch I","Ragazzi","01:12.10","1","",false,"T6"],
+["13","PELUSO LUIGI","2011","NAPOLI NUOTO","100 Stile Libero Masch I","Ragazzi","01:13.10","1","",false,"T6"],
+["14","MARINIELLO ANTONIO","2011","NAPOLI NUOTO","100 Stile Libero Masch I","Ragazzi","01:15.30","1","",false,"T6"],
+["15","SEPE ANTONIO","2011","AZURRA SSD SRL","100 Stile Libero Masch I","Ragazzi","01:23.60","1","",false,"T6"],
+["sq","CANOZO VINCENZO","2011","NAPOLI NUOTO","100 Stile Libero Masch I","Ragazzi","—","0","",true,"T6"],
+["1","DI LORENZO GABRIELE","2008","CS NUOTO QUATTROVENTI","100 Stile Libero","Juniores","00:54.20","14","M",false,"T6"],
+["2","GAMBINO CRISTIAN","2009","CS NUOTO QUATTROVENTI","100 Stile Libero","Juniores","00:56.30","12","M",false,"T6"],
+["3","ROCCELLA LUIGI","2008","NAPOLI NUOTO","100 Stile Libero","Juniores","01:05.80","10","M",false,"T6"],
+["4","AURIEMMA GIOVANNI","2009","AZURRA SSD SRL","100 Stile Libero","Juniores","01:14.50","8","M",false,"T6"],
+["1","BARBATO LUDOVICA","2014","CS NUOTO QUATTROVENTI","50 Dorso","ES-A","00:39.80","14","F",false,"T6"],
+["2","MANNIELLO MIA","2014","SORRENTO INFINITY","50 Dorso","ES-A","00:40.60","12","F",false,"T6"],
+["3","PAUDICE CHIARA","2015","ACCADUEO","50 Dorso","ES-A","00:40.80","10","F",false,"T6"],
+["4","GALLO MARTINA","2015","BLU TEAM CAMPANIA ASD","50 Dorso","ES-A","00:40.90","8","F",false,"T6"],
+["5","DE NISCO GINEVRA","2015","ACCADUEO","50 Dorso","ES-A","00:41.70","6","F",false,"T6"],
+["6","PORCIELLO ANGELA","2015","AZURRA SSD SRL","50 Dorso","ES-A","00:41.80","4","F",false,"T6"],
+["7","FALANGA FEDERICA","2015","CS NUOTO QUATTROVENTI","50 Dorso","ES-A","00:43.40","2","F",false,"T6"],
+["8","APREA ELENA SOFIA","2015","CS NUOTO QUATTROVENTI","50 Dorso","ES-A","00:45.10","1","F",false,"T6"],
+["9","IMPARATO REBECCA","2015","CS NUOTO QUATTROVENTI","50 Dorso","ES-A","00:46.10","1","F",false,"T6"],
+["10","TROISI ANTONELLA","2015","SELE NUOTO","50 Dorso","ES-A","00:46.90","1","F",false,"T6"],
+["11","ASCIONE ASSUNTA","2014","CS NUOTO QUATTROVENTI","50 Dorso","ES-A","00:49.30","1","F",false,"T6"],
+["12","BIRRA ANJA","2014","CS NUOTO QUATTROVENTI","50 Dorso","ES-A","00:49.40","1","F",false,"T6"],
+["13","LAEZZA AURORA","2014","GIVA SSD ARL","50 Dorso","ES-A","00:54.60","1","F",false,"T6"],
+["14","PORCEDDU SOPIA","2014","NAPOLI NUOTO","50 Dorso","ES-A","00:55.80","1","F",false,"T6"],
+["1","MANNIELLO ALISIA","2013","SORRENTO INFINITY","50 Dorso","Ragazzi","00:37.40","14","F",false,"T6"],
+["2","ESPOSITO NUNZIA","2013","CS NUOTO QUATTROVENTI","50 Dorso","Ragazzi","00:38.70","12","F",false,"T6"],
+["3","RICCIO GRACE","2013","CS NUOTO QUATTROVENTI","50 Dorso","Ragazzi","00:39.60","10","F",false,"T6"],
+["4","AIELLO GAIA","2013","AZURRA SSD SRL","50 Dorso","Ragazzi","00:40.50","8","F",false,"T6"],
+["5","RICCONE GLORIA","2012","CS NUOTO QUATTROVENTI","50 Dorso","Ragazzi","00:40.70","6","F",false,"T6"],
+["6","GIORNO IRENE","2013","CS NUOTO QUATTROVENTI","50 Dorso","Ragazzi","00:42.90","4","F",false,"T6"],
+["7","CACACE GIADA","2013","SORRENTO INFINITY","50 Dorso","Ragazzi","00:43.30","2","F",false,"T6"],
+["8","GENTILE GIULIA","2013","SPORT LIFE SSD ARL","50 Dorso","Ragazzi","00:43.40","1","F",false,"T6"],
+["9","ANNUNZIATA CRISTINA","2012","CS NUOTO QUATTROVENTI","50 Dorso","Ragazzi","00:43.90","1","F",false,"T6"],
+["10","RENZULLO AGATA","2013","AZURRA SSD SRL","50 Dorso","Ragazzi","00:48.70","1","F",false,"T6"],
+["11","PICCOLO AURORA","2013","NAPOLI NUOTO","50 Dorso","Ragazzi","00:48.90","1","F",false,"T6"],
+["1","SCHIRRIPA LUDOVICA","2011","NAPOLI NUOTO","50 Dorso","Juniores","00:49.50","14","F",false,"T6"],
+["1","STILETTI SARA","2009","NAPOLI NUOTO","50 Dorso","Cadetti","00:49.10","14","F",false,"T6"],
+["1","CELONE VINCENZO","2013","BLU TEAM CAMPANIA ASD","50 Dorso","ES-A","00:33.60","14","M",false,"T6"],
+["2","TERRACCIANO BRYAN","2013","NAPOLI NUOTO","50 Dorso","ES-A","00:34.70","12","M",false,"T6"],
+["3","ERRICO CIRO","2014","NAPOLI NUOTO","50 Dorso","ES-A","00:37.60","10","M",false,"T6"],
+["4","GUIDA SILVIO","2013","BLU TEAM CAMPANIA ASD","50 Dorso","ES-A","00:37.80","8","M",false,"T6"],
+["5","RUSSO MATTEO","2013","NAPOLI NUOTO","50 Dorso","ES-A","00:37.90","6","M",false,"T6"],
+["6","GARGIULO GIORGIO","2014","BLU TEAM CAMPANIA ASD","50 Dorso","ES-A","00:38.40","4","M",false,"T6"],
+["8","DI RAZZA SALVATORE ALÃŒ00 40 90 2,00 7 2013 CIRCOLO SPORTIVO NUOTO QUATTROVENTI MANGONE MICHELE","2014","NAPOLI NUOTO","50 Dorso","ES-A","00:44.00","1","M",false,"T6"],
+["9","GALLUCCI GIORGIO","2013","GIVA SSD ARL","50 Dorso","ES-A","00:44.10","1","M",false,"T6"],
+["10","DELLE DONNE MICHELE","2013","CS NUOTO QUATTROVENTI","50 Dorso","ES-A","00:45.40","1","M",false,"T6"],
+["11","PRAGLIOLA ALDO","2014","NAPOLI NUOTO","50 Dorso","ES-A","00:54.30","1","M",false,"T6"],
+["1","DE MARTINO EMANUELE","2010","CS NUOTO QUATTROVENTI","50 Dorso","Ragazzi","00:31.70","14","M",false,"T6"],
+["2","CORCIONE ANTONINO","2011","SORRENTO INFINITY","50 Dorso","Ragazzi","00:32.70","12","M",false,"T6"],
+["3","VIVOLO LEONARDO","2010","AZURRA SSD SRL","50 Dorso","Ragazzi","00:33.80","10","M",false,"T6"],
+["4","COZZOLINO FELICE","2011","AZURRA SSD SRL","50 Dorso","Ragazzi","00:35.80","8","M",false,"T6"],
+["5","FIORENTINO CHRISTIAN","2012","SORRENTO INFINITY","50 Dorso","Ragazzi","00:36.70","6","M",false,"T6"],
+["6","GIORNO DOMENICO","2011","CS NUOTO QUATTROVENTI","50 Dorso","Ragazzi","00:37.70","4","M",false,"T6"],
+["7","PINZOLO LUIGI","2011","NAPOLI NUOTO","50 Dorso","Ragazzi","00:38.90","2","M",false,"T6"],
+["8","PERRONE GENNARO","2011","NAPOLI NUOTO","50 Dorso","Ragazzi","00:39.60","1","M",false,"T6"],
+["9","PIRONE MATTEO","2012","CS NUOTO QUATTROVENTI","50 Dorso","Ragazzi","00:40.20","1","M",false,"T6"],
+["10","ESPOSITO LUIGI","2011","CS NUOTO QUATTROVENTI","50 Dorso","Ragazzi","00:41.50","1","M",false,"T6"],
+["11","MARRA ANDREA","2012","NAPOLI NUOTO","50 Dorso","Ragazzi","00:44.20","1","M",false,"T6"],
+["12","GARGIULO GIOSIA","2012","CS NUOTO QUATTROVENTI","50 Dorso","Ragazzi","00:44.60","1","M",false,"T6"],
+["sq","BORRELLI DOMENICO","2007","CS NUOTO QUATTROVENTI","50 Dorso","Cadetti","—","0","M",true,"T6"],
+["1","FERRARA GIADA","2014","ACCADUEO","50 Rana","ES-A","00:42.00","14","F",false,"T6"],
+["2","TUCCI GRETA","2015","CS NUOTO QUATTROVENTI","50 Rana","ES-A","00:42.50","12","F",false,"T6"],
+["3","PERSICO GRETA","2014","SORRENTO INFINITY","50 Rana","ES-A","00:42.90","10","F",false,"T6"],
+["4","DONNARUMMA SIRYA","2014","BLU TEAM CAMPANIA ASD","50 Rana","ES-A","00:44.60","8","F",false,"T6"],
+["5","PELUSO CRISTINA","2014","NAPOLI NUOTO","50 Rana","ES-A","00:46.80","6","F",false,"T6"],
+["6","VASSALLO VITTORIA","2015","ATLAS SPORT VILLAGE SSD","50 Rana","ES-A","00:47.80","4","F",false,"T6"],
+["7","IMPARATO FRANCESCA","2015","CS NUOTO QUATTROVENTI","50 Rana","ES-A","00:48.20","2","F",false,"T6"],
+["8","CUOMO FABIANA","2014","SORRENTO INFINITY","50 Rana","ES-A","00:49.00","1","F",false,"T6"],
+["9","DE LUCA MELANIA","2014","NEW WONDER SSD","50 Rana","ES-A","00:50.50","1","F",false,"T6"],
+["10","PACELLI SOFIA","2015","SORRENTO INFINITY","50 Rana","ES-A","00:50.60","1","F",false,"T6"],
+["11","TROISI ANTONELLA","2015","SELE NUOTO","50 Rana","ES-A","00:50.80","1","F",false,"T6"],
+["12","DI CRISTO GIADA","2014","CS NUOTO QUATTROVENTI","50 Rana","ES-A","00:54.60","1","F",false,"T6"],
+["13","CARUSO DILETTA","2014","NAPOLI NUOTO","50 Rana","ES-A","00:57.40","1","F",false,"T6"],
+["1","ARVONIO FEDERICA","2012","NEW WONDER SSD","50 Rana","Ragazzi","00:43.80","14","F",false,"T6"],
+["2","BOVA DENISE","2013","NAPOLI NUOTO","50 Rana","Ragazzi","00:45.40","12","F",false,"T6"],
+["3","RENZULLO ALESSANDRA","2013","AZURRA SSD SRL","50 Rana","Ragazzi","00:46.20","10","F",false,"T6"],
+["4","D'ALESSIO VIRGINIA","2013","SORRENTO INFINITY","50 Rana","Ragazzi","00:47.50","8","F",false,"T6"],
+["5","MANZO SARA","2012","NAPOLI NUOTO","50 Rana","Ragazzi","00:48.00","6","F",false,"T6"],
+["6","CINQUE MICHELA","2013","SORRENTO INFINITY","50 Rana","Ragazzi","00:48.40","4","F",false,"T6"],
+["7","LO SAPIO FRANCESCA","2013","AZURRA SSD SRL","50 Rana","Ragazzi","00:53.50","2","F",false,"T6"],
+["1","CIOMMIENTO MARINA","2010","SPORT LIFE SSD ARL","50 Rana","Juniores","00:49.20","14","F",false,"T6"],
+["2","DI LEO CHIARA","2011","AZURRA SSD SRL","50 Rana","Juniores","00:58.90","12","F",false,"T6"],
+["1","FILIPPELLI IMMACOLATA PIA","2009","SPORT LIFE SSD ARL","50 Rana","Cadetti","00:58.10","14","F",false,"T6"],
+["1","SANTARPIA GAETANO","2013","BLU TEAM CAMPANIA ASD","50 Rana","ES-A","00:36.30","14","M",false,"T6"],
+["2","CARROZZA LORENZO","2013","NAPOLI NUOTO","50 Rana","ES-A","00:39.20","12","M",false,"T6"],
+["3","MARTINO RAFFAELE","2014","ACCADUEO","50 Rana","ES-A","00:44.60","10","M",false,"T6"],
+["4","MARRANDINO RUFFO RAFFAELE","2014","ACCADUEO","50 Rana","ES-A","00:45.10","8","M",false,"T6"],
+["5","DEL PIANO FILIBERTO FRANCESCO","2013","ASD ONDA NUOTO","50 Rana","ES-A","00:47.30","6","M",false,"T6"],
+["6","MAZZEO PASQUALE","2013","AZURRA SSD SRL","50 Rana","ES-A","00:49.10","4","M",false,"T6"],
+["7","CARRELLA NICOLA LUIGI","2013","AZURRA SSD SRL","50 Rana","ES-A","00:50.50","2","M",false,"T6"],
+["8","PISCOPO MATTIA","2014","NAPOLI NUOTO","50 Rana","ES-A","00:55.90","1","M",false,"T6"],
+["1","CASILLO STEFANO","2010","CS NUOTO QUATTROVENTI","50 Rana","Ragazzi","00:32.80","14","M",false,"T6"],
+["2","MADDALONI DOMENICO","2012","AZURRA SSD SRL","50 Rana","Ragazzi","00:34.90","12","M",false,"T6"],
+["3","CAPOZZI ALBERTO","2010","SORRENTO INFINITY","50 Rana","Ragazzi","00:37.00","10","M",false,"T6"],
+["4","PELUSO LUIGI","2011","NAPOLI NUOTO","50 Rana","Ragazzi","00:39.40","8","M",false,"T6"],
+["5","ACANFORA FRANCESCO","2012","SORRENTO INFINITY","50 Rana","Ragazzi","00:40.60","6","M",false,"T6"],
+["6","BASILE LORENZO","2012","NAPOLI NUOTO","50 Rana","Ragazzi","00:42.60","4","M",false,"T6"],
+["7","CAVALLO GIUSEPPE","2010","NAPOLI NUOTO","50 Rana","Ragazzi","00:44.00","2","M",false,"T6"],
+["8","CARBONE RICCARDO","2012","AZURRA SSD SRL","50 Rana","Ragazzi","00:45.00","1","M",false,"T6"],
+["9","GIORNO DOMENICO","2011","CS NUOTO QUATTROVENTI","50 Rana","Ragazzi","00:46.60","1","M",false,"T6"],
+["10","OSIYUK EVALD","2012","AZURRA SSD SRL","50 Rana","Ragazzi","00:50.40","1","M",false,"T6"],
+["11","PIRONE MATTEO","2012","CS NUOTO QUATTROVENTI","50 Rana","Ragazzi","00:50.70","1","M",false,"T6"],
+["1","CHERBAUCICH MARIA FRANCESCA","2015","NAPOLI NUOTO","50 Farfalla","ES-A","00:34.80","14","F",false,"T6"],
+["2","BARBATO LUDOVICA","2014","CS NUOTO QUATTROVENTI","50 Farfalla","ES-A","00:35.30","12","F",false,"T6"],
+["3","VESTUTO CHIARA","2015","NAPOLI NUOTO","50 Farfalla","ES-A","00:36.70","10","F",false,"T6"],
+["4","FERRARA GIADA","2014","ACCADUEO","50 Farfalla","ES-A","00:37.10","8","F",false,"T6"],
+["5","OLIVIERO NOEMI","2014","CS NUOTO QUATTROVENTI","50 Farfalla","ES-A","00:37.50","6","F",false,"T6"],
+["6","SANZONE MARIA","2014","BLU TEAM CAMPANIA ASD","50 Farfalla","ES-A","00:40.20","4","F",false,"T6"],
+["7","GALLO MARTINA","2015","BLU TEAM CAMPANIA ASD","50 Farfalla","ES-A","00:40.80","2","F",false,"T6"],
+["8","EGGER COLOMBA","2014","CS NUOTO QUATTROVENTI","50 Farfalla","ES-A","00:41.00","1","F",false,"T6"],
+["9","ZONFRILLO GIORGIA","2015","NAPOLI NUOTO","50 Farfalla","ES-A","00:41.20","1","F",false,"T6"],
+["10","PAUDICE CHIARA","2015","ACCADUEO","50 Farfalla","ES-A","00:42.00","1","F",false,"T6"],
+["11","FALANGA FEDERICA","2015","CS NUOTO QUATTROVENTI","50 Farfalla","ES-A","00:43.30","1","F",false,"T6"],
+["12","DE NISCO GINEVRA","2015","ACCADUEO","50 Farfalla","ES-A","00:43.90","1","F",false,"T6"],
+["13","TUCCI GRETA","2015","CS NUOTO QUATTROVENTI","50 Farfalla","ES-A","00:45.70","1","F",false,"T6"],
+["14","CILENTO ELENA","2014","CS NUOTO QUATTROVENTI","50 Farfalla","ES-A","00:45.90","1","F",false,"T6"],
+["15","PERSICO CAMILLA","2015","BLU TEAM CAMPANIA ASD","50 Farfalla","ES-A","00:47.30","1","F",false,"T6"],
+["16","ASCIONE ASSUNTA","2014","CS NUOTO QUATTROVENTI","50 Farfalla","ES-A","00:50.60","1","F",false,"T6"],
+["1","MERCOGLIANO LAURA","2013","SPORT LIFE SSD ARL","50 Farfalla","Ragazzi","00:40.40","14","F",false,"T6"],
+["2","RICCONE GLORIA","2012","CS NUOTO QUATTROVENTI","50 Farfalla","Ragazzi","00:42.10","12","F",false,"T6"],
+["3","MANZO SARA","2012","NAPOLI NUOTO","50 Farfalla","Ragazzi","00:44.70","10","F",false,"T6"],
+["4","RENZULLO AGATA","2013","AZURRA SSD SRL","50 Farfalla","Ragazzi","00:48.80","8","F",false,"T6"],
+["1","DI PIERNO ALICE","2009","NAPOLI NUOTO","50 Farfalla","Cadetti","00:41.90","14","F",false,"T6"],
+["1","IOVINO MARIANO","2013","BLU TEAM CAMPANIA ASD","50 Farfalla","ES-A","00:34.60","14","M",false,"T6"],
+["2","D'ANTONIO EMANUELE","2014","CS NUOTO QUATTROVENTI","50 Farfalla","ES-A","00:35.20","12","M",false,"T6"],
+["3","MADDALONI DANIELE","2014","AZURRA SSD SRL","50 Farfalla","ES-A","00:35.30","10","M",false,"T6"],
+["4","KNOWLTON SAMUELE","2013","NAPOLI NUOTO","50 Farfalla","ES-A","00:35.90","8","M",false,"T6"],
+["5","GUIDA LUIGI","2013","BLU TEAM CAMPANIA ASD","50 Farfalla","ES-A","00:39.20","6","M",false,"T6"],
+["6","MARRANDINO RUFFO RAFFAELE","2014","ACCADUEO","50 Farfalla","ES-A","00:40.90","4","M",false,"T6"],
+["7","GARGIULO GIORGIO","2014","BLU TEAM CAMPANIA ASD","50 Farfalla","ES-A","00:41.30","2","M",false,"T6"],
+["8","FORMISANO GIULIO","2014","NEW WONDER SSD","50 Farfalla","ES-A","00:54.20","1","M",false,"T6"],
+["1","GIGLIO GIOSUE","2010","CS NUOTO QUATTROVENTI","50 Farfalla","Ragazzi","00:29.00","14","M",false,"T6"],
+["2","DI LUCA ANTONIO","2011","CS NUOTO QUATTROVENTI","50 Farfalla","Ragazzi","00:30.40","12","M",false,"T6"],
+["3","PALUMMO MICHELE","2010","SORRENTO INFINITY","50 Farfalla","Ragazzi","00:30.70","10","M",false,"T6"],
+["4","CUCCARO LUIGI","2012","SORRENTO INFINITY","50 Farfalla","Ragazzi","00:31.20","8","M",false,"T6"],
+["5","DE SIMONE GIUSEPPE","2010","AZURRA SSD SRL","50 Farfalla","Ragazzi","00:31.40","6","M",false,"T6"],
+["6","FONTANAROSA ANTONIO","2012","AZURRA SSD SRL","50 Farfalla","Ragazzi","00:34.10","4","M",false,"T6"],
+["7","FIORENTINO CHRISTIAN","2012","SORRENTO INFINITY","50 Farfalla","Ragazzi","00:34.30","2","M",false,"T6"],
+["8","CERRETO GIOVANNI","2012","SPORT LIFE SSD ARL","50 Farfalla","Ragazzi","00:38.50","1","M",false,"T6"],
+["9","MARINIELLO ANTONIO","2011","NAPOLI NUOTO","50 Farfalla","Ragazzi","00:39.00","1","M",false,"T6"],
+["10","IMPARATO NICOLA","2012","BLU TEAM CAMPANIA ASD","50 Farfalla","Ragazzi","00:39.30","1","M",false,"T6"],
+["1","DI LORENZO GABRIELE","2008","CS NUOTO QUATTROVENTI","50 Farfalla","Juniores","00:27.50","14","M",false,"T6"],
+["2","GAMBINO CRISTIAN","2009","CS NUOTO QUATTROVENTI","50 Farfalla","Juniores","00:28.60","12","M",false,"T6"],
+["3","AURIEMMA GIOVANNI","2009","AZURRA SSD SRL","50 Farfalla","Juniores","00:37.00","10","M",false,"T6"],
+["1","BORRELLI DOMENICO","2007","CS NUOTO QUATTROVENTI","50 Farfalla","Cadetti","00:26.30","14","M",false,"T6"],
+["1","OLIVIERO NOEMI","2014","CS NUOTO QUATTROVENTI","50 Stile Libero","ES-A","00:34.00","14","F",false,"T6"],
+["2","MANNIELLO MIA","2014","SORRENTO INFINITY","50 Stile Libero","ES-A","00:36.30","12","F",false,"T6"],
+["3","EGGER COLOMBA","2014","CS NUOTO QUATTROVENTI","50 Stile Libero","ES-A","00:36.40","10","F",false,"T6"],
+["3","PELUSO CRISTINA","2014","NAPOLI NUOTO","50 Stile Libero","ES-A","00:36.40","10","F",false,"T6"],
+["5","IMPARATO REBECCA","2015","CS NUOTO QUATTROVENTI","50 Stile Libero","ES-A","00:36.70","6","F",false,"T6"],
+["6","APREA ELENA SOFIA","2015","CS NUOTO QUATTROVENTI","50 Stile Libero","ES-A","00:38.10","4","F",false,"T6"],
+["7","CILENTO ELENA","2014","CS NUOTO QUATTROVENTI","50 Stile Libero","ES-A","00:38.90","2","F",false,"T6"],
+["8","IMPARATO FRANCESCA","2015","CS NUOTO QUATTROVENTI","50 Stile Libero","ES-A","00:39.20","1","F",false,"T6"],
+["9","TROISI ANTONELLA","2015","SELE NUOTO","50 Stile Libero","ES-A","00:39.50","1","F",false,"T6"],
+["10","ASCIONE ASSUNTA","2014","CS NUOTO QUATTROVENTI","50 Stile Libero","ES-A","00:39.70","1","F",false,"T6"],
+["11","CARUSO DILETTA","2014","NAPOLI NUOTO","50 Stile Libero","ES-A","00:41.50","1","F",false,"T6"],
+["12","BIRRA ANJA","2014","CS NUOTO QUATTROVENTI","50 Stile Libero","ES-A","00:42.00","1","F",false,"T6"],
+["13","DI CRISTO GIADA","2014","CS NUOTO QUATTROVENTI","50 Stile Libero","ES-A","00:43.40","1","F",false,"T6"],
+["14","FALANGA FEDERICA","2015","CS NUOTO QUATTROVENTI","50 Stile Libero","ES-A","00:43.90","1","F",false,"T6"],
+["15","LAEZZA AURORA","2014","GIVA SSD ARL","50 Stile Libero","ES-A","00:48.30","1","F",false,"T6"],
+["16","PACELLI SOFIA","2015","SORRENTO INFINITY","50 Stile Libero","ES-A","00:48.50","1","F",false,"T6"],
+["1","RICCIO GRACE","2013","CS NUOTO QUATTROVENTI","50 Stile Libero","Ragazzi","00:33.10","14","F",false,"T6"],
+["2","ESPOSITO NUNZIA","2013","CS NUOTO QUATTROVENTI","50 Stile Libero","Ragazzi","00:33.20","12","F",false,"T6"],
+["3","RICCONE GLORIA","2012","CS NUOTO QUATTROVENTI","50 Stile Libero","Ragazzi","00:34.80","10","F",false,"T6"],
+["4","GIORNO IRENE","2013","CS NUOTO QUATTROVENTI","50 Stile Libero","Ragazzi","00:35.20","8","F",false,"T6"],
+["5","ANNUNZIATA CRISTINA","2012","CS NUOTO QUATTROVENTI","50 Stile Libero","Ragazzi","00:35.40","6","F",false,"T6"],
+["6","D'ALESSIO VIRGINIA","2013","SORRENTO INFINITY","50 Stile Libero","Ragazzi","00:36.20","4","F",false,"T6"],
+["7","CACACE GIADA","2013","SORRENTO INFINITY","50 Stile Libero","Ragazzi","00:36.50","2","F",false,"T6"],
+["8","GENTILE GIULIA","2013","SPORT LIFE SSD ARL","50 Stile Libero","Ragazzi","00:38.10","1","F",false,"T6"],
+["9","MERCOGLIANO LAURA","2013","SPORT LIFE SSD ARL","50 Stile Libero","Ragazzi","00:38.20","1","F",false,"T6"],
+["9","RUSSO FRANCESCA","2013","GIVA SSD ARL","50 Stile Libero","Ragazzi","00:38.20","1","F",false,"T6"],
+["11","BOVA DENISE","2013","NAPOLI NUOTO","50 Stile Libero","Ragazzi","00:38.80","1","F",false,"T6"],
+["12","DE MARIA MARTA","2012","NAPOLI NUOTO","50 Stile Libero","Ragazzi","00:40.50","1","F",false,"T6"],
+["13","CINQUE MICHELA","2013","SORRENTO INFINITY","50 Stile Libero","Ragazzi","00:40.60","1","F",false,"T6"],
+["14","LO SAPIO FRANCESCA","2013","AZURRA SSD SRL","50 Stile Libero","Ragazzi","00:43.40","1","F",false,"T6"],
+["15","PICCOLO AURORA","2013","NAPOLI NUOTO","50 Stile Libero","Ragazzi","00:45.20","1","F",false,"T6"],
+["1","CIOMMIENTO MARINA","2010","SPORT LIFE SSD ARL","50 Stile Libero","Juniores","00:37.60","14","F",false,"T6"],
+["2","DI LEO CHIARA","2011","AZURRA SSD SRL","50 Stile Libero","Juniores","00:40.20","12","F",false,"T6"],
+["1","SALVATI MARTINA","2009","NAPOLI NUOTO","50 Stile Libero","Cadetti","00:40.00","14","F",false,"T6"],
+["2","FILIPPELLI IMMACOLATA PIA","2009","SPORT LIFE SSD ARL","50 Stile Libero","Cadetti","00:45.70","12","F",false,"T6"],
+["1","SIMERI SARA","2007","NAPOLI NUOTO","50 Stile Libero","Senior","00:34.40","14","F",false,"T6"],
+["1","CELONE VINCENZO","2013","BLU TEAM CAMPANIA ASD","50 Stile Libero","ES-A","00:29.80","14","M",false,"T6"],
+["2","RUSSO MATTEO","2013","NAPOLI NUOTO","50 Stile Libero","ES-A","00:32.40","12","M",false,"T6"],
+["3","CARROZZA LORENZO","2013","NAPOLI NUOTO","50 Stile Libero","ES-A","00:32.50","10","M",false,"T6"],
+["4","BELFIORE LUIGI","2014","ACCADUEO","50 Stile Libero","ES-A","00:32.70","8","M",false,"T6"],
+["6","DI RAZZA SALVATORE ALÃŒ00 33 60 6,00 5 2013 CIRCOLO SPORTIVO NUOTO QUATTROVENTI D'ANTONIO EMANUELE","2014","NAPOLI NUOTO","50 Stile Libero","ES-A","00:33.70","4","M",false,"T6"],
+["7","MANGONE MICHELE","2014","CS NUOTO QUATTROVENTI","50 Stile Libero","ES-A","00:35.10","2","M",false,"T6"],
+["8","DEL PIANO FILIBERTO FRANCESCO","2013","ASD ONDA NUOTO","50 Stile Libero","ES-A","00:36.60","1","M",false,"T6"],
+["9","GALLUCCI GIORGIO","2013","GIVA SSD ARL","50 Stile Libero","ES-A","00:38.00","1","M",false,"T6"],
+["10","CARRELLA NICOLA LUIGI","2013","AZURRA SSD SRL","50 Stile Libero","ES-A","00:40.80","1","M",false,"T6"],
+["11","DELLE DONNE MICHELE","2013","CS NUOTO QUATTROVENTI","50 Stile Libero","ES-A","00:41.00","1","M",false,"T6"],
+["12","MAZZEO PASQUALE","2013","AZURRA SSD SRL","50 Stile Libero","ES-A","00:42.10","1","M",false,"T6"],
+["13","PRAGLIOLA ALDO","2014","NAPOLI NUOTO","50 Stile Libero","ES-A","00:52.00","1","M",false,"T6"],
+["1","STAIANO GIUSEPPE","2010","SORRENTO INFINITY","50 Stile Libero","Ragazzi","00:26.10","14","M",false,"T6"],
+["2","DE MARTINO EMANUELE","2010","CS NUOTO QUATTROVENTI","50 Stile Libero","Ragazzi","00:26.80","12","M",false,"T6"],
+["3","BABO DARIO","2010","NAPOLI NUOTO","50 Stile Libero","Ragazzi","00:27.10","10","M",false,"T6"],
+["3","GIGLIO GIOSUE","2010","CS NUOTO QUATTROVENTI","50 Stile Libero","Ragazzi","00:27.10","10","M",false,"T6"],
+["5","ERCOLANO VITTORIO","2010","SORRENTO INFINITY","50 Stile Libero","Ragazzi","00:27.50","6","M",false,"T6"],
+["6","CASILLO STEFANO","2010","CS NUOTO QUATTROVENTI","50 Stile Libero","Ragazzi","00:27.80","4","M",false,"T6"],
+["7","PALUMMO MICHELE","2010","SORRENTO INFINITY","50 Stile Libero","Ragazzi","00:27.90","2","M",false,"T6"],
+["8","STAIANO RAFFAELE","2012","SORRENTO INFINITY","50 Stile Libero","Ragazzi","00:28.00","1","M",false,"T6"],
+["9","DI LUCA ANTONIO","2011","CS NUOTO QUATTROVENTI","50 Stile Libero","Ragazzi","00:28.20","1","M",false,"T6"],
+["9","ESPOSITO ANTONIO","2011","SORRENTO INFINITY","50 Stile Libero","Ragazzi","00:28.20","1","M",false,"T6"],
+["11","ESPOSITO LUIGI","2011","CS NUOTO QUATTROVENTI","50 Stile Libero","Ragazzi","00:29.00","1","M",false,"T6"],
+["12","PERRONE GENNARO","2011","NAPOLI NUOTO","50 Stile Libero","Ragazzi","00:30.80","1","M",false,"T6"],
+["13","ACANFORA FRANCESCO","2012","SORRENTO INFINITY","50 Stile Libero","Ragazzi","00:31.10","1","M",false,"T6"],
+["14","CANOZO VINCENZO","2011","NAPOLI NUOTO","50 Stile Libero","Ragazzi","00:31.50","1","M",false,"T6"],
+["14","COZZOLINO FELICE","2011","AZURRA SSD SRL","50 Stile Libero","Ragazzi","00:31.50","1","M",false,"T6"],
+["16","DI MARINO SALVATORE","2010","NAPOLI NUOTO","50 Stile Libero","Ragazzi","00:31.60","1","M",false,"T6"],
+["17","CAPOZZI ALBERTO","2010","SORRENTO INFINITY","50 Stile Libero","Ragazzi","00:32.70","1","M",false,"T6"],
+["18","GIORNO DOMENICO","2011","CS NUOTO QUATTROVENTI","50 Stile Libero","Ragazzi","00:32.90","1","M",false,"T6"],
+["19","PIRONE MATTEO","2012","CS NUOTO QUATTROVENTI","50 Stile Libero","Ragazzi","00:33.10","1","M",false,"T6"],
+["20","PINZOLO LUIGI","2011","NAPOLI NUOTO","50 Stile Libero","Ragazzi","00:34.00","1","M",false,"T6"],
+["21","CARBONE RICCARDO","2012","AZURRA SSD SRL","50 Stile Libero","Ragazzi","00:34.70","1","M",false,"T6"],
+["21","CERRETO GIOVANNI","2012","SPORT LIFE SSD ARL","50 Stile Libero","Ragazzi","00:34.70","1","M",false,"T6"],
+["23","CAVALLO GIUSEPPE","2010","NAPOLI NUOTO","50 Stile Libero","Ragazzi","00:34.90","1","M",false,"T6"],
+["24","MARRA ANDREA","2012","NAPOLI NUOTO","50 Stile Libero","Ragazzi","00:35.60","1","M",false,"T6"],
+["25","BASILE LORENZO","2012","NAPOLI NUOTO","50 Stile Libero","Ragazzi","00:36.70","1","M",false,"T6"],
+["26","SEPE ANTONIO","2011","AZURRA SSD SRL","50 Stile Libero","Ragazzi","00:37.20","1","M",false,"T6"],
+["27","OSIYUK EVALD","2012","AZURRA SSD SRL","50 Stile Libero","Ragazzi","00:37.30","1","M",false,"T6"],
+["sq","GARGIULO GIOSIA","2012","CS NUOTO QUATTROVENTI","50 Stile Libero","Ragazzi","—","0","M",true,"T6"],
+["1","DI LORENZO GABRIELE","2008","CS NUOTO QUATTROVENTI","50 Stile Libero","Juniores","00:26.00","14","M",false,"T6"],
+["2","GAMBINO CRISTIAN","2009","CS NUOTO QUATTROVENTI","50 Stile Libero","Juniores","00:26.30","12","M",false,"T6"],
+["3","ROCCELLA LUIGI","2008","NAPOLI NUOTO","50 Stile Libero","Juniores","00:29.20","10","M",false,"T6"],
+["1","BORRELLI DOMENICO","2007","CS NUOTO QUATTROVENTI","50 Stile Libero","Cadetti","00:25.20","14","M",false,"T6"],
+["1","CHERBAUCICH MARIA FRANCESCA","2015","NAPOLI NUOTO","100 Misti","ES-A","01:22.30","14","F",false,"T6"],
+["2","BARBATO LUDOVICA","2014","CS NUOTO QUATTROVENTI","100 Misti","ES-A","01:24.50","12","F",false,"T6"],
+["3","FERRARA GIADA","2014","ACCADUEO","100 Misti","ES-A","01:25.10","10","F",false,"T6"],
+["4","VESTUTO CHIARA","2015","NAPOLI NUOTO","100 Misti","ES-A","01:27.40","8","F",false,"T6"],
+["5","SANZONE MARIA","2014","BLU TEAM CAMPANIA ASD","100 Misti","ES-A","01:27.80","6","F",false,"T6"],
+["6","PORCIELLO ANGELA","2015","AZURRA SSD SRL","100 Misti","ES-A","01:29.70","4","F",false,"T6"],
+["7","DE FRANCHIS CHIARA","2014","NAPOLI NUOTO","100 Misti","ES-A","01:30.80","2","F",false,"T6"],
+["8","DE NISCO GINEVRA","2015","ACCADUEO","100 Misti","ES-A","01:30.90","1","F",false,"T6"],
+["9","PAUDICE CHIARA","2015","ACCADUEO","100 Misti","ES-A","01:31.50","1","F",false,"T6"],
+["10","ZONFRILLO GIORGIA","2015","NAPOLI NUOTO","100 Misti","ES-A","01:31.60","1","F",false,"T6"],
+["11","TUCCI GRETA","2015","CS NUOTO QUATTROVENTI","100 Misti","ES-A","01:35.70","1","F",false,"T6"],
+["12","CUOMO FABIANA","2014","SORRENTO INFINITY","100 Misti","ES-A","01:37.50","1","F",false,"T6"],
+["1","ESPOSITO NUNZIA","2013","CS NUOTO QUATTROVENTI","100 Misti","Ragazzi","01:27.50","14","F",false,"T6"],
+["2","AIELLO GAIA","2013","AZURRA SSD SRL","100 Misti","Ragazzi","01:31.20","12","F",false,"T6"],
+["1","CAMMENATELLI FRANCESCA","2009","NAPOLI NUOTO","100 Misti","Cadetti","01:43.50","14","F",false,"T6"],
+["1","SANTARPIA GAETANO","2013","BLU TEAM CAMPANIA ASD","100 Misti","ES-A","01:13.10","14","M",false,"T6"],
+["2","MADDALONI DANIELE","2014","AZURRA SSD SRL","100 Misti","ES-A","01:20.40","12","M",false,"T6"],
+["3","IOVINO MARIANO","2013","BLU TEAM CAMPANIA ASD","100 Misti","ES-A","01:23.00","10","M",false,"T6"],
+["4","ERRICO CIRO","2014","NAPOLI NUOTO","100 Misti","ES-A","01:23.70","8","M",false,"T6"],
+["5","GUIDA SILVIO","2013","BLU TEAM CAMPANIA ASD","100 Misti","ES-A","01:23.80","6","M",false,"T6"],
+["6","BELFIORE LUIGI","2014","ACCADUEO","100 Misti","ES-A","01:24.50","4","M",false,"T6"],
+["7","MARTINO RAFFAELE","2014","ACCADUEO","100 Misti","ES-A","01:27.30","2","M",false,"T6"],
+["8","MARRANDINO RUFFO RAFFAELE","2014","ACCADUEO","100 Misti","ES-A","01:31.90","1","M",false,"T6"],
+["1","CASILLO STEFANO","2010","CS NUOTO QUATTROVENTI","100 Misti","Ragazzi","01:10.30","14","M",false,"T6"],
+["2","MADDALONI DOMENICO","2012","AZURRA SSD SRL","100 Misti","Ragazzi","01:11.30","12","M",false,"T6"],
+["3","ERCOLANO VITTORIO","2010","SORRENTO INFINITY","100 Misti","Ragazzi","01:11.80","10","M",false,"T6"],
+["4","CORCIONE ANTONINO","2011","SORRENTO INFINITY","100 Misti","Ragazzi","01:12.80","8","M",false,"T6"],
+["5","ESPOSITO ANTONIO","2011","SORRENTO INFINITY","100 Misti","Ragazzi","01:13.60","6","M",false,"T6"],
+["6","VIVOLO LEONARDO","2010","AZURRA SSD SRL","100 Misti","Ragazzi","01:14.10","4","M",false,"T6"],
 ];
 
 
@@ -3835,6 +4389,34 @@ const STAFFETTE = [
 ["1","CS NUOTO QUATTROVENTI","Staffetta 4x50 SL","ES-B","M","02:48.70","28","CICCARELLI VINCENZO · ASCIONE MATTIA · ASCIONE MATTIA · TUCCI GIOELE",false,"T5"],
 ["2","NAPOLI NUOTO","Staffetta 4x50 SL","ES-B","M","02:57.50","24","LOTTI DAVIDE · SCAMARDELLA RAFFAELE · MORTILLI GIOVANNI FRANCESCO · GUARDASCIONE EMANUELE",false,"T5"],
 
+
+// ===== FINALE - 24 MAG 2026 =====
+["1","NAPOLI NUOTO","4x50 Stile Libero","ES-B","F","02:44.20","28","BERTINI BENEDETTA · LEONE ANNA · LEONE LAURA · BUONOCORE BEATRI CE",false,"T6"],
+["2","CS NUOTO QUATTROVENTI","4x50 Stile Libero","ES-B","F","03:23.10","24","ASCIONE ANNA · FALANGA MATILDE · FORMISANO ELISA · ZINNO AMBRA",false,"T6"],
+["1","NAPOLI NUOTO","4x50 Stile Libero","ES-B","M","02:20.10","28","DI BONITO VINCENZO · SCALZO MATTIA · MASULLO GABRIELE · INNOCEN TE SIMONE",false,"T6"],
+["2","BLU TEAM CAMPANIA ASD","4x50 Stile Libero","ES-B","M","02:32.10","24","SCARICA GIOVANNI · BOCCIA ALESSANDRO · MARAGAS GABRIEL · DEL GA UDIO GABRIELE",false,"T6"],
+["3","CS NUOTO QUATTROVENTI","4x50 Stile Libero","ES-B","M","02:45.50","20","PANDISCIA ALBERTO · RAIA LIBERATO · ASCIONE MATTIA · TUCCI GIOE LE",false,"T6"],
+["1","NAPOLI NUOTO","4x50 Stile Libero","ES-A","F","02:16.80","28","ZONFRILLO GIORGIA · CHERBAUCICH MARIA FRANCESCA · VESTUTO CHIARA · DE FRANCHIS CHIARA",false,"T6"],
+["2","CS NUOTO QUATTROVENTI","4x50 Stile Libero","ES-A","F","02:22.60","24","BARBATO LUDOVICA · EGGER COLOMBA · IMPARATO FRANCESCA · OLIVIERO NOEMI",false,"T6"],
+["3","BLU TEAM CAMPANIA ASD","4x50 Stile Libero","ES-A","F","02:29.20","20","DONNARUMMA SIRYA · SANZONE MARIA · PERSICO CAMILLA · GALLO MARTINA",false,"T6"],
+["4","SORRENTO INFINITY","4x50 Stile Libero","ES-A","F","02:42.20","16","ESPOSITO GINEVRA · CUOMO FABIANA · PACELLI SOFIA · PERSICO GRETA",false,"T6"],
+["1","CS NUOTO QUATTROVENTI","4x50 Stile Libero","Ragazzi","F","02:16.80","28","ESPOSITO NUNZIA · GIORNO IRENE · RICCIO GRACE · APREA ELENA SOFIA",false,"T6"],
+["2","SORRENTO INFINITY","4x50 Stile Libero","Ragazzi","F","02:16.90","24","MANNIELLO MIA · CINQUE MICHELA · D'ALESSIO VIRGINIA · MANNIELLO ALISIA",false,"T6"],
+["3","NAPOLI NUOTO","4x50 Stile Libero","Ragazzi","F","02:30.00","20","MANZO SARA · BOVA DENISE · DE MARIA MARTA · PELUSO CRISTINA",false,"T6"],
+["4","AZURRA SSD SRL","4x50 Stile Libero","Ragazzi","F","02:37.70","16","PORCIELLO ANGELA · RENZULLO AGATA · LO SAPIO FRANCESCA · CATAPA NO ANNA",false,"T6"],
+["1","AZURRA SSD SRL","4x50 Stile Libero","Juniores","F","02:33.50","28","LO SAPIO VIVIANA · DI LEO CHIARA · RENZULLO ALESSANDRA · AIELLO GAIA",false,"T6"],
+["1","SPORT LIFE SSD ARL","4x50 Stile Libero","Cadetti","F","02:35.00","28","MERCOGLIANO LAURA · GENTILE GIULIA · CIOMMIENTO MARINA · FILIPPELLI IMMACOLATA PIA",false,"T6"],
+["1","NAPOLI NUOTO","4x50 Stile Libero","Senior","F","02:32.90","28","SIMERI SARA · DI PIERNO ALICE · SCHIRRIPA LUDOVICA · SALVATI MA RTINA",false,"T6"],
+["1","BLU TEAM CAMPANIA ASD","4x50 Stile Libero","ES-A","M","02:05.70","28","CELONE VINCENZO · SANTARPIA GAETANO · IOVINO MARIANO · GUIDA SI LVIO",false,"T6"],
+["2","NAPOLI NUOTO","4x50 Stile Libero","ES-A","M","02:07.40","24","KNOWLTON SAMUELE · TERRACCIANO BRYAN · ERRICO CIRO · RUSSO MATT EO",false,"T6"],
+["3","AZURRA SSD SRL","4x50 Stile Libero","ES-A","M","02:27.30","20","CARRELLA NICOLA LUIGI · VISONE LUCA · MAZZEO PASQUALE · MADDALO NI DANIELE",false,"T6"],
+["1","SORRENTO INFINITY","4x50 Stile Libero","Ragazzi","M","01:51.30","28","STAIANO GIUSEPPE · ESPOSITO ANTONIO · ERCOLANO VITTORIO · ESPOS ITO LORENZO",false,"T6"],
+["2","CS NUOTO QUATTROVENTI","4x50 Stile Libero","Ragazzi","M","01:54.20","24","ESPOSITO LUIGI · CASILLO STEFANO · DI LUCA ANTONIO · GIGLIO GIO SUE",false,"T6"],
+["fg","SORRENTO INFINITY","4x50 Stile Libero","Ragazzi","M","01:55.90","0","PALUMMO MICHELE · CORCIONE ANTONINO · STAIANO RAFFAELE · CUCCAR O LUIGI",true,"T6"],
+["3","AZURRA SSD SRL","4x50 Stile Libero","Ragazzi","M","01:58.60","20","MADDALONI DOMENICO · DE SIMONE GIUSEPPE · CARBONE RICCARDO · OS IYUK EVALD",false,"T6"],
+["4","NAPOLI NUOTO","4x50 Stile Libero","Ragazzi","M","02:07.20","16","PELUSO LUIGI · DI MARINO SALVATORE · CANOZO VINCENZO · PERRONE GENNARO",false,"T6"],
+["1","NAPOLI NUOTO","4x50 Stile Libero","Juniores","M","02:02.10","28","ROCCELLA LUIGI · MARINIELLO ANTONIO · CAVALLO GIUSEPPE · BABO D ARIO",false,"T6"],
+["2","AZURRA SSD SRL","4x50 Stile Libero","Juniores","M","02:15.10","24","AURIEMMA GIOVANNI · VIVOLO LEONARDO · FONTANAROSA ANTONIO · SEP E ANTONIO",false,"T6"],
 ];
 
 
@@ -4221,35 +4803,142 @@ function selectAtleta(idx) {
   renderScheda(atleta.nome);
 }
 
+function schedaDistanceValue(gara) {
+  const m = String(gara || '').match(/(\d+)/);
+  return m ? parseInt(m[1], 10) : 9999;
+}
+
+function schedaStyleOrder(gara) {
+  const g = String(gara || '').toLowerCase();
+  if (g.includes('stile libero')) return 1;
+  if (g.includes('dorso')) return 2;
+  if (g.includes('rana')) return 3;
+  if (g.includes('farfalla')) return 4;
+  if (g.includes('misti')) return 5;
+  return 9;
+}
+
+function schedaTappaOrder(tappa) {
+  const m = String(tappa || '').match(/T(\d+)/i);
+  return m ? parseInt(m[1], 10) : 999;
+}
+
+function schedaPosOrder(pos, sqOrFg) {
+  if (sqOrFg) return 999;
+  const n = parseInt(pos, 10);
+  return isNaN(n) ? 999 : n;
+}
+
+function formatSchedaTappa(tappa) {
+  return tappa === 'T6' ? 'Finale' : tappa;
+}
+
+function compareSchedaGare(a, b) {
+  const d = schedaDistanceValue(a) - schedaDistanceValue(b);
+  if (d !== 0) return d;
+  const s = schedaStyleOrder(a) - schedaStyleOrder(b);
+  if (s !== 0) return s;
+  return String(a || '').localeCompare(String(b || ''), 'it', { numeric: true, sensitivity: 'base' });
+}
+
+function buildSchedaRows(rows, isStaffetta = false) {
+  return rows.map(r => `
+    <tr${isStaffetta ? ' style="background:#f8fafc"' : ''}>
+      <td>${isStaffetta ? (r.fg ? '<span class="pos-badge pos-sq">FG</span>' : r.pos === '1' ? '<span class="pos-badge pos-1">🥇</span>' : r.pos === '2' ? '<span class="pos-badge pos-2">🥈</span>' : r.pos === '3' ? '<span class="pos-badge pos-3">🥉</span>' : `<span class="pos-badge pos-x">${r.pos}°</span>`) : posBadge(r.pos, r.sq)}</td>
+      <td><span class="cat-badge">${r.cat}</span></td>
+      <td style="font-size:11px;color:#5a7a9a;text-align:center">${formatSchedaTappa(r.tappa)}</td>
+      <td class="time-cell">${r.tempo}</td>
+      <td>${r.punti > 1 ? `<span class="pts">${r.punti}</span>` : r.punti === 0 ? '<span class="pts-0">—</span>' : `<span class="pts-0">${r.punti}</span>`}</td>
+    </tr>`).join('');
+}
+
+function buildSchedaSection(title, rows, isStaffetta = false) {
+  return `
+    <div class="scheda-section">
+      <div class="scheda-section-header">
+        <div class="scheda-section-title">${title}${isStaffetta ? ' <span class="staffetta-tag">staffetta</span>' : ''}</div>
+        <div class="scheda-section-count">${rows.length} ${rows.length === 1 ? 'risultato' : 'risultati'}</div>
+      </div>
+      <div class="scheda-table-wrap">
+        <table class="scheda-table-compact">
+          <thead><tr>
+            <th>Pos</th><th>Cat.</th><th>Tappa</th><th>Tempo</th><th>Punti</th>
+          </tr></thead>
+          <tbody>
+            ${buildSchedaRows(rows, isStaffetta)}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
 function renderScheda(nome) {
-  const risultati = data.filter(d => d.nome === nome).sort((a, b) => {
-    // Sort: gara asc, then pos
-    if (a.gara < b.gara) return -1;
-    if (a.gara > b.gara) return 1;
-    return parseInt(a.pos) - parseInt(b.pos);
-  });
+  const risultati = data.filter(d => d.nome === nome);
 
   if (risultati.length === 0) {
     document.getElementById('schedaContent').innerHTML = `<div class="scheda-empty"><strong>Nessun risultato</strong>Atleta non trovato nel database</div>`;
     return;
   }
 
-  const r0 = risultati[0];
+  const risultatiOrdinati = [...risultati].sort((a, b) => {
+    const g = compareSchedaGare(a.gara, b.gara);
+    if (g !== 0) return g;
+    const t = schedaTappaOrder(a.tappa) - schedaTappaOrder(b.tappa);
+    if (t !== 0) return t;
+    const c = String(a.cat || '').localeCompare(String(b.cat || ''), 'it', { numeric: true, sensitivity: 'base' });
+    if (c !== 0) return c;
+    return schedaPosOrder(a.pos, a.sq) - schedaPosOrder(b.pos, b.sq);
+  });
+
+  const r0 = risultatiOrdinati[0];
   const totPunti = risultati.reduce((s, r) => s + r.punti, 0);
   const gareDisputate = risultati.filter(r => !r.sq).length;
   const gold = risultati.filter(r => r.pos === '1' && !r.sq).length;
   const silver = risultati.filter(r => r.pos === '2' && !r.sq).length;
   const bronze = risultati.filter(r => r.pos === '3' && !r.sq).length;
   const bestPos = risultati.filter(r => !r.sq).reduce((best, r) => {
-    const p = parseInt(r.pos);
-    return p < best ? p : best;
+    const p = parseInt(r.pos, 10);
+    return (!isNaN(p) && p < best) ? p : best;
   }, 999);
 
-  // Also check staffette
-  const staffRis = staffData.filter(d => {
-    // Check if athlete name appears in componenti
-    return d.componenti.includes(nome);
+  const staffRis = staffData.filter(d => d.componenti.includes(nome)).sort((a, b) => {
+    const g = compareSchedaGare(a.gara, b.gara);
+    if (g !== 0) return g;
+    const t = schedaTappaOrder(a.tappa) - schedaTappaOrder(b.tappa);
+    if (t !== 0) return t;
+    const c = String(a.cat || '').localeCompare(String(b.cat || ''), 'it', { numeric: true, sensitivity: 'base' });
+    if (c !== 0) return c;
+    return schedaPosOrder(a.pos, a.fg) - schedaPosOrder(b.pos, b.fg);
   });
+
+  const gruppiGara = [];
+  const groupMap = new Map();
+  risultatiOrdinati.forEach(r => {
+    if (!groupMap.has(r.gara)) {
+      const group = { key: r.gara, rows: [] };
+      groupMap.set(r.gara, group);
+      gruppiGara.push(group);
+    }
+    groupMap.get(r.gara).rows.push(r);
+  });
+  gruppiGara.sort((a, b) => compareSchedaGare(a.key, b.key));
+
+  const gruppiStaff = [];
+  const staffMap = new Map();
+  staffRis.forEach(r => {
+    if (!staffMap.has(r.gara)) {
+      const group = { key: r.gara, rows: [] };
+      staffMap.set(r.gara, group);
+      gruppiStaff.push(group);
+    }
+    staffMap.get(r.gara).rows.push(r);
+  });
+  gruppiStaff.sort((a, b) => compareSchedaGare(a.key, b.key));
+
+  const sezioniIndividuali = gruppiGara.map(g => buildSchedaSection(g.key, g.rows)).join('');
+  const sezioniStaff = gruppiStaff.length > 0
+    ? gruppiStaff.map(g => buildSchedaSection(g.key, g.rows, true)).join('')
+    : '<div class="scheda-section"><div class="scheda-section-header"><div class="scheda-section-title">Staffette</div><div class="scheda-section-count">0 risultati</div></div><div class="scheda-section-empty">Nessuna staffetta disputata.</div></div>';
 
   document.getElementById('schedaContent').innerHTML = `
     <div class="scheda-card">
@@ -4261,14 +4950,8 @@ function renderScheda(nome) {
           </div>
         </div>
         <div class="scheda-kpi">
-          <div class="kpi-box">
-            <div class="kpi-val">${totPunti}</div>
-            <div class="kpi-lbl">Punti</div>
-          </div>
-          <div class="kpi-box">
-            <div class="kpi-val">${gareDisputate}</div>
-            <div class="kpi-lbl">Gare</div>
-          </div>
+          <div class="kpi-box"><div class="kpi-val">${totPunti}</div><div class="kpi-lbl">Punti</div></div>
+          <div class="kpi-box"><div class="kpi-val">${gareDisputate}</div><div class="kpi-lbl">Gare</div></div>
           ${bestPos < 999 ? `<div class="kpi-box"><div class="kpi-val">${bestPos}°</div><div class="kpi-lbl">Miglior pos.</div></div>` : ''}
         </div>
       </div>
@@ -4277,34 +4960,12 @@ function renderScheda(nome) {
         <span class="scheda-medal scheda-medal-g">🥇 ${gold}</span>
         <span class="scheda-medal scheda-medal-s">🥈 ${silver}</span>
         <span class="scheda-medal scheda-medal-b">🥉 ${bronze}</span>
-        ${staffRis.length > 0 ? `<span class="scheda-medal-lbl" style="margin-left:12px">Staffette: <b>${staffRis.length}</b></span>` : ''}
+        <span class="scheda-medal-lbl" style="margin-left:12px">Tipologie individuali: <b>${gruppiGara.length}</b></span>
+        <span class="scheda-medal-lbl">Staffette: <b>${staffRis.length}</b></span>
       </div>
-      <div class="scheda-table-wrap">
-        <table>
-          <thead><tr>
-            <th>Pos</th><th>Gara</th><th>Cat.</th><th>Tappa</th><th>Tempo</th><th>Punti</th>
-          </tr></thead>
-          <tbody>
-            ${risultati.map(r => `
-              <tr>
-                <td>${posBadge(r.pos, r.sq)}</td>
-                <td class="gara-cell">${r.gara}</td>
-                <td><span class="cat-badge">${r.cat}</span></td>
-                <td style="font-size:11px;color:#5a7a9a;text-align:center">${r.tappa}</td>
-                <td class="time-cell">${r.tempo}</td>
-                <td>${r.punti > 1 ? `<span class="pts">${r.punti}</span>` : r.punti === 0 ? '<span class="pts-0">—</span>' : `<span class="pts-0">${r.punti}</span>`}</td>
-              </tr>`).join('')}
-            ${staffRis.map(r => `
-              <tr style="background:#f8fafc">
-                <td>${r.fg ? '<span class="pos-badge pos-sq">FG</span>' : r.pos==='1'?'<span class="pos-badge pos-1">🥇</span>':r.pos==='2'?'<span class="pos-badge pos-2">🥈</span>':r.pos==='3'?'<span class="pos-badge pos-3">🥉</span>':`<span class="pos-badge pos-x">${r.pos}°</span>`}</td>
-                <td class="gara-cell">${r.gara} <span style="font-size:10px;color:#8aaacc">(Staffetta)</span></td>
-                <td><span class="cat-badge">${r.cat}</span></td>
-                <td style="font-size:11px;color:#5a7a9a;text-align:center">${r.tappa}</td>
-                <td class="time-cell">${r.tempo}</td>
-                <td>${r.punti > 0 ? `<span class="pts">${r.punti}</span>` : '<span class="pts-0">—</span>'}</td>
-              </tr>`).join('')}
-          </tbody>
-        </table>
+      <div class="scheda-sections">
+        ${sezioniIndividuali}
+        ${sezioniStaff}
       </div>
     </div>`;
 }
@@ -4338,7 +4999,7 @@ window.onload = () => {
 
 <footer class="site-footer">
   <div class="site-footer-inner">
-    <div class="site-footer-source">Dati estratti dai risultati ufficiali delle tappe 2025/26</div>
+    <div class="site-footer-source">Dati estratti dai risultati ufficiali delle tappe 2025/26 e della finale del 24 mag 2026</div>
   </div>
 </footer>
 
