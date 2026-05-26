@@ -373,12 +373,29 @@
   .scheda-section-title { font-family: 'Barlow Condensed', sans-serif; font-size: 17px; font-weight: 700; color: #1a2a3a; letter-spacing: 0.3px; text-transform: uppercase; }
   .scheda-section-count { font-size: 11px; color: #6a8aaa; text-transform: uppercase; letter-spacing: 0.5px; }
   .scheda-section-empty { padding: 16px 14px; color: #6a8aaa; font-size: 13px; }
+  .scheda-table-compact { width: 100%; table-layout: fixed; }
   .scheda-table-compact th, .scheda-table-compact td { padding-top: 6px; padding-bottom: 6px; }
   .staffetta-tag { font-size: 10px; color: #8aaacc; text-transform: uppercase; letter-spacing: 0.4px; }
+  .scheda-table-compact .col-pos { width: 78px; }
+  .scheda-table-compact .col-cat { width: 96px; }
+  .scheda-table-compact .col-tappa { width: 96px; }
+  .scheda-table-compact .col-tempo { width: 110px; }
+  .scheda-table-compact .col-punti { width: 86px; }
+  .scheda-table-compact th:nth-child(1), .scheda-table-compact td:nth-child(1),
+  .scheda-table-compact th:nth-child(2), .scheda-table-compact td:nth-child(2),
+  .scheda-table-compact th:nth-child(3), .scheda-table-compact td:nth-child(3),
+  .scheda-table-compact th:nth-child(4), .scheda-table-compact td:nth-child(4),
+  .scheda-table-compact th:nth-child(5), .scheda-table-compact td:nth-child(5) { text-align: center; }
+  .scheda-tappa-cell { font-size: 11px; color: #5a7a9a; font-variant-numeric: tabular-nums; white-space: nowrap; }
   @media (max-width: 700px) {
     .scheda-sections { padding: 14px; }
     .scheda-section-header { padding: 10px 12px; }
     .scheda-section-title { font-size: 15px; }
+    .scheda-table-compact .col-pos { width: 68px; }
+    .scheda-table-compact .col-cat { width: 86px; }
+    .scheda-table-compact .col-tappa { width: 78px; }
+    .scheda-table-compact .col-tempo { width: 98px; }
+    .scheda-table-compact .col-punti { width: 74px; }
   }
 </style>
 </head>
@@ -4846,7 +4863,7 @@ function buildSchedaRows(rows, isStaffetta = false) {
     <tr${isStaffetta ? ' style="background:#f8fafc"' : ''}>
       <td>${isStaffetta ? (r.fg ? '<span class="pos-badge pos-sq">FG</span>' : r.pos === '1' ? '<span class="pos-badge pos-1">🥇</span>' : r.pos === '2' ? '<span class="pos-badge pos-2">🥈</span>' : r.pos === '3' ? '<span class="pos-badge pos-3">🥉</span>' : `<span class="pos-badge pos-x">${r.pos}°</span>`) : posBadge(r.pos, r.sq)}</td>
       <td><span class="cat-badge">${r.cat}</span></td>
-      <td style="font-size:11px;color:#5a7a9a;text-align:center">${formatSchedaTappa(r.tappa)}</td>
+      <td class="scheda-tappa-cell">${formatSchedaTappa(r.tappa)}</td>
       <td class="time-cell">${r.tempo}</td>
       <td>${r.punti > 1 ? `<span class="pts">${r.punti}</span>` : r.punti === 0 ? '<span class="pts-0">—</span>' : `<span class="pts-0">${r.punti}</span>`}</td>
     </tr>`).join('');
@@ -4861,6 +4878,9 @@ function buildSchedaSection(title, rows, isStaffetta = false) {
       </div>
       <div class="scheda-table-wrap">
         <table class="scheda-table-compact">
+          <colgroup>
+            <col class="col-pos"><col class="col-cat"><col class="col-tappa"><col class="col-tempo"><col class="col-punti">
+          </colgroup>
           <thead><tr>
             <th>Pos</th><th>Cat.</th><th>Tappa</th><th>Tempo</th><th>Punti</th>
           </tr></thead>
