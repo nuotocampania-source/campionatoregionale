@@ -616,28 +616,52 @@ async function loadSeasonData(id){
   showLoading();
   try {
     const base=BASE_URL+'/data/'+id;
+    // FASE 1: carica solo meta + individuale + staffette (essenziale per Gare/Soc/IRON)
     const meta=await fetchJSON(base+'/meta.json');
-    const [ind, staff, finale, finale_staff]=await Promise.all([
+    const [ind, staff]=await Promise.all([
       fetchJSON(base+'/individuale.json').catch(()=>[]),
       fetchJSON(base+'/staffette.json').catch(()=>[]),
-      meta.has_finale ? fetchJSON(base+'/finale.json').catch(()=>[]) : Promise.resolve([]),
-      meta.has_finale ? fetchJSON(base+'/finale_staff.json').catch(()=>[]) : Promise.resolve([]),
     ]);
-    // Load tempi personali for all prev seasons (solo_tempi)
-    const tempiAll = {};
-    for(const s of seasons){
-      if(s.solo_tempi){
-        const t=await fetchJSON(BASE_URL+'/data/'+s.id+'/tempi_personali.json').catch(()=>({}));
-        tempiAll[s.id]={label:s.label, data:t};
-      }
-    }
-    seasonData[id]={meta, D:ind, DS:staff, DF:finale, DSF:finale_staff, tempiAll};
+    // Salva subito con finale vuoto — UI è già utilizzabile
+    seasonData[id]={meta, D:ind, DS:staff, DF:[], DSF:[], tempiAll:{}, _finaleLoaded:false, _tempiLoaded:false};
     applySeasonData(id);
+
+    // FASE 2: carica finale in background (non blocca la UI)
+    if(meta.has_finale){
+      Promise.all([
+        fetchJSON(base+'/finale.json').catch(()=>[]),
+        fetchJSON(base+'/finale_staff.json').catch(()=>[]),
+      ]).then(([fin, finSt])=>{
+        seasonData[id].DF=fin;
+        seasonData[id].DSF=finSt;
+        seasonData[id]._finaleLoaded=true;
+        // Ricostruisce indice atleti (ora include finale)
+        if(currentSeason===id) buildAtletiIndex(seasonData[id]);
+      });
+    } else {
+      seasonData[id]._finaleLoaded=true;
+    }
+
   } catch(e){
     hideLoading();
     document.getElementById('cntA').textContent='Errore caricamento dati: '+e.message;
     console.error(e);
   }
+}
+
+// Carica tempi storici solo quando l'utente apre la Scheda Atleta
+async function ensureTempiLoaded(id){
+  const sd=seasonData[id];
+  if(!sd||sd._tempiLoaded) return;
+  sd._tempiLoaded=true; // flag subito per evitare doppio caricamento
+  const tempiAll={};
+  await Promise.all(seasons.filter(s=>s.solo_tempi).map(async s=>{
+    const t=await fetchJSON(BASE_URL+'/data/'+s.id+'/tempi_personali.json').catch(()=>({}));
+    tempiAll[s.id]={label:s.label, data:t};
+  }));
+  sd.tempiAll=tempiAll;
+  // Ricostruisce indice con tempi storici
+  if(currentSeason===id) buildAtletiIndex(sd);
 }
 
 function applySeasonData(id){
@@ -988,6 +1012,7 @@ function buildAtletiIndex(sd){
 // SCHEDA ATLETA
 // ============================================================
 function schedaSearch(){
+  ensureTempiLoaded(currentSeason);
   const q=document.getElementById('schedaInput').value.trim().toLowerCase();
   const drop=document.getElementById('schedaDrop');
   if(q.length<2){drop.style.display='none';return;}
@@ -1244,7 +1269,8 @@ function sw(name,btn){
   document.querySelectorAll('.pane').forEach(p=>p.classList.remove('on'));
   btn.classList.add('on');
   document.getElementById(name).classList.add('on');
-  if(name==='iron')fi();
+  if(name==='iron') fi();
+  if(name==='scheda') ensureTempiLoaded(currentSeason);
 }
 
 // ============================================================
