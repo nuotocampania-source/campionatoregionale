@@ -1059,10 +1059,14 @@ document.addEventListener('click',e=>{
     document.getElementById('schedaDrop').style.display='none';
 });
 
-function schedaShow(idx){
+async function schedaShow(idx){
   document.getElementById('schedaDrop').style.display='none';
   const atletaRef=atletiList[idx];
   if(!atletaRef)return;
+  // Assicura che tutti i dati storici siano caricati prima di mostrare la scheda
+  await ensureTempiLoaded(currentSeason);
+  // Ricostruisci l'indice con i dati storici ora disponibili
+  buildAtletiIndex(seasonData[currentSeason]);
   const nome=atletaRef.nome;
   const gen=atletaRef.gen;
   const cat=atletaRef.cat;
@@ -1217,28 +1221,6 @@ function schedaShow(idx){
     tutteGare[g.gara][g.season+'|'+g.tappa]={tempo:g.tempo,pos:g.pos,punti:g.punti,isCurrent:g.season===currentSeason};
   });
 
-  // SVG sparkline per una gara: punti = secondi, solo tappe regolari con valore
-  function sparkline(garaName){
-    const colReg=colonneAll.filter(c=>!c.isTF);
-    const pts=colReg.map((c,i)=>{
-      const v=tutteGare[garaName]?.[c.sid+'|'+c.tappaId];
-      return v?{i,s:toSec(v.tempo),cur:c.isCurrent}:null;
-    }).filter(Boolean);
-    if(pts.length<2) return '';
-    const W=160,H=36,PAD=4;
-    const minS=Math.min(...pts.map(p=>p.s));
-    const maxS=Math.max(...pts.map(p=>p.s));
-    const range=maxS-minS||1;
-    const xs=i=>(PAD+(i/(colReg.length-1||1))*(W-PAD*2));
-    const ys=s=>(H-PAD-(s-minS)/range*(H-PAD*2));
-    const line=pts.map((p,i)=>`${i?'L':'M'}${xs(p.i).toFixed(1)},${ys(p.s).toFixed(1)}`).join(' ');
-    const dots=pts.map(p=>`<circle cx="${xs(p.i).toFixed(1)}" cy="${ys(p.s).toFixed(1)}" r="${p.cur?3.5:2.5}" fill="${p.cur?'var(--blue)':'#94a3b8'}" stroke="#fff" stroke-width="1"/>`).join('');
-    return`<svg width="${W}" height="${H}" style="display:block;margin:0 auto" viewBox="0 0 ${W} ${H}">
-      <polyline points="${pts.map(p=>xs(p.i).toFixed(1)+','+ys(p.s).toFixed(1)).join(' ')}" fill="none" stroke="#cbd5e1" stroke-width="1.5" stroke-linejoin="round"/>
-      ${dots}
-    </svg>`;
-  }
-
   const gareNomi=[...new Set(a.gare.map(g=>g.gara))].sort((a,b)=>{const da=distOrd[a.split(' ')[0]]??9,db=distOrd[b.split(' ')[0]]??9;return da!==db?da-db:a.localeCompare(b);});
   let gareHtml='';
 
@@ -1251,8 +1233,7 @@ function schedaShow(idx){
       stagGroups[stagGroups.length-1].count++;
     });
 
-    const thStyle=(isCur)=>`text-align:center;padding:5px 8px;font-family:'Barlow Condensed',sans-serif;font-size:0.75rem;letter-spacing:0.04em;font-weight:700;white-space:nowrap;color:${isCur?'var(--blue)':'#374151'};border-bottom:1px solid #e5e7eb`;
-    const minW=140+colonneAll.length*90+170;
+    const minW=140+colonneAll.length*82;
 
     gareHtml+=`<div style="margin-top:1rem">
       <div style="background:var(--blue);color:#fff;padding:8px 16px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.95rem;letter-spacing:0.06em;border-radius:var(--radius) var(--radius) 0 0">
@@ -1261,15 +1242,12 @@ function schedaShow(idx){
       <div style="overflow-x:auto">
       <table style="width:100%;border-collapse:collapse;font-size:0.8rem;min-width:${minW}px">
         <thead>
-          <tr style="background:#f1f5f9">
-            <th style="text-align:left;padding:5px 12px;font-size:0.72rem;font-weight:700;color:var(--muted);border-bottom:1px solid #e5e7eb" rowspan="2">Gara</th>
-            ${stagGroups.map(g=>`<th colspan="${g.count}" style="text-align:center;padding:5px 8px;font-family:'Barlow Condensed',sans-serif;font-size:0.78rem;font-weight:700;letter-spacing:0.05em;color:${g.isCurrent?'var(--blue)':'#374151'};border-bottom:1px solid #e5e7eb;border-left:2px solid ${g.isCurrent?'var(--blue)':'#d1d5db'}">${g.label}</th>`).join('')}
-            <th style="text-align:center;padding:5px 8px;font-size:0.72rem;font-weight:700;color:var(--muted);border-bottom:1px solid #e5e7eb;border-left:2px solid #e5e7eb" rowspan="2">Trend</th>
-          </tr>
-          <tr style="background:#f8fafc">
+          <tr style="background:#f1f5f9;border-bottom:2px solid #e5e7eb">
+            <th style="text-align:left;padding:6px 12px;font-size:0.72rem;font-weight:700;color:var(--muted);white-space:nowrap;min-width:140px">Gara</th>
             ${colonneAll.map((c,ci)=>{
               const isFirstInStag=ci===0||colonneAll[ci-1].sid!==c.sid;
-              return`<th style="${thStyle(c.isCurrent)};${c.isTF?'color:#dc2626;':''}${isFirstInStag?'border-left:2px solid '+(c.isCurrent?'var(--blue)':'#d1d5db')+';':''}">${c.colLabel}<br><span style="font-weight:400;font-size:0.68rem;color:var(--muted)">${c.data}</span></th>`;
+              const stagLabel=isFirstInStag?`<div style="font-size:0.65rem;font-weight:400;color:${c.isCurrent?'var(--blue)':'var(--muted)'};margin-bottom:1px">${c.stagLabel}</div>`:'';
+              return`<th style="text-align:center;padding:5px 8px;font-family:'Barlow Condensed',sans-serif;font-size:0.75rem;font-weight:700;white-space:nowrap;color:${c.isTF?'#dc2626':c.isCurrent?'var(--blue)':'#374151'};${isFirstInStag?'border-left:2px solid '+(c.isCurrent?'#bfdbfe':'#e5e7eb')+';':''}">${stagLabel}${c.colLabel}${c.data?`<div style="font-weight:400;font-size:0.65rem;color:var(--muted)">${c.data}</div>`:''}</th>`;
             }).join('')}
           </tr>
         </thead>
@@ -1278,7 +1256,7 @@ function schedaShow(idx){
     gareNomi.forEach((garaName,ri)=>{
       const rowBg=ri%2===0?'':'background:#f8faf9';
       gareHtml+=`<tr style="${rowBg};border-bottom:1px solid #f0f0f0">
-        <td style="padding:7px 12px;font-weight:600;color:var(--text);white-space:nowrap">${garaName}</td>`;
+        <td style="padding:6px 12px;font-weight:600;color:var(--text);white-space:nowrap">${garaName}</td>`;
       colonneAll.forEach((c,ci)=>{
         const v=tutteGare[garaName]?.[c.sid+'|'+c.tappaId];
         const isFirstInStag=ci===0||colonneAll[ci-1].sid!==c.sid;
@@ -1286,15 +1264,12 @@ function schedaShow(idx){
         if(!v){
           gareHtml+=`<td style="text-align:center;padding:6px 8px;color:#d1d5db;${borderL}">—</td>`;
         } else {
-          const posIcon=v.pos==='1'?'🥇':v.pos==='2'?'🥈':v.pos==='3'?'🥉':v.pos?(v.pos+'°'):'';
-          const isCur=c.isCurrent;
-          const puntiStr=(isCur&&!c.isTF&&v.punti>0)?`<br><span style="font-size:0.68rem;color:var(--muted)">${fp(v.punti)}pt</span>`:'';
-          gareHtml+=`<td style="text-align:center;padding:6px 8px;vertical-align:middle;${borderL}${isCur?'background:#eff6ff;':''}">
-            <span style="font-weight:600;color:var(--text);font-size:0.8rem">${posIcon?posIcon+' ':''}${v.tempo}</span>${puntiStr}
+          gareHtml+=`<td style="text-align:center;padding:6px 8px;${borderL}${c.isCurrent?'background:#eff6ff;':''}">
+            <span style="font-weight:600;color:var(--text);font-size:0.8rem">${v.tempo}</span>
           </td>`;
         }
       });
-      gareHtml+=`<td style="padding:4px 8px;border-left:2px solid #e5e7eb;min-width:170px">${sparkline(garaName)}</td></tr>`;
+      gareHtml+=`</tr>`;
     });
     gareHtml+=`</tbody></table></div>`;
 
@@ -1383,8 +1358,8 @@ function schedaShow(idx){
         ${allPunti.length?`<span class="stagione-pill">Media punteggio ${fp(allPunti.reduce((s,p)=>s+p,0)/allPunti.length)}</span>`:''}
       </div>
     </div>
-    ${gareHtml}
-  </div>`;
+  </div>
+  ${gareHtml}`;
 
   document.getElementById('schedaContent').innerHTML=html;
 }
