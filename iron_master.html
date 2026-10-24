@@ -643,18 +643,38 @@ async function loadSeasonData(id){
   }
 }
 
-// Carica tempi storici solo quando l'utente apre la Scheda Atleta
+// Carica dati storici solo quando l'utente apre la Scheda Atleta
 async function ensureTempiLoaded(id){
   const sd=seasonData[id];
   if(!sd||sd._tempiLoaded) return;
-  sd._tempiLoaded=true; // flag subito per evitare doppio caricamento
+  sd._tempiLoaded=true;
   const tempiAll={};
+  // Stagioni solo_tempi: carica tempi_personali.json
   await Promise.all(seasons.filter(s=>s.solo_tempi).map(async s=>{
     const t=await fetchJSON(BASE_URL+'data/'+s.id+'/tempi_personali.json').catch(()=>({}));
     tempiAll[s.id]={label:s.label, data:t};
   }));
   sd.tempiAll=tempiAll;
-  // Ricostruisce indice con tempi storici
+  // Stagioni storiche con individuale completo (non current, non solo_tempi): carica se non già in cache
+  await Promise.all(seasons.filter(s=>!s.current&&!s.solo_tempi).map(async s=>{
+    if(seasonData[s.id]) return; // già in cache
+    const base=BASE_URL+'data/'+s.id;
+    const meta=await fetchJSON(base+'/meta.json').catch(()=>({}));
+    const [ind,staff]=await Promise.all([
+      fetchJSON(base+'/individuale.json').catch(()=>[]),
+      fetchJSON(base+'/staffette.json').catch(()=>[]),
+    ]);
+    seasonData[s.id]={meta, D:ind, DS:staff, DF:[], DSF:[], tempiAll:{}, _finaleLoaded:false, _tempiLoaded:true};
+    if(meta.has_finale){
+      const [fin,finSt]=await Promise.all([
+        fetchJSON(base+'/finale.json').catch(()=>[]),
+        fetchJSON(base+'/finale_staff.json').catch(()=>[]),
+      ]);
+      seasonData[s.id].DF=fin; seasonData[s.id].DSF=finSt; seasonData[s.id]._finaleLoaded=true;
+    } else {
+      seasonData[s.id]._finaleLoaded=true;
+    }
+  }));
   if(currentSeason===id) buildAtletiIndex(sd);
 }
 
@@ -997,17 +1017,25 @@ function buildAtletiIndex(sd){
     if(!atletiIndex[key])atletiIndex[key]={nome:r[2],gen:r[6],cat:r[7],soc:r[4],anno:r[3],gare:[]};
     atletiIndex[key].gare.push({season:currentSeason,tappa:r[0],pos:r[1],gara:r[5],tempo:r[8],punti:parseFloat(r[9])||0});
   });
-  // Also include athletes from solo_tempi seasons (tempiAll)
+  // Stagioni storiche con individuale completo
+  seasons.filter(s=>!s.current&&!s.solo_tempi).forEach(s=>{
+    const hsd=seasonData[s.id];
+    if(!hsd) return;
+    [...(hsd.D||[]),...(hsd.DF||[])].forEach(r=>{
+      const key=r[2]+'|'+r[6]+'|'+r[7];
+      if(!atletiIndex[key])atletiIndex[key]={nome:r[2],gen:r[6],cat:r[7],soc:r[4],anno:r[3],gare:[]};
+      atletiIndex[key].gare.push({season:s.id,tappa:r[0],pos:r[1],gara:r[5],tempo:r[8],punti:parseFloat(r[9])||0});
+    });
+  });
+  // Stagioni solo_tempi: aggiungi atleti all'indice (senza gare dettagliate)
   Object.entries(sd.tempiAll||{}).forEach(([sid,sobj])=>{
-    Object.entries(sobj.data||{}).forEach(([key,gare])=>{
+    Object.entries(sobj.data||{}).forEach(([key])=>{
       if(!atletiIndex[key]){
         const parts=key.split('|');
         atletiIndex[key]={nome:parts[0],gen:parts[1],cat:parts[2],soc:'',anno:'',gare:[]};
       }
     });
   });
-  // Current season staffette: DS + DSF (not per athlete but by name in componenti)
-  // will be used directly in schedaShow
   atletiList=Object.values(atletiIndex).sort((a,b)=>a.nome.localeCompare(b.nome));
 }
 
@@ -1134,76 +1162,104 @@ function schedaShow(idx){
     tempiHtml+=`</tbody></table></div></div>`;
   }
 
-  // --- PER-GARA BLOCKS ---
-  const gareOrdered=Object.entries(byGara).sort((a,b)=>{
-    const da=distOrd[a[0].split(' ')[0]]??9,db=distOrd[b[0].split(' ')[0]]??9;
-    return da!==db?da-db:a[0].localeCompare(b[0]);
-  });
-
+  // --- PER-GARA BLOCKS (per stagione) ---
   const tappaColor=(t)=>t==='T1'?'#1a5c2e':t==='T2'?'#c8960a':t==='T3'?'#6b8299':t==='TF'?'#dc2626':'#5b21b6';
-  const tappaLabel=(t,meta)=>{if(!meta)return t;const tp=meta.tappe.find(x=>x.id===t);return tp?tp.label:t;};
+  const tappaLabel=(t,m)=>{if(!m)return t;const tp=m.tappe?.find(x=>x.id===t);return tp?tp.label:t;};
+
+  // Raccogli tutte le stagioni con dati da mostrare (corrente + storiche con individuale)
+  const stagioniBlocchi=[
+    ...(seasons.filter(s=>s.current)),
+    ...(seasons.filter(s=>!s.current&&!s.solo_tempi&&seasonData[s.id]))
+  ];
 
   let gareHtml='';
-  gareOrdered.forEach(([garaName,results])=>{
-    const sorted=results.sort((a,b)=>a.tappa.localeCompare(b.tappa));
-    const sortedReg=sorted.filter(r=>r.tappa!=='TF');
-    const maxP=Math.max(...sortedReg.map(r=>r.punti).filter(p=>p>0),0);
-    const validTimes=sortedReg.filter(r=>r.punti>0).map(r=>r.tempo);
-    const bestTime=validTimes.length?validTimes.reduce((b,t)=>toSec(t)<toSec(b)?t:b):'';
-    gareHtml+=`<div style="border-top:1px solid #f0f0f0">
-      <div style="background:var(--blue-pale);padding:6px 16px;display:flex;justify-content:space-between;align-items:center">
-        <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.88rem;color:var(--blue);letter-spacing:0.04em;text-transform:uppercase">${garaName}</span>
-        ${bestTime?`<span class="gara-best">Best: ${bestTime}</span>`:''}
-      </div>
-      <div style="display:grid;grid-template-columns:80px 1fr 90px 80px;padding:4px 16px;background:#f4f8f6;border-bottom:1px solid #e8eee9">
-        <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em">Tappa</div>
-        <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em">Pos</div>
-        <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;text-align:right;padding-right:8px">Tempo</div>
-        <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;text-align:right">Punti</div>
-      </div>`;
-    sorted.forEach((r,ri)=>{
-      const tc=tappaColor(r.tappa);
-      const tl=tappaLabel(r.tappa,meta);
-      const posIcon=r.pos==='1'?'🥇':r.pos==='2'?'🥈':r.pos==='3'?'🥉':r.pos+'°';
-      const rowBg=ri%2===0?'':'background:#f8faf9;';
-      gareHtml+=`<div class="gara-row" style="grid-template-columns:80px 1fr 90px 80px;${rowBg}">
-        <div class="tappa-dot"><span style="width:8px;height:8px;border-radius:50%;background:${tc};display:inline-block;flex-shrink:0"></span>${tl}</div>
-        <div style="font-size:0.82rem;color:var(--text)">${posIcon} ${a.cat}</div>
-        <div class="gara-tempo-val" style="padding-right:8px">${r.tempo}</div>
-        <div class="gara-punti-val">${r.punti>0?fp(r.punti):'—'}</div>
-      </div>`;
-    });
-    gareHtml+=`</div>`;
-  });
+  stagioniBlocchi.forEach(stagione=>{
+    const sid=stagione.id;
+    const smeta=stagione.current?meta:seasonData[sid]?.meta;
+    const sgare=a.gare.filter(g=>g.season===sid);
+    if(!sgare.length) return;
 
-  // Staffette block
-  if(staffAtleta.length){
-    gareHtml+=`<div style="border-top:1px solid #f0f0f0">
-      <div style="background:var(--blue-pale);padding:6px 16px;display:flex;justify-content:space-between;align-items:center">
-        <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.88rem;color:var(--blue);letter-spacing:0.04em;text-transform:uppercase">Staffette</span>
-        <span class="gara-best">${staffAtleta.length} partecipazion${staffAtleta.length===1?'e':'i'}</span>
-      </div>
-      <div style="display:grid;grid-template-columns:80px 1fr 90px 80px;padding:4px 16px;background:#f4f8f6;border-bottom:1px solid #e8eee9">
-        <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em">Tappa</div>
-        <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em">Tipo · Cat</div>
-        <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;text-align:right;padding-right:8px">Tempo</div>
-        <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;text-align:right">Punti</div>
-      </div>`;
-    staffAtleta.sort((a,b)=>a[0].localeCompare(b[0])).forEach((r,ri)=>{
-      const tc=tappaColor(r[0]);
-      const tl=tappaLabel(r[0],meta);
-      const posIcon=r[1]==='1'?'🥇 ':r[1]==='2'?'🥈 ':r[1]==='3'?'🥉 ':'';
-      const rowBg=ri%2===0?'':'background:#f8faf9;';
-      const puntiVal=r[0]==='TF'?'—':fp(parseFloat(r[6])||0);
-      gareHtml+=`<div class="gara-row" style="grid-template-columns:80px 1fr 90px 80px;${rowBg}">
-        <div class="tappa-dot"><span style="width:8px;height:8px;border-radius:50%;background:${tc};display:inline-block;flex-shrink:0"></span>${tl}</div>
-        <div style="font-size:0.82rem;color:var(--text)">${posIcon}${r[3]} &middot; Cat. ${r[4]} &middot; <span style="color:var(--muted)">${r[2]}</span></div>
-        <div class="gara-tempo-val" style="padding-right:8px">${r[7]}</div>
-        <div class="gara-punti-val">${puntiVal}</div>
-      </div>`;
+    // Raggruppa per gara
+    const byGaraSeason={};
+    sgare.forEach(g=>{
+      if(!byGaraSeason[g.gara])byGaraSeason[g.gara]=[];
+      byGaraSeason[g.gara].push(g);
     });
-    gareHtml+=`</div>`;
-  }
+    const gareOrdered=Object.entries(byGaraSeason).sort((a,b)=>{
+      const da=distOrd[a[0].split(' ')[0]]??9,db=distOrd[b[0].split(' ')[0]]??9;
+      return da!==db?da-db:a[0].localeCompare(b[0]);
+    });
+
+    // Intestazione stagione
+    gareHtml+=`<div style="margin-top:1rem">
+      <div style="background:var(--blue);color:#fff;padding:8px 16px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.95rem;letter-spacing:0.06em;border-radius:var(--radius) var(--radius) 0 0">
+        Stagione ${smeta?.label||sid}
+      </div>`;
+
+    gareOrdered.forEach(([garaName,results])=>{
+      const sorted=results.sort((a,b)=>a.tappa.localeCompare(b.tappa));
+      const sortedReg=sorted.filter(r=>r.tappa!=='TF');
+      const validTimes=sortedReg.filter(r=>r.punti>0).map(r=>r.tempo);
+      const bestTime=validTimes.length?validTimes.reduce((b,t)=>toSec(t)<toSec(b)?t:b):'';
+      gareHtml+=`<div style="border-top:1px solid #f0f0f0">
+        <div style="background:var(--blue-pale);padding:6px 16px;display:flex;justify-content:space-between;align-items:center">
+          <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.88rem;color:var(--blue);letter-spacing:0.04em;text-transform:uppercase">${garaName}</span>
+          ${bestTime?`<span class="gara-best">Best: ${bestTime}</span>`:''}
+        </div>
+        <div style="display:grid;grid-template-columns:80px 1fr 90px 80px;padding:4px 16px;background:#f4f8f6;border-bottom:1px solid #e8eee9">
+          <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em">Tappa</div>
+          <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em">Pos</div>
+          <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;text-align:right;padding-right:8px">Tempo</div>
+          <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;text-align:right">Punti</div>
+        </div>`;
+      sorted.forEach((r,ri)=>{
+        const tc=tappaColor(r.tappa);
+        const tl=tappaLabel(r.tappa,smeta);
+        const posIcon=r.pos==='1'?'🥇':r.pos==='2'?'🥈':r.pos==='3'?'🥉':r.pos+'°';
+        const rowBg=ri%2===0?'':'background:#f8faf9;';
+        gareHtml+=`<div class="gara-row" style="grid-template-columns:80px 1fr 90px 80px;${rowBg}">
+          <div class="tappa-dot"><span style="width:8px;height:8px;border-radius:50%;background:${tc};display:inline-block;flex-shrink:0"></span>${tl}</div>
+          <div style="font-size:0.82rem;color:var(--text)">${posIcon} ${a.cat}</div>
+          <div class="gara-tempo-val" style="padding-right:8px">${r.tempo}</div>
+          <div class="gara-punti-val">${r.punti>0?fp(r.punti):'—'}</div>
+        </div>`;
+      });
+      gareHtml+=`</div>`;
+    });
+
+    // Staffette di questa stagione
+    const staffSeason=stagione.current
+      ?[...DS,...DSF].filter(r=>r[5].toUpperCase().includes(nome.toUpperCase()))
+      :(()=>{const hsd=seasonData[sid];return hsd?[...(hsd.DS||[]),...(hsd.DSF||[])].filter(r=>r[5].toUpperCase().includes(nome.toUpperCase())):[];})();
+    if(staffSeason.length){
+      gareHtml+=`<div style="border-top:1px solid #f0f0f0">
+        <div style="background:var(--blue-pale);padding:6px 16px;display:flex;justify-content:space-between;align-items:center">
+          <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.88rem;color:var(--blue);letter-spacing:0.04em;text-transform:uppercase">Staffette</span>
+          <span class="gara-best">${staffSeason.length} partecipazion${staffSeason.length===1?'e':'i'}</span>
+        </div>
+        <div style="display:grid;grid-template-columns:80px 1fr 90px 80px;padding:4px 16px;background:#f4f8f6;border-bottom:1px solid #e8eee9">
+          <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em">Tappa</div>
+          <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em">Tipo · Cat</div>
+          <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;text-align:right;padding-right:8px">Tempo</div>
+          <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;text-align:right">Punti</div>
+        </div>`;
+      staffSeason.sort((a,b)=>a[0].localeCompare(b[0])).forEach((r,ri)=>{
+        const tc=tappaColor(r[0]);
+        const tl=tappaLabel(r[0],smeta);
+        const posIcon=r[1]==='1'?'🥇 ':r[1]==='2'?'🥈 ':r[1]==='3'?'🥉 ':'';
+        const rowBg=ri%2===0?'':'background:#f8faf9;';
+        const puntiVal=r[0]==='TF'?'—':fp(parseFloat(r[6])||0);
+        gareHtml+=`<div class="gara-row" style="grid-template-columns:80px 1fr 90px 80px;${rowBg}">
+          <div class="tappa-dot"><span style="width:8px;height:8px;border-radius:50%;background:${tc};display:inline-block;flex-shrink:0"></span>${tl}</div>
+          <div style="font-size:0.82rem;color:var(--text)">${posIcon}${r[3]} &middot; Cat. ${r[4]} &middot; <span style="color:var(--muted)">${r[2]}</span></div>
+          <div class="gara-tempo-val" style="padding-right:8px">${r[7]}</div>
+          <div class="gara-punti-val">${puntiVal}</div>
+        </div>`;
+      });
+      gareHtml+=`</div>`;
+    }
+    gareHtml+=`</div>`; // chiude blocco stagione
+  });
 
   // IRON block
   const ironEntry=iron8||iron4;
