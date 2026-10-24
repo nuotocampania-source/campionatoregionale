@@ -1218,31 +1218,6 @@ function schedaShow(idx){
       gareHtml+=`</div>`;
     });
 
-    // Staffette storiche: solo tappa + staffetta + tempo
-    const staffSeason=(()=>{const hsd=seasonData[sid];return hsd?[...(hsd.DS||[]),...(hsd.DSF||[])].filter(r=>r[5].toUpperCase().includes(nome.toUpperCase())):[];})();
-    if(staffSeason.length){
-      gareHtml+=`<div style="border-top:1px solid #f0f0f0">
-        <div style="background:#f3f4f6;padding:6px 16px">
-          <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.88rem;color:#374151;letter-spacing:0.04em;text-transform:uppercase">Staffette</span>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 90px;padding:4px 16px;background:#f9fafb;border-bottom:1px solid #e8eee9">
-          <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em">Tappa · Tipo</div>
-          <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;text-align:right">Tempo</div>
-        </div>`;
-      staffSeason.sort((a,b)=>a[0].localeCompare(b[0])).forEach((r,ri)=>{
-        const tc=tappaColor(r[0]);
-        const tl=tappaLabel(r[0],smeta);
-        const rowBg=ri%2===0?'':'background:#f8faf9;';
-        gareHtml+=`<div style="display:grid;grid-template-columns:1fr 90px;padding:7px 16px;${rowBg}border-bottom:1px solid #f0f0f0">
-          <div style="display:flex;align-items:center;gap:6px;font-size:0.82rem;color:var(--text)">
-            <span style="width:8px;height:8px;border-radius:50%;background:${tc};display:inline-block;flex-shrink:0"></span>
-            ${tl} · ${r[3]}
-          </div>
-          <div style="text-align:right;font-size:0.82rem;font-weight:600;color:var(--text)">${r[7]}</div>
-        </div>`;
-      });
-      gareHtml+=`</div>`;
-    }
     gareHtml+=`</div>`;
   });
 
