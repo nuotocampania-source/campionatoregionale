@@ -584,7 +584,7 @@ async function fetchJSON(url){
 // CARICAMENTO STAGIONI
 // ============================================================
 async function loadIndex(){
-  const idx=await fetchJSON(BASE_URL+'/data/index.json');
+  const idx=await fetchJSON(BASE_URL+'data/index.json');
   seasons=idx.stagioni||[];
   buildSeasonSwitcher();
   const cur=seasons.find(s=>s.current)||seasons[0];
@@ -615,7 +615,7 @@ async function loadSeasonData(id){
   if(seasonData[id]){applySeasonData(id);return;}
   showLoading();
   try {
-    const base=BASE_URL+'/data/'+id;
+    const base=BASE_URL+'data/'+id;
     // Carica meta + individuale + staffette in parallelo
     const meta=await fetchJSON(base+'/meta.json');
     const [ind, staff]=await Promise.all([
@@ -650,7 +650,7 @@ async function ensureTempiLoaded(id){
   sd._tempiLoaded=true; // flag subito per evitare doppio caricamento
   const tempiAll={};
   await Promise.all(seasons.filter(s=>s.solo_tempi).map(async s=>{
-    const t=await fetchJSON(BASE_URL+'/data/'+s.id+'/tempi_personali.json').catch(()=>({}));
+    const t=await fetchJSON(BASE_URL+'data/'+s.id+'/tempi_personali.json').catch(()=>({}));
     tempiAll[s.id]={label:s.label, data:t};
   }));
   sd.tempiAll=tempiAll;
