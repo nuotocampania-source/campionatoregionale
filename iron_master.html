@@ -997,6 +997,15 @@ function buildAtletiIndex(sd){
     if(!atletiIndex[key])atletiIndex[key]={nome:r[2],gen:r[6],cat:r[7],soc:r[4],anno:r[3],gare:[]};
     atletiIndex[key].gare.push({season:currentSeason,tappa:r[0],pos:r[1],gara:r[5],tempo:r[8],punti:parseFloat(r[9])||0});
   });
+  // Also include athletes from solo_tempi seasons (tempiAll)
+  Object.entries(sd.tempiAll||{}).forEach(([sid,sobj])=>{
+    Object.entries(sobj.data||{}).forEach(([key,gare])=>{
+      if(!atletiIndex[key]){
+        const parts=key.split('|');
+        atletiIndex[key]={nome:parts[0],gen:parts[1],cat:parts[2],soc:'',anno:'',gare:[]};
+      }
+    });
+  });
   // Current season staffette: DS + DSF (not per athlete but by name in componenti)
   // will be used directly in schedaShow
   atletiList=Object.values(atletiIndex).sort((a,b)=>a.nome.localeCompare(b.nome));
