@@ -1,11 +1,1 @@
-{
-  "label": "2025/26",
-  "tappe": [
-    { "id": "T1", "label": "Tappa 1", "data": "14 dic 2025" },
-    { "id": "T2", "label": "Tappa 2", "data": "1 feb 2026" },
-    { "id": "T3", "label": "Tappa 3", "data": "1 mar 2026" },
-    { "id": "T4", "label": "Tappa 4", "data": "12 apr 2026" },
-    { "id": "TF", "label": "Finale",  "data": "14 giu 2026" }
-  ],
-  "has_finale": true
-}
+{"label":"2025/26","tappe":[{"id":"T1","label":"Tappa 1","data":"14 dic 2025"},{"id":"T2","label":"Tappa 2","data":"1 feb 2026"},{"id":"T3","label":"Tappa 3","data":"1 mar 2026"},{"id":"T4","label":"Tappa 4","data":"12 apr 2026"},{"id":"TF","label":"Finale","data":"14 giu 2026"}],"has_finale":true}
