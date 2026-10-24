@@ -1,1 +1,1 @@
-{"stagioni":[{"id":"2026-27","label":"2026/27","current":true},{"id":"2025-26","label":"2025/26","solo_tempi":true},{"id":"2024-25","label":"2024/25","solo_tempi":true}]}
+{"stagioni":[{"id":"2026-27","label":"2026/27","current":true},{"id":"2025-26","label":"2025/26","has_finale":true},{"id":"2024-25","label":"2024/25","solo_tempi":true}]}
