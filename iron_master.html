@@ -1166,20 +1166,16 @@ function schedaShow(idx){
   const tappaColor=(t)=>t==='T1'?'#1a5c2e':t==='T2'?'#c8960a':t==='T3'?'#6b8299':t==='TF'?'#dc2626':'#5b21b6';
   const tappaLabel=(t,m)=>{if(!m)return t;const tp=m.tappe?.find(x=>x.id===t);return tp?tp.label:t;};
 
-  // Raccogli tutte le stagioni con dati da mostrare (corrente + storiche con individuale)
-  const stagioniBlocchi=[
-    ...(seasons.filter(s=>s.current)),
-    ...(seasons.filter(s=>!s.current&&!s.solo_tempi&&seasonData[s.id]))
-  ];
-
+  // Stagioni storiche (non current): solo data tappa + tempo, senza pos/punti
+  const stagioniStoriche=seasons.filter(s=>!s.current&&!s.solo_tempi&&seasonData[s.id]);
   let gareHtml='';
-  stagioniBlocchi.forEach(stagione=>{
+
+  stagioniStoriche.forEach(stagione=>{
     const sid=stagione.id;
-    const smeta=stagione.current?meta:seasonData[sid]?.meta;
+    const smeta=seasonData[sid]?.meta;
     const sgare=a.gare.filter(g=>g.season===sid);
     if(!sgare.length) return;
 
-    // Raggruppa per gara
     const byGaraSeason={};
     sgare.forEach(g=>{
       if(!byGaraSeason[g.gara])byGaraSeason[g.gara]=[];
@@ -1190,76 +1186,145 @@ function schedaShow(idx){
       return da!==db?da-db:a[0].localeCompare(b[0]);
     });
 
-    // Intestazione stagione
     gareHtml+=`<div style="margin-top:1rem">
-      <div style="background:var(--blue);color:#fff;padding:8px 16px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.95rem;letter-spacing:0.06em;border-radius:var(--radius) var(--radius) 0 0">
+      <div style="background:#6b7280;color:#fff;padding:8px 16px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.95rem;letter-spacing:0.06em;border-radius:var(--radius) var(--radius) 0 0">
         Stagione ${smeta?.label||sid}
       </div>`;
 
     gareOrdered.forEach(([garaName,results])=>{
       const sorted=results.sort((a,b)=>a.tappa.localeCompare(b.tappa));
-      const sortedReg=sorted.filter(r=>r.tappa!=='TF');
-      const validTimes=sortedReg.filter(r=>r.punti>0).map(r=>r.tempo);
-      const bestTime=validTimes.length?validTimes.reduce((b,t)=>toSec(t)<toSec(b)?t:b):'';
       gareHtml+=`<div style="border-top:1px solid #f0f0f0">
-        <div style="background:var(--blue-pale);padding:6px 16px;display:flex;justify-content:space-between;align-items:center">
-          <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.88rem;color:var(--blue);letter-spacing:0.04em;text-transform:uppercase">${garaName}</span>
-          ${bestTime?`<span class="gara-best">Best: ${bestTime}</span>`:''}
+        <div style="background:#f3f4f6;padding:6px 16px">
+          <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.88rem;color:#374151;letter-spacing:0.04em;text-transform:uppercase">${garaName}</span>
         </div>
-        <div style="display:grid;grid-template-columns:80px 1fr 90px 80px;padding:4px 16px;background:#f4f8f6;border-bottom:1px solid #e8eee9">
+        <div style="display:grid;grid-template-columns:1fr 90px;padding:4px 16px;background:#f9fafb;border-bottom:1px solid #e8eee9">
           <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em">Tappa</div>
-          <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em">Pos</div>
-          <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;text-align:right;padding-right:8px">Tempo</div>
-          <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;text-align:right">Punti</div>
+          <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;text-align:right">Tempo</div>
         </div>`;
       sorted.forEach((r,ri)=>{
         const tc=tappaColor(r.tappa);
         const tl=tappaLabel(r.tappa,smeta);
-        const posIcon=r.pos==='1'?'🥇':r.pos==='2'?'🥈':r.pos==='3'?'🥉':r.pos+'°';
+        const tappaData=smeta?.tappe?.find(x=>x.id===r.tappa);
+        const dataStr=tappaData?.data?` · ${tappaData.data}`:'';
         const rowBg=ri%2===0?'':'background:#f8faf9;';
-        gareHtml+=`<div class="gara-row" style="grid-template-columns:80px 1fr 90px 80px;${rowBg}">
-          <div class="tappa-dot"><span style="width:8px;height:8px;border-radius:50%;background:${tc};display:inline-block;flex-shrink:0"></span>${tl}</div>
-          <div style="font-size:0.82rem;color:var(--text)">${posIcon} ${a.cat}</div>
-          <div class="gara-tempo-val" style="padding-right:8px">${r.tempo}</div>
-          <div class="gara-punti-val">${r.punti>0?fp(r.punti):'—'}</div>
+        gareHtml+=`<div style="display:grid;grid-template-columns:1fr 90px;padding:7px 16px;${rowBg}border-bottom:1px solid #f0f0f0">
+          <div style="display:flex;align-items:center;gap:6px;font-size:0.82rem;color:var(--text)">
+            <span style="width:8px;height:8px;border-radius:50%;background:${tc};display:inline-block;flex-shrink:0"></span>
+            ${tl}${dataStr}
+          </div>
+          <div style="text-align:right;font-size:0.82rem;font-weight:600;color:var(--text)">${r.tempo}</div>
         </div>`;
       });
       gareHtml+=`</div>`;
     });
 
-    // Staffette di questa stagione
-    const staffSeason=stagione.current
-      ?[...DS,...DSF].filter(r=>r[5].toUpperCase().includes(nome.toUpperCase()))
-      :(()=>{const hsd=seasonData[sid];return hsd?[...(hsd.DS||[]),...(hsd.DSF||[])].filter(r=>r[5].toUpperCase().includes(nome.toUpperCase())):[];})();
+    // Staffette storiche: solo tappa + staffetta + tempo
+    const staffSeason=(()=>{const hsd=seasonData[sid];return hsd?[...(hsd.DS||[]),...(hsd.DSF||[])].filter(r=>r[5].toUpperCase().includes(nome.toUpperCase())):[];})();
     if(staffSeason.length){
       gareHtml+=`<div style="border-top:1px solid #f0f0f0">
-        <div style="background:var(--blue-pale);padding:6px 16px;display:flex;justify-content:space-between;align-items:center">
-          <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.88rem;color:var(--blue);letter-spacing:0.04em;text-transform:uppercase">Staffette</span>
-          <span class="gara-best">${staffSeason.length} partecipazion${staffSeason.length===1?'e':'i'}</span>
+        <div style="background:#f3f4f6;padding:6px 16px">
+          <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.88rem;color:#374151;letter-spacing:0.04em;text-transform:uppercase">Staffette</span>
         </div>
-        <div style="display:grid;grid-template-columns:80px 1fr 90px 80px;padding:4px 16px;background:#f4f8f6;border-bottom:1px solid #e8eee9">
-          <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em">Tappa</div>
-          <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em">Tipo · Cat</div>
-          <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;text-align:right;padding-right:8px">Tempo</div>
-          <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;text-align:right">Punti</div>
+        <div style="display:grid;grid-template-columns:1fr 90px;padding:4px 16px;background:#f9fafb;border-bottom:1px solid #e8eee9">
+          <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em">Tappa · Tipo</div>
+          <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;text-align:right">Tempo</div>
         </div>`;
       staffSeason.sort((a,b)=>a[0].localeCompare(b[0])).forEach((r,ri)=>{
         const tc=tappaColor(r[0]);
         const tl=tappaLabel(r[0],smeta);
-        const posIcon=r[1]==='1'?'🥇 ':r[1]==='2'?'🥈 ':r[1]==='3'?'🥉 ':'';
         const rowBg=ri%2===0?'':'background:#f8faf9;';
-        const puntiVal=r[0]==='TF'?'—':fp(parseFloat(r[6])||0);
-        gareHtml+=`<div class="gara-row" style="grid-template-columns:80px 1fr 90px 80px;${rowBg}">
-          <div class="tappa-dot"><span style="width:8px;height:8px;border-radius:50%;background:${tc};display:inline-block;flex-shrink:0"></span>${tl}</div>
-          <div style="font-size:0.82rem;color:var(--text)">${posIcon}${r[3]} &middot; Cat. ${r[4]} &middot; <span style="color:var(--muted)">${r[2]}</span></div>
-          <div class="gara-tempo-val" style="padding-right:8px">${r[7]}</div>
-          <div class="gara-punti-val">${puntiVal}</div>
+        gareHtml+=`<div style="display:grid;grid-template-columns:1fr 90px;padding:7px 16px;${rowBg}border-bottom:1px solid #f0f0f0">
+          <div style="display:flex;align-items:center;gap:6px;font-size:0.82rem;color:var(--text)">
+            <span style="width:8px;height:8px;border-radius:50%;background:${tc};display:inline-block;flex-shrink:0"></span>
+            ${tl} · ${r[3]}
+          </div>
+          <div style="text-align:right;font-size:0.82rem;font-weight:600;color:var(--text)">${r[7]}</div>
         </div>`;
       });
       gareHtml+=`</div>`;
     }
-    gareHtml+=`</div>`; // chiude blocco stagione
+    gareHtml+=`</div>`;
   });
+
+  // Stagione corrente: dettaglio completo con posizione e punti
+  {
+    const sgare=a.gare.filter(g=>g.season===currentSeason);
+    if(sgare.length){
+      const byGaraCurr={};
+      sgare.forEach(g=>{
+        if(!byGaraCurr[g.gara])byGaraCurr[g.gara]=[];
+        byGaraCurr[g.gara].push(g);
+      });
+      const gareOrdered=Object.entries(byGaraCurr).sort((a,b)=>{
+        const da=distOrd[a[0].split(' ')[0]]??9,db=distOrd[b[0].split(' ')[0]]??9;
+        return da!==db?da-db:a[0].localeCompare(b[0]);
+      });
+      gareHtml+=`<div style="margin-top:1rem">
+        <div style="background:var(--blue);color:#fff;padding:8px 16px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.95rem;letter-spacing:0.06em;border-radius:var(--radius) var(--radius) 0 0">
+          Stagione ${meta?.label||currentSeason} (in corso)
+        </div>`;
+      gareOrdered.forEach(([garaName,results])=>{
+        const sorted=results.sort((a,b)=>a.tappa.localeCompare(b.tappa));
+        const sortedReg=sorted.filter(r=>r.tappa!=='TF');
+        const validTimes=sortedReg.filter(r=>r.punti>0).map(r=>r.tempo);
+        const bestTime=validTimes.length?validTimes.reduce((b,t)=>toSec(t)<toSec(b)?t:b):'';
+        gareHtml+=`<div style="border-top:1px solid #f0f0f0">
+          <div style="background:var(--blue-pale);padding:6px 16px;display:flex;justify-content:space-between;align-items:center">
+            <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.88rem;color:var(--blue);letter-spacing:0.04em;text-transform:uppercase">${garaName}</span>
+            ${bestTime?`<span class="gara-best">Best: ${bestTime}</span>`:''}
+          </div>
+          <div style="display:grid;grid-template-columns:80px 1fr 90px 80px;padding:4px 16px;background:#f4f8f6;border-bottom:1px solid #e8eee9">
+            <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em">Tappa</div>
+            <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em">Pos</div>
+            <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;text-align:right;padding-right:8px">Tempo</div>
+            <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;text-align:right">Punti</div>
+          </div>`;
+        sorted.forEach((r,ri)=>{
+          const tc=tappaColor(r.tappa);
+          const tl=tappaLabel(r.tappa,meta);
+          const posIcon=r.pos==='1'?'🥇':r.pos==='2'?'🥈':r.pos==='3'?'🥉':r.pos+'°';
+          const rowBg=ri%2===0?'':'background:#f8faf9;';
+          gareHtml+=`<div class="gara-row" style="grid-template-columns:80px 1fr 90px 80px;${rowBg}">
+            <div class="tappa-dot"><span style="width:8px;height:8px;border-radius:50%;background:${tc};display:inline-block;flex-shrink:0"></span>${tl}</div>
+            <div style="font-size:0.82rem;color:var(--text)">${posIcon} ${a.cat}</div>
+            <div class="gara-tempo-val" style="padding-right:8px">${r.tempo}</div>
+            <div class="gara-punti-val">${r.punti>0?fp(r.punti):'—'}</div>
+          </div>`;
+        });
+        gareHtml+=`</div>`;
+      });
+      // Staffette stagione corrente
+      const staffAtletaCurr=[...DS,...DSF].filter(r=>r[5].toUpperCase().includes(nome.toUpperCase()));
+      if(staffAtletaCurr.length){
+        gareHtml+=`<div style="border-top:1px solid #f0f0f0">
+          <div style="background:var(--blue-pale);padding:6px 16px;display:flex;justify-content:space-between;align-items:center">
+            <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.88rem;color:var(--blue);letter-spacing:0.04em;text-transform:uppercase">Staffette</span>
+            <span class="gara-best">${staffAtletaCurr.length} partecipazion${staffAtletaCurr.length===1?'e':'i'}</span>
+          </div>
+          <div style="display:grid;grid-template-columns:80px 1fr 90px 80px;padding:4px 16px;background:#f4f8f6;border-bottom:1px solid #e8eee9">
+            <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em">Tappa</div>
+            <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em">Tipo · Cat</div>
+            <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;text-align:right;padding-right:8px">Tempo</div>
+            <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;text-align:right">Punti</div>
+          </div>`;
+        staffAtletaCurr.sort((a,b)=>a[0].localeCompare(b[0])).forEach((r,ri)=>{
+          const tc=tappaColor(r[0]);
+          const tl=tappaLabel(r[0],meta);
+          const posIcon=r[1]==='1'?'🥇 ':r[1]==='2'?'🥈 ':r[1]==='3'?'🥉 ':'';
+          const rowBg=ri%2===0?'':'background:#f8faf9;';
+          const puntiVal=r[0]==='TF'?'—':fp(parseFloat(r[6])||0);
+          gareHtml+=`<div class="gara-row" style="grid-template-columns:80px 1fr 90px 80px;${rowBg}">
+            <div class="tappa-dot"><span style="width:8px;height:8px;border-radius:50%;background:${tc};display:inline-block;flex-shrink:0"></span>${tl}</div>
+            <div style="font-size:0.82rem;color:var(--text)">${posIcon}${r[3]} &middot; Cat. ${r[4]} &middot; <span style="color:var(--muted)">${r[2]}</span></div>
+            <div class="gara-tempo-val" style="padding-right:8px">${r[7]}</div>
+            <div class="gara-punti-val">${puntiVal}</div>
+          </div>`;
+        });
+        gareHtml+=`</div>`;
+      }
+      gareHtml+=`</div>`;
+    }
+  }
 
   // IRON block
   const ironEntry=iron8||iron4;
