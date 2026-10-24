@@ -616,65 +616,26 @@ async function loadSeasonData(id){
   showLoading();
   try {
     const base=BASE_URL+'/data/'+id;
+    // Carica meta + individuale + staffette in parallelo
     const meta=await fetchJSON(base+'/meta.json');
-
-    // FASE 1: carica prima tappa disponibile (non-finale) → UI subito utilizzabile
-    const tappeReg=meta.tappe.filter(tp=>tp.id!=='TF');
-    const primaT=tappeReg[0];
-
-    // Prova file per-tappa (individuale_T1.json ecc.), fallback su individuale.json unico
-    let ind=[], staff=[];
-    const hasSplit = primaT ? await fetch(base+'/individuale_'+primaT.id+'.json',{method:'HEAD'})
-      .then(r=>r.ok).catch(()=>false) : false;
-
-    if(hasSplit){
-      // Carica prima tappa subito
-      [ind, staff] = await Promise.all([
-        fetchJSON(base+'/individuale_'+primaT.id+'.json').catch(()=>[]),
-        fetchJSON(base+'/staffette.json').catch(()=>[]),
-      ]);
-      seasonData[id]={meta, D:ind, DS:staff, DF:[], DSF:[], tempiAll:{}, _finaleLoaded:false, _tempiLoaded:false, _tappeCaricate:new Set([primaT.id])};
-      applySeasonData(id);
-
-      // FASE 2: carica le altre tappe in background
-      const altreTappe=tappeReg.slice(1);
-      (async()=>{
-        for(const tp of altreTappe){
-          const rows=await fetchJSON(base+'/individuale_'+tp.id+'.json').catch(()=>[]);
-          seasonData[id].D=[...seasonData[id].D,...rows];
-          seasonData[id]._tappeCaricate.add(tp.id);
-          if(currentSeason===id){ buildIron(); buildAtletiIndex(seasonData[id]); }
-        }
-        // FASE 3: finale in background
-        if(meta.has_finale){
-          const [fin,finSt]=await Promise.all([
-            fetchJSON(base+'/finale.json').catch(()=>[]),
-            fetchJSON(base+'/finale_staff.json').catch(()=>[]),
-          ]);
-          seasonData[id].DF=fin; seasonData[id].DSF=finSt; seasonData[id]._finaleLoaded=true;
-          if(currentSeason===id) buildAtletiIndex(seasonData[id]);
-        }
-      })();
-
+    const [ind, staff]=await Promise.all([
+      fetchJSON(base+'/individuale.json').catch(()=>[]),
+      fetchJSON(base+'/staffette.json').catch(()=>[]),
+    ]);
+    seasonData[id]={meta, D:ind, DS:staff, DF:[], DSF:[], tempiAll:{}, _finaleLoaded:false, _tempiLoaded:false};
+    applySeasonData(id);
+    // Finale in background dopo che la UI è già attiva
+    if(meta.has_finale){
+      Promise.all([
+        fetchJSON(base+'/finale.json').catch(()=>[]),
+        fetchJSON(base+'/finale_staff.json').catch(()=>[]),
+      ]).then(([fin,finSt])=>{
+        seasonData[id].DF=fin; seasonData[id].DSF=finSt; seasonData[id]._finaleLoaded=true;
+        if(currentSeason===id) buildAtletiIndex(seasonData[id]);
+      });
     } else {
-      // Fallback: file unico
-      [ind, staff] = await Promise.all([
-        fetchJSON(base+'/individuale.json').catch(()=>[]),
-        fetchJSON(base+'/staffette.json').catch(()=>[]),
-      ]);
-      seasonData[id]={meta, D:ind, DS:staff, DF:[], DSF:[], tempiAll:{}, _finaleLoaded:false, _tempiLoaded:false};
-      applySeasonData(id);
-      if(meta.has_finale){
-        Promise.all([
-          fetchJSON(base+'/finale.json').catch(()=>[]),
-          fetchJSON(base+'/finale_staff.json').catch(()=>[]),
-        ]).then(([fin,finSt])=>{
-          seasonData[id].DF=fin; seasonData[id].DSF=finSt; seasonData[id]._finaleLoaded=true;
-          if(currentSeason===id) buildAtletiIndex(seasonData[id]);
-        });
-      }
+      seasonData[id]._finaleLoaded=true;
     }
-
   } catch(e){
     hideLoading();
     document.getElementById('cntA').textContent='Errore caricamento dati: '+e.message;
