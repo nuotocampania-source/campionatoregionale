@@ -1125,7 +1125,7 @@ function schedaShow(idx){
     // Build header
     let thPrev=prevSeasonsList.map(([sid,ts])=>`<th style="text-align:center;padding:7px 10px;font-family:'Barlow Condensed',sans-serif;font-size:0.8rem;letter-spacing:0.05em;color:#fff;font-weight:700;border-bottom:1.5px solid var(--border)">Stagione ${ts.label}</th>`).join('');
     tempiHtml+=`<div class="gara-block">
-      <div class="gara-block-header"><span>Tempi personali</span></div>
+      <div class="gara-block-header"><span>Migliori tempi personali</span></div>
       <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:0.82rem">
         <thead><tr style="background:var(--blue)">
           <th style="text-align:left;padding:7px 12px;font-family:'Barlow Condensed',sans-serif;font-size:0.8rem;letter-spacing:0.05em;color:#fff;font-weight:700;border-bottom:1.5px solid var(--border)">Gara</th>
@@ -1221,7 +1221,7 @@ function schedaShow(idx){
     gareHtml+=`</div>`;
   });
 
-  // Stagione corrente: dettaglio completo con posizione e punti
+  // Stagione corrente: tabella per gara con colonne = tappe
   {
     const sgare=a.gare.filter(g=>g.season===currentSeason);
     if(sgare.length){
@@ -1234,40 +1234,47 @@ function schedaShow(idx){
         const da=distOrd[a[0].split(' ')[0]]??9,db=distOrd[b[0].split(' ')[0]]??9;
         return da!==db?da-db:a[0].localeCompare(b[0]);
       });
+      // Calcola tutte le tappe presenti (ordinate)
+      const tappePresenti=[...new Set(sgare.map(g=>g.tappa))].sort((a,b)=>a.localeCompare(b));
+      const tappeReg=tappePresenti.filter(t=>t!=='TF');
+      const hasTF=tappePresenti.includes('TF');
+      const tappeAll=hasTF?[...tappeReg,'TF']:tappeReg;
+
       gareHtml+=`<div style="margin-top:1rem">
         <div style="background:var(--blue);color:#fff;padding:8px 16px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.95rem;letter-spacing:0.06em;border-radius:var(--radius) var(--radius) 0 0">
-          Stagione ${meta?.label||currentSeason} (in corso)
-        </div>`;
-      gareOrdered.forEach(([garaName,results])=>{
-        const sorted=results.sort((a,b)=>a.tappa.localeCompare(b.tappa));
-        const sortedReg=sorted.filter(r=>r.tappa!=='TF');
-        const validTimes=sortedReg.filter(r=>r.punti>0).map(r=>r.tempo);
-        const bestTime=validTimes.length?validTimes.reduce((b,t)=>toSec(t)<toSec(b)?t:b):'';
-        gareHtml+=`<div style="border-top:1px solid #f0f0f0">
-          <div style="background:var(--blue-pale);padding:6px 16px;display:flex;justify-content:space-between;align-items:center">
-            <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.88rem;color:var(--blue);letter-spacing:0.04em;text-transform:uppercase">${garaName}</span>
-            ${bestTime?`<span class="gara-best">Best: ${bestTime}</span>`:''}
-          </div>
-          <div style="display:grid;grid-template-columns:80px 1fr 90px 80px;padding:4px 16px;background:#f4f8f6;border-bottom:1px solid #e8eee9">
-            <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em">Tappa</div>
-            <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em">Pos</div>
-            <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;text-align:right;padding-right:8px">Tempo</div>
-            <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;text-align:right">Punti</div>
-          </div>`;
-        sorted.forEach((r,ri)=>{
-          const tc=tappaColor(r.tappa);
-          const tl=tappaLabel(r.tappa,meta);
-          const posIcon=r.pos==='1'?'🥇':r.pos==='2'?'🥈':r.pos==='3'?'🥉':r.pos+'°';
-          const rowBg=ri%2===0?'':'background:#f8faf9;';
-          gareHtml+=`<div class="gara-row" style="grid-template-columns:80px 1fr 90px 80px;${rowBg}">
-            <div class="tappa-dot"><span style="width:8px;height:8px;border-radius:50%;background:${tc};display:inline-block;flex-shrink:0"></span>${tl}</div>
-            <div style="font-size:0.82rem;color:var(--text)">${posIcon} ${a.cat}</div>
-            <div class="gara-tempo-val" style="padding-right:8px">${r.tempo}</div>
-            <div class="gara-punti-val">${r.punti>0?fp(r.punti):'—'}</div>
-          </div>`;
+          Tempi personali
+        </div>
+        <div style="overflow-x:auto">
+        <table style="width:100%;border-collapse:collapse;font-size:0.82rem;min-width:${120+tappeAll.length*110}px">
+          <thead>
+            <tr style="background:var(--blue-pale);border-bottom:2px solid var(--blue)">
+              <th style="text-align:left;padding:7px 12px;font-family:'Barlow Condensed',sans-serif;font-size:0.8rem;letter-spacing:0.05em;color:var(--blue);font-weight:700;white-space:nowrap;min-width:120px">Gara</th>
+              ${tappeAll.map(t=>{
+                const tl=tappaLabel(t,meta);
+                const tm=meta?.tappe?.find(x=>x.id===t);
+                return`<th style="text-align:center;padding:7px 10px;font-family:'Barlow Condensed',sans-serif;font-size:0.78rem;letter-spacing:0.05em;color:var(--blue);font-weight:700;white-space:nowrap;min-width:110px">${tl}${tm?.data?`<br><span style="font-size:0.7rem;font-weight:400;color:var(--muted)">${tm.data}</span>`:''}</th>`;
+              }).join('')}
+            </tr>
+          </thead>
+          <tbody>`;
+      gareOrdered.forEach(([garaName,results],ri)=>{
+        const rowBg=ri%2===0?'':'background:#f8faf9;';
+        gareHtml+=`<tr style="${rowBg}border-bottom:1px solid #f0f0f0">
+          <td style="padding:7px 12px;font-weight:600;color:var(--text);white-space:nowrap">${garaName}</td>`;
+        tappeAll.map(t=>{
+          const r=results.find(g=>g.tappa===t);
+          const isTF=t==='TF';
+          if(!r){
+            gareHtml+=`<td style="text-align:center;padding:7px 10px;color:var(--muted)">—</td>`;
+          } else {
+            const posIcon=r.pos==='1'?'🥇 ':r.pos==='2'?'🥈 ':r.pos==='3'?'🥉 ':r.pos?r.pos+'° ':'';
+            const puntiStr=(!isTF&&r.punti>0)?`<br><span style="font-size:0.72rem;color:var(--muted)">${fp(r.punti)} pt</span>`:'';
+            gareHtml+=`<td style="text-align:center;padding:7px 10px;vertical-align:middle"><span style="font-weight:600;color:var(--text)">${posIcon}${r.tempo}</span>${puntiStr}</td>`;
+          }
         });
-        gareHtml+=`</div>`;
+        gareHtml+=`</tr>`;
       });
+      gareHtml+=`</tbody></table></div>`;
       // Staffette stagione corrente
       const staffAtletaCurr=[...DS,...DSF].filter(r=>r[5].toUpperCase().includes(nome.toUpperCase()));
       if(staffAtletaCurr.length){
