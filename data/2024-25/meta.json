@@ -1,1 +1,1 @@
-{"label":"2024/25","tappe":[],"has_finale":false,"solo_tempi":true}
+{"label":"2024/25","tappe":[{"id":"T1","label":"Tappa 1","data":"24 nov 2024"},{"id":"T2","label":"Tappa 2","data":"8 dic 2024"},{"id":"T3","label":"Tappa 3","data":"12 gen 2025"},{"id":"T4","label":"Tappa 4","data":"9 mar 2025"},{"id":"T5","label":"Tappa 5","data":"23 mar 2025"},{"id":"T6","label":"Tappa 6","data":"27 apr 2025"},{"id":"TF","label":"Finale","data":"giu 2025"}],"has_finale":true}
