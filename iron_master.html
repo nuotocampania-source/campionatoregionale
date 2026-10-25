@@ -358,7 +358,7 @@ thead th.sort-desc::after { content: '▼'; opacity: 1; }
 .tp-si.both::after { content:'↕'; }
 .tp-bars { display:flex; flex-direction:column; gap:10px; }
 .tp-bar-row { display:flex; align-items:center; gap:10px; }
-.tp-bar-meta { display:flex; align-items:center; gap:8px; flex-shrink:0; width:210px; }
+.tp-bar-meta { display:grid; grid-template-columns:130px 44px 32px; align-items:center; gap:6px; flex-shrink:0; }
 .tp-bar-date { font-size:0.82rem; font-weight:600; color:var(--text); white-space:nowrap; }
 .tp-stag-pill { height:20px; border-radius:10px; flex-shrink:0; display:inline-flex; align-items:center; justify-content:center; font-family:'Barlow Condensed',sans-serif; font-size:0.68rem; font-weight:700; letter-spacing:.02em; padding:0 7px; border:1.5px solid var(--border); color:var(--muted); background:var(--bg); white-space:nowrap; }
 .tp-tappa-pill { width:28px; height:28px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-family:'Barlow Condensed',sans-serif; font-size:0.68rem; font-weight:700; border:2px solid var(--blue); color:var(--blue); background:#fff; }
@@ -1312,8 +1312,9 @@ async function schedaShow(idx){
         const stagShort=(c.stagLabel||'').replace(/^20/,'');
         // Abbrevia tappa: T1, T2, TF→Fin
         const tappaShort=c.tappaId==='TF'?'Fin':c.tappaId;
-        // Data leggibile: già in c.data (es. "15 novembre 2024"), altrimenti stagione+tappa
-        const dateLabel=c.data||`${stagShort} ${c.colLabel}`;
+        // Data leggibile: solo mese e anno (es. "novembre 2024"), altrimenti stagione+tappa
+        const rawDate=c.data||'';
+        const dateLabel=rawDate?rawDate.replace(/^\d+\s+/,''):`${stagShort} ${c.colLabel}`;
         rows.push({dateLabel,stagShort,tappaShort,tempo:v.tempo,sortIdx:ci,isBest:false});
       });
       // Calcola miglior tempo
