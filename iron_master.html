@@ -664,21 +664,27 @@ async function _doEnsureTempiLoaded(id){
   }));
   sd.tempiAll=tempiAll;
   // Stagioni storiche con individuale completo (non current, non solo_tempi): carica tutto incluso finale
-  await Promise.all(seasons.filter(s=>!s.current&&!s.solo_tempi).map(async s=>{
+  const storiche=seasons.filter(s=>!s.current&&!s.solo_tempi);
+  console.log('[tempi] stagioni storiche da caricare:',storiche.map(s=>s.id));
+  await Promise.all(storiche.map(async s=>{
     const base=BASE_URL+'data/'+s.id;
-    if(seasonData[s.id]&&seasonData[s.id]._finaleLoaded) return; // già completa in cache
+    const cached=seasonData[s.id];
+    console.log('[tempi]',s.id,'cached=',!!cached,'_finaleLoaded=',cached?._finaleLoaded);
+    if(cached&&cached._finaleLoaded){
+      console.log('[tempi]',s.id,'→ già completa, skip');
+      return;
+    }
     let meta, ind, staff;
-    if(seasonData[s.id]){
-      // parzialmente in cache (senza finale) — aspetta e carica il finale
-      meta=seasonData[s.id].meta;
-      ind=seasonData[s.id].D||[];
-      staff=seasonData[s.id].DS||[];
+    if(cached){
+      meta=cached.meta; ind=cached.D||[]; staff=cached.DS||[];
+      console.log('[tempi]',s.id,'→ parziale, D=',ind.length,'carico finale...');
     } else {
       meta=await fetchJSON(base+'/meta.json').catch(()=>({}));
       [ind,staff]=await Promise.all([
         fetchJSON(base+'/individuale.json').catch(()=>[]),
         fetchJSON(base+'/staffette.json').catch(()=>[]),
       ]);
+      console.log('[tempi]',s.id,'→ caricato da zero, D=',ind.length,'has_finale=',meta.has_finale);
       seasonData[s.id]={meta, D:ind, DS:staff, DF:[], DSF:[], tempiAll:{}, _finaleLoaded:false, _tempiLoaded:true};
     }
     if(meta.has_finale&&!seasonData[s.id]._finaleLoaded){
@@ -687,10 +693,12 @@ async function _doEnsureTempiLoaded(id){
         fetchJSON(base+'/finale_staff.json').catch(()=>[]),
       ]);
       seasonData[s.id].DF=fin; seasonData[s.id].DSF=finSt; seasonData[s.id]._finaleLoaded=true;
+      console.log('[tempi]',s.id,'finale caricato: DF=',fin.length);
     } else if(!meta.has_finale){
       seasonData[s.id]._finaleLoaded=true;
     }
   }));
+  console.log('[tempi] fine caricamento. buildAtletiIndex chiamato=',currentSeason===id);
   if(currentSeason===id) buildAtletiIndex(sd);
 }
 
