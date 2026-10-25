@@ -1200,6 +1200,7 @@ async function schedaShow(idx){
   console.log('[scheda] seasonData stato:',Object.fromEntries(seasons.map(s=>[s.id,seasonData[s.id]?`D=${seasonData[s.id].D?.length} DF=${seasonData[s.id].DF?.length} finLoaded=${seasonData[s.id]._finaleLoaded}`:'MANCANTE'])));
   if(!a)return;
   const nome=a.nome, gen=a.gen, anno=a.anno||'', cat=a.cat;
+  const aid=_nome.replace(/\s+/g,'_')+'_'+_gen+'_'+(_anno||'x'); // ID univoco per cache ordinamento
   console.log('[scheda] gare per stagione=',a.gare.reduce((acc,g)=>{acc[g.season]=(acc[g.season]||0)+1;return acc},{}));
 
   const sd=seasonData[currentSeason];
@@ -1265,52 +1266,6 @@ async function schedaShow(idx){
     ...Object.entries(tempiAll).map(([sid,ts])=>({sid,label:ts.label,type:'tempi'}))
   ];
   const curLabel=meta?.label||currentSeason;
-
-  let tempiHtml='';
-  if(gareAtleta.length){
-    let thPrev=prevSeasonsList.map(({label})=>`<th style="text-align:center;padding:7px 10px;font-family:'Barlow Condensed',sans-serif;font-size:0.8rem;letter-spacing:0.05em;color:#fff;font-weight:700;border-bottom:1.5px solid var(--border)">Stagione ${label}</th>`).join('');
-    tempiHtml+=`<div class="gara-block">
-      <div class="gara-block-header"><span>Migliori tempi personali</span></div>
-      <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:0.82rem">
-        <thead><tr style="background:var(--blue)">
-          <th style="text-align:left;padding:7px 12px;font-family:'Barlow Condensed',sans-serif;font-size:0.8rem;letter-spacing:0.05em;color:#fff;font-weight:700;border-bottom:1.5px solid var(--border)">Gara</th>
-          <th style="text-align:center;padding:7px 10px;font-family:'Barlow Condensed',sans-serif;font-size:0.8rem;letter-spacing:0.05em;color:#fff;font-weight:700;border-bottom:1.5px solid var(--border)">Migliore assoluto</th>
-          <th style="text-align:center;padding:7px 10px;font-family:'Barlow Condensed',sans-serif;font-size:0.8rem;letter-spacing:0.05em;color:#fff;font-weight:700;border-bottom:1.5px solid var(--border)">Stagione ${curLabel}</th>
-          ${thPrev}
-        </tr></thead><tbody>`;
-    gareAtleta.forEach((garaName,ri)=>{
-      const results=byGara[garaName]||[];
-      const resultsReg=results.filter(r=>r.tappa!=='TF');
-      const bestCurr=resultsReg.length?resultsReg.reduce((b,r)=>toSec(r.tempo)<toSec(b.tempo)?r:b,resultsReg[0]):null;
-      const currTime=bestCurr?bestCurr.tempo:'—';
-      // Previous seasons
-      const prevTimes=prevSeasonsList.map(({sid,type})=>{
-        if(type==='full'){
-          return byGaraStorico[garaName]?.[sid]||'—';
-        } else {
-          const ts=tempiAll[sid];
-          const pd=ts?.data[key]||ts?.data[nome+'|'+gen+'|'+cat]||{};
-          return pd[garaName]||'—';
-        }
-      });
-      // Best absolute
-      const allTimes=[currTime,...prevTimes].filter(t=>t!=='—');
-      let absTime=allTimes.length?allTimes.reduce((b,t)=>toSec(t)<toSec(b)?t:b):'—';
-      const rowBg=ri%2===0?'':'background:#f8faf9;';
-      const tdPrev=prevTimes.map(t=>{
-        const isBest=(t!=='—'&&t===absTime&&absTime!==currTime);
-        return`<td style="text-align:center;padding:7px 10px;color:var(--muted);${isBest?'font-weight:700;color:var(--blue);':''}">${t}</td>`;
-      }).join('');
-      const curBest=(currTime!=='—'&&currTime===absTime);
-      tempiHtml+=`<tr style="${rowBg}border-bottom:1px solid #f0f0f0">
-        <td style="padding:7px 12px;font-weight:600;color:var(--text)">${garaName}</td>
-        <td style="text-align:center;padding:7px 10px;font-weight:700;color:var(--blue)">${absTime}</td>
-        <td style="text-align:center;padding:7px 10px;${curBest?'font-weight:700;color:var(--blue)':''}">${currTime}</td>
-        ${tdPrev}
-      </tr>`;
-    });
-    tempiHtml+=`</tbody></table></div></div>`;
-  }
 
   // --- TEMPI PERSONALI UNIFICATI: tutte le stagioni, tutte le tappe ---
   const tappaColor=(t)=>t==='T1'?'#1a5c2e':t==='T2'?'#c8960a':t==='T3'?'#6b8299':t==='TF'?'#dc2626':'#5b21b6';
@@ -1513,10 +1468,9 @@ async function schedaShow(idx){
     <div class="scheda-avatar">${initials}</div>
     <div style="flex:1">
       <div class="scheda-nome">${nome}</div>
-      <div class="scheda-meta">${a.soc} · ${a.cat} · ${a.gen==='F'?'Femmine':'Maschi'}${a.anno?' · n. '+a.anno:''}</div>
+      <div class="scheda-meta">${a.cat} · ${a.soc}${a.anno?' · Nato '+a.anno:''}</div>
     </div>
   </div>
-  ${tempiHtml}
   <div class="gara-block">
     <div class="gara-block-header" style="flex-direction:column;align-items:flex-start;gap:8px">
       <span>Trofeo Iron Master UISP Campania ${curLabel}</span>
