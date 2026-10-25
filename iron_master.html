@@ -380,7 +380,7 @@ thead th.sort-desc::after { content: '▼'; opacity: 1; }
     <div class="ticker">
       <div class="ticker-label">📢 News</div>
       <div class="ticker-track">
-        <span class="ticker-text">La finale del Trofeo IRON Master UISP 2025/2026 si è svolta domenica 14 giugno 2026 &nbsp;&nbsp;&nbsp;⭐&nbsp;&nbsp;&nbsp; Consulta la tua Scheda Atleta per confrontare i risultati delle diverse stagioni. &nbsp;&nbsp;&nbsp;⭐&nbsp;&nbsp;&nbsp; La finale del Trofeo IRON Master UISP 2025/2026 si è svolta domenica 14 giugno 2026 &nbsp;&nbsp;&nbsp;⭐&nbsp;&nbsp;&nbsp; Consulta la tua Scheda Atleta per confrontare i risultati delle diverse stagioni.</span>
+        <span class="ticker-text">Consulta la tua Scheda Atleta per confrontare i risultati delle diverse stagioni. &nbsp;&nbsp;&nbsp;⭐&nbsp;&nbsp;&nbsp; Consulta la tua Scheda Atleta per confrontare i risultati delle diverse stagioni.</span>
       </div>
     </div>
   </div>
@@ -593,9 +593,9 @@ async function loadIndex(){
 
 function buildSeasonSwitcher(){
   const sw=document.getElementById('seasonSwitcher');
-  if(seasons.length<=1){sw.style.display='none';return;}
+  if(seasons.filter(s=>s.current).length<=1){sw.style.display='none';return;}
   let html=`<span class="season-switcher-label">Stagione:</span>`;
-  seasons.filter(s=>!s.solo_tempi).forEach(s=>{
+  seasons.filter(s=>s.current).forEach(s=>{
     html+=`<button class="season-btn${s.current?' on':''}" onclick="switchSeason('${s.id}')" id="sbtn-${s.id}">${s.label}</button>`;
   });
   sw.innerHTML=html;
