@@ -1083,7 +1083,8 @@ async function schedaShow(idx){
 
   const key=_nome+'|'+_gen+'|'+_anno;
   const a=atletiIndex[key];
-  console.log('[scheda] key=',key,'found=',!!a,'gare=',a?.gare?.length,'seasons=',{...Object.fromEntries(seasons.map(s=>[s.id,!!seasonData[s.id]&&seasonData[s.id]._finaleLoaded]))});
+  console.log('[scheda] key=',key,'found=',!!a,'gare=',a?.gare?.length);
+  console.log('[scheda] seasonData stato:',Object.fromEntries(seasons.map(s=>[s.id,seasonData[s.id]?`D=${seasonData[s.id].D?.length} DF=${seasonData[s.id].DF?.length} finLoaded=${seasonData[s.id]._finaleLoaded}`:'MANCANTE'])));
   if(!a)return;
   const nome=a.nome, gen=a.gen, anno=a.anno||'', cat=a.cat;
   console.log('[scheda] gare per stagione=',a.gare.reduce((acc,g)=>{acc[g.season]=(acc[g.season]||0)+1;return acc},{}));
