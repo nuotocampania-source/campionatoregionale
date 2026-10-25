@@ -1469,9 +1469,10 @@ async function schedaShow(idx){
     <div class="scheda-avatar">${initials}</div>
     <div style="flex:1">
       <div class="scheda-nome">${nome}</div>
-      <div class="scheda-meta">${a.cat} · ${a.soc}${a.anno?' · Nato '+a.anno:''}</div>
+      <div class="scheda-meta">${a.cat} · ${a.soc}</div>
     </div>
   </div>
+  ${gareHtml}
   <div class="gara-block">
     <div class="gara-block-header" style="flex-direction:column;align-items:flex-start;gap:8px">
       <span>Trofeo Iron Master UISP Campania ${curLabel}</span>
@@ -1486,8 +1487,7 @@ async function schedaShow(idx){
         ${allPunti.length?`<span class="stagione-pill">Media punteggio ${fp(allPunti.reduce((s,p)=>s+p,0)/allPunti.length)}</span>`:''}
       </div>
     </div>
-  </div>
-  ${gareHtml}`;
+  </div>`;
 
   document.getElementById('schedaContent').innerHTML=html;
 }
