@@ -1185,28 +1185,22 @@ async function schedaShow(idx){
   const tappaColor=(t)=>t==='T1'?'#1a5c2e':t==='T2'?'#c8960a':t==='T3'?'#6b8299':t==='TF'?'#dc2626':'#5b21b6';
   const tappaLabel=(t,m)=>{if(!m)return t;const tp=m.tappe?.find(x=>x.id===t);return tp?tp.label:t;};
 
-  // Costruisci lista ordinata di tutte le tappe di tutte le stagioni (escl. TF)
-  // Formato: [{sid, tappaId, label, data}] in ordine cronologico stagione→tappa
-  const tutteLeStag=[
-    ...seasons.filter(s=>!s.current&&!s.solo_tempi&&seasonData[s.id]),
-    ...seasons.filter(s=>s.current&&seasonData[s.id])
-  ];
+  // Costruisci lista ordinata di tutte le tappe in ordine CRONOLOGICO (dalla più vecchia alla più recente)
+  // seasons è ordinato newest-first in index.json, quindi invertiamo
+  const tutteLeStag=[...seasons].reverse().filter(s=>!s.solo_tempi&&seasonData[s.id]);
 
-  const colonneAll=[]; // {sid, tappaId, colLabel, data, isCurrent, isTF}
+  const colonneAll=[]; // {sid, tappaId, colLabel, data, isCurrent, isTF, stagLabel}
   tutteLeStag.forEach(s=>{
     const smeta=seasonData[s.id]?.meta;
-    const tappe=smeta?.tappe||[];
-    // tappe regolari
-    tappe.filter(t=>t.id!=='TF').forEach(t=>{
+    const tappe=(smeta?.tappe||[]).filter(t=>t.id!=='TF');
+    tappe.forEach(t=>{
       colonneAll.push({sid:s.id,tappaId:t.id,colLabel:t.label,data:t.data||'',stagLabel:smeta?.label||s.id,isCurrent:!!s.current,isTF:false});
     });
-  });
-  // Finale: una colonna per stagione che ha TF (in fondo a quella stagione)
-  tutteLeStag.forEach(s=>{
-    const smeta=seasonData[s.id]?.meta;
-    if(!smeta?.has_finale) return;
-    const tf=smeta?.tappe?.find(t=>t.id==='TF');
-    colonneAll.push({sid:s.id,tappaId:'TF',colLabel:tf?.label||'Finale',data:tf?.data||'',stagLabel:smeta?.label||s.id,isCurrent:!!s.current,isTF:true});
+    // Finale in fondo alla stagione
+    if(smeta?.has_finale){
+      const tf=smeta?.tappe?.find(t=>t.id==='TF');
+      if(tf) colonneAll.push({sid:s.id,tappaId:'TF',colLabel:'Finale',data:tf.data||'',stagLabel:smeta?.label||s.id,isCurrent:!!s.current,isTF:true});
+    }
   });
 
   // Raccoglie tutte le gare dell'atleta (storiche + corrente) indicizzate per (gara,sid,tappaId)
@@ -1241,8 +1235,9 @@ async function schedaShow(idx){
             <th style="text-align:left;padding:6px 12px;font-size:0.72rem;font-weight:700;color:var(--muted);white-space:nowrap;min-width:140px">Gara</th>
             ${colonneAll.map((c,ci)=>{
               const isFirstInStag=ci===0||colonneAll[ci-1].sid!==c.sid;
-              const stagLabel=isFirstInStag?`<div style="font-size:0.65rem;font-weight:400;color:${c.isCurrent?'var(--blue)':'var(--muted)'};margin-bottom:1px">${c.stagLabel}</div>`:'';
-              return`<th style="text-align:center;padding:5px 8px;font-family:'Barlow Condensed',sans-serif;font-size:0.75rem;font-weight:700;white-space:nowrap;color:${c.isTF?'#dc2626':c.isCurrent?'var(--blue)':'#374151'};${isFirstInStag?'border-left:2px solid '+(c.isCurrent?'#bfdbfe':'#e5e7eb')+';':''}">${stagLabel}${c.colLabel}${c.data?`<div style="font-weight:400;font-size:0.65rem;color:var(--muted)">${c.data}</div>`:''}</th>`;
+              const stagLabel=isFirstInStag?`<div style="font-size:0.7rem;font-weight:700;color:${c.isCurrent?'var(--blue)':'#6b7280'};margin-bottom:2px;letter-spacing:0.03em">${c.stagLabel}</div>`:'<div style="margin-bottom:2px;height:1rem"></div>';
+              const colColor=c.isTF?'#dc2626':c.isCurrent?'var(--blue)':'#1f2937';
+              return`<th style="text-align:center;padding:6px 10px;font-family:'Barlow Condensed',sans-serif;font-size:0.82rem;font-weight:700;white-space:nowrap;color:${colColor};${isFirstInStag?'border-left:2px solid '+(c.isCurrent?'#bfdbfe':'#d1d5db')+';':''}">${stagLabel}${c.colLabel}<div style="font-weight:500;font-size:0.72rem;color:#6b7280;margin-top:1px">${c.data}</div></th>`;
             }).join('')}
           </tr>
         </thead>
