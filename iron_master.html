@@ -1011,29 +1011,23 @@ function fi(){
 // ============================================================
 function buildAtletiIndex(sd){
   atletiIndex={};
-  // Current season: D + DF
+  // Chiave identificativa: nome|gen|anno (anno di nascita — invariante tra stagioni)
+  const mkKey=(nome,gen,anno)=>nome+'|'+gen+'|'+(anno||'');
+  // Current season: D + DF (più recente → sovrascrive cat/soc)
   [...(sd.D||[]),...(sd.DF||[])].forEach(r=>{
-    const key=r[2]+'|'+r[6]+'|'+r[7];
+    const key=mkKey(r[2],r[6],r[3]);
     if(!atletiIndex[key])atletiIndex[key]={nome:r[2],gen:r[6],cat:r[7],soc:r[4],anno:r[3],gare:[]};
-    atletiIndex[key].gare.push({season:currentSeason,tappa:r[0],pos:r[1],gara:r[5],tempo:r[8],punti:parseFloat(r[9])||0});
+    else{atletiIndex[key].cat=r[7];atletiIndex[key].soc=r[4];} // aggiorna cat con stagione corrente
+    atletiIndex[key].gare.push({season:currentSeason,tappa:r[0],pos:r[1],gara:r[5],cat:r[7],tempo:r[8],punti:parseFloat(r[9])||0});
   });
   // Stagioni storiche con individuale completo
   seasons.filter(s=>!s.current&&!s.solo_tempi).forEach(s=>{
     const hsd=seasonData[s.id];
     if(!hsd) return;
     [...(hsd.D||[]),...(hsd.DF||[])].forEach(r=>{
-      const key=r[2]+'|'+r[6]+'|'+r[7];
+      const key=mkKey(r[2],r[6],r[3]);
       if(!atletiIndex[key])atletiIndex[key]={nome:r[2],gen:r[6],cat:r[7],soc:r[4],anno:r[3],gare:[]};
-      atletiIndex[key].gare.push({season:s.id,tappa:r[0],pos:r[1],gara:r[5],tempo:r[8],punti:parseFloat(r[9])||0});
-    });
-  });
-  // Stagioni solo_tempi: aggiungi atleti all'indice (senza gare dettagliate)
-  Object.entries(sd.tempiAll||{}).forEach(([sid,sobj])=>{
-    Object.entries(sobj.data||{}).forEach(([key])=>{
-      if(!atletiIndex[key]){
-        const parts=key.split('|');
-        atletiIndex[key]={nome:parts[0],gen:parts[1],cat:parts[2],soc:'',anno:'',gare:[]};
-      }
+      atletiIndex[key].gare.push({season:s.id,tappa:r[0],pos:r[1],gara:r[5],cat:r[7],tempo:r[8],punti:parseFloat(r[9])||0});
     });
   });
   atletiList=Object.values(atletiIndex).sort((a,b)=>a.nome.localeCompare(b.nome));
@@ -1069,10 +1063,11 @@ async function schedaShow(idx){
   buildAtletiIndex(seasonData[currentSeason]);
   const nome=atletaRef.nome;
   const gen=atletaRef.gen;
-  const cat=atletaRef.cat;
+  const anno=atletaRef.anno;
+  const cat=atletaRef.cat; // categoria stagione più recente
   document.getElementById('schedaInput').value=nome;
 
-  const key=nome+'|'+gen+'|'+cat;
+  const key=nome+'|'+gen+'|'+(anno||'');
   const a=atletiIndex[key];
   if(!a)return;
 
@@ -1121,7 +1116,7 @@ async function schedaShow(idx){
   storicoFullSeasons.forEach(s=>{
     const hsd=seasonData[s.id];
     if(!hsd) return;
-    [...(hsd.D||[]),...(hsd.DF||[])].filter(r=>r[2]===nome&&r[6]===gen&&r[7]===cat).forEach(r=>{
+    [...(hsd.D||[]),...(hsd.DF||[])].filter(r=>r[2]===nome&&r[6]===gen&&r[3]===anno).forEach(r=>{
       if(!byGaraStorico[r[5]])byGaraStorico[r[5]]={};
       const prev=byGaraStorico[r[5]][s.id];
       if(!prev||toSec(r[8])<toSec(prev)) byGaraStorico[r[5]][s.id]=r[8];
@@ -1130,7 +1125,7 @@ async function schedaShow(idx){
 
   // Collect all gara names: current + storiche + solo_tempi
   const allGareKeys=new Set([...Object.keys(byGara),...Object.keys(byGaraStorico)]);
-  Object.values(tempiAll).forEach(ts=>Object.keys(ts.data[key]||ts.data[nome+'|'+gen+'|'+cat]||{}).forEach(k=>allGareKeys.add(k)));
+  Object.values(tempiAll).forEach(ts=>Object.keys(ts.data[key]||{}).forEach(k=>allGareKeys.add(k)));
   const gareAtleta=[...allGareKeys].sort((a,b)=>{const da=distOrd[a.split(' ')[0]]??9,db=distOrd[b.split(' ')[0]]??9;return da!==db?da-db:a.localeCompare(b);});
 
   // Season labels: prima le storiche full (in ordine), poi le solo_tempi
@@ -1340,7 +1335,7 @@ async function schedaShow(idx){
     <div class="scheda-avatar">${initials}</div>
     <div style="flex:1">
       <div class="scheda-nome">${nome}</div>
-      <div class="scheda-meta">${a.soc} · ${a.cat} · ${a.gen==='F'?'Femmine':'Maschi'}</div>
+      <div class="scheda-meta">${a.soc} · ${a.cat} · ${a.gen==='F'?'Femmine':'Maschi'}${a.anno?' · n. '+a.anno:''}</div>
     </div>
   </div>
   ${tempiHtml}
