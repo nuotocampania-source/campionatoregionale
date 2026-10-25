@@ -644,14 +644,20 @@ async function loadSeasonData(id){
 }
 
 // Carica dati storici solo quando l'utente apre la Scheda Atleta
+function _storiheCaricate(){
+  // Tutte le stagioni non-current e non-solo_tempi devono essere in seasonData con _finaleLoaded
+  return seasons.filter(s=>!s.current&&!s.solo_tempi).every(s=>seasonData[s.id]&&seasonData[s.id]._finaleLoaded);
+}
 async function ensureTempiLoaded(id){
   const sd=seasonData[id];
   if(!sd) return;
   // Se c'è già una Promise in corso, la aspettiamo (evita race condition)
   if(sd._tempiPromise) return sd._tempiPromise;
-  if(sd._tempiLoaded) return;
+  // Già tutto caricato?
+  if(sd._tempiLoaded&&_storiheCaricate()) return;
   sd._tempiPromise=_doEnsureTempiLoaded(id);
   await sd._tempiPromise;
+  sd._tempiPromise=null; // reset così può essere ri-chiamata se necessario
 }
 async function _doEnsureTempiLoaded(id){
   const sd=seasonData[id];
