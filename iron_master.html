@@ -1065,19 +1065,20 @@ async function schedaShow(idx){
   document.getElementById('schedaDrop').style.display='none';
   const atletaRef=atletiList[idx];
   if(!atletaRef)return;
+  // Salva riferimento atleta PRIMA di ricaricare l'indice
+  const _nome=atletaRef.nome, _gen=atletaRef.gen, _anno=atletaRef.anno||'';
+  document.getElementById('schedaInput').value=_nome;
   // Assicura che tutti i dati storici siano caricati prima di mostrare la scheda
   await ensureTempiLoaded(currentSeason);
-  // Ricostruisci l'indice con i dati storici ora disponibili
+  // Ricostruisci l'indice con i dati storici ora disponibili (atletiList cambia, ma usiamo nome/gen/anno)
   buildAtletiIndex(seasonData[currentSeason]);
-  const nome=atletaRef.nome;
-  const gen=atletaRef.gen;
-  const anno=atletaRef.anno;
-  const cat=atletaRef.cat; // categoria stagione più recente
-  document.getElementById('schedaInput').value=nome;
 
-  const key=nome+'|'+gen+'|'+(anno||'');
+  const key=_nome+'|'+_gen+'|'+_anno;
   const a=atletiIndex[key];
+  console.log('[scheda] key=',key,'found=',!!a,'gare=',a?.gare?.length,'seasons=',{...Object.fromEntries(seasons.map(s=>[s.id,!!seasonData[s.id]&&seasonData[s.id]._finaleLoaded]))});
   if(!a)return;
+  const nome=a.nome, gen=a.gen, anno=a.anno||'', cat=a.cat;
+  console.log('[scheda] gare per stagione=',a.gare.reduce((acc,g)=>{acc[g.season]=(acc[g.season]||0)+1;return acc},{}));
 
   const sd=seasonData[currentSeason];
   const meta=sd?.meta;
