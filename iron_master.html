@@ -337,6 +337,39 @@ thead th.sort-desc::after { content: '▼'; opacity: 1; }
 .stagione-bar-body { background: #fff; padding: 10px 14px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .stagione-pill { background: #fff; border: 1px solid var(--border); border-radius: 20px; padding: 4px 12px; font-size: 0.78rem; font-weight: 600; color: var(--blue); font-family: 'Barlow Condensed', sans-serif; letter-spacing: 0.03em; white-space: nowrap; display: inline-flex; align-items: center; height: 26px; box-sizing: border-box; }
 
+/* TEMPI PERSONALI — pill + barre */
+.tp-wrap { margin-top:1rem; border:1.5px solid var(--border); border-radius:var(--radius); overflow:hidden; }
+.tp-header { background:var(--blue); color:#fff; padding:10px 16px; font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:0.95rem; letter-spacing:0.06em; }
+.tp-nav { background:#fff; border-bottom:1px solid var(--border); padding:10px 16px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.tp-nav-label { font-size:0.7rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.07em; margin-right:2px; white-space:nowrap; }
+.tp-pill { font-family:'Barlow Condensed',sans-serif; font-size:0.88rem; font-weight:700; padding:4px 14px; border-radius:20px; border:1.5px solid var(--border); background:var(--bg); color:var(--muted); cursor:pointer; transition:all .15s; }
+.tp-pill.on { background:var(--blue); color:#fff; border-color:var(--blue); }
+.tp-detail { background:#fff; padding:14px 16px; display:none; }
+.tp-detail.on { display:block; }
+.tp-col-heads { display:flex; align-items:center; gap:8px; margin-bottom:10px; padding-bottom:8px; border-bottom:1px solid var(--border); }
+.tp-col-head { font-size:0.7rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.07em; display:flex; align-items:center; gap:3px; cursor:pointer; user-select:none; transition:color .12s; }
+.tp-col-head:hover { color:var(--blue-light); }
+.tp-col-head.active { color:var(--blue); }
+.tp-col-head-data { flex:1; }
+.tp-col-head-tempo { text-align:right; min-width:72px; }
+.tp-si { font-size:0.65rem; opacity:.5; }
+.tp-si.asc::after  { content:'↑'; }
+.tp-si.desc::after { content:'↓'; }
+.tp-si.both::after { content:'↕'; }
+.tp-bars { display:flex; flex-direction:column; gap:10px; }
+.tp-bar-row { display:flex; align-items:center; gap:10px; }
+.tp-bar-meta { display:flex; align-items:center; gap:8px; flex-shrink:0; width:210px; }
+.tp-bar-date { font-size:0.82rem; font-weight:600; color:var(--text); white-space:nowrap; }
+.tp-stag-pill { height:20px; border-radius:10px; flex-shrink:0; display:inline-flex; align-items:center; justify-content:center; font-family:'Barlow Condensed',sans-serif; font-size:0.68rem; font-weight:700; letter-spacing:.02em; padding:0 7px; border:1.5px solid var(--border); color:var(--muted); background:var(--bg); white-space:nowrap; }
+.tp-tappa-pill { width:28px; height:28px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-family:'Barlow Condensed',sans-serif; font-size:0.68rem; font-weight:700; border:2px solid var(--blue); color:var(--blue); background:#fff; }
+.tp-tappa-pill.best { border-color:var(--gold); color:var(--gold); }
+.tp-track { flex:1; height:10px; background:var(--border); border-radius:5px; overflow:hidden; }
+.tp-fill { height:100%; border-radius:5px; background:var(--blue-light); transition:width .5s cubic-bezier(.4,0,.2,1); }
+.tp-fill.best { background:var(--gold); }
+.tp-tempo { font-family:'Barlow Condensed',sans-serif; font-size:1.1rem; font-weight:700; font-variant-numeric:tabular-nums; color:var(--blue); min-width:72px; text-align:right; }
+.tp-tempo.best { color:var(--gold); }
+.tp-empty { padding:20px 16px; text-align:center; color:var(--muted); font-size:0.88rem; background:#fff; }
+
 /* NEWS TICKER */
 .ticker-wrap { background: var(--blue); overflow: hidden; padding: 0; margin-bottom: 1rem; border-radius: var(--radius); }
 .ticker { display: flex; align-items: center; height: 36px; }
@@ -1064,6 +1097,72 @@ function buildAtletiIndex(sd){
 }
 
 // ============================================================
+// TEMPI PERSONALI — funzioni globali per interattività
+// ============================================================
+function tpSelectGara(btn,aid,garaName){
+  // Deseleziona tutte le pill e nasconde tutti i detail nello stesso contenitore
+  const wrap=btn.closest('.tp-wrap');
+  wrap.querySelectorAll('.tp-pill').forEach(p=>p.classList.remove('on'));
+  wrap.querySelectorAll('.tp-detail').forEach(d=>d.classList.remove('on'));
+  btn.classList.add('on');
+  const detail=Array.from(wrap.querySelectorAll('.tp-detail')).find(d=>d.dataset.gara===garaName);
+  if(detail)detail.classList.add('on');
+}
+
+function tpCycleSort(headEl,aid,by){
+  if(!window._tpSort)window._tpSort={};
+  if(!window._tpSort[aid])window._tpSort[aid]={by:'date',dir:'asc'};
+  const sort=window._tpSort[aid];
+  if(sort.by===by){sort.dir=sort.dir==='asc'?'desc':'asc';}else{sort.by=by;sort.dir='asc';}
+
+  // Aggiorna intestazioni
+  const detail=headEl.closest('.tp-detail');
+  if(!detail)return;
+  detail.querySelectorAll('.tp-col-head').forEach(h=>h.classList.remove('active'));
+  detail.querySelectorAll('.tp-si').forEach(s=>{s.className='tp-si both';});
+  headEl.classList.add('active');
+  const si=headEl.querySelector('.tp-si');
+  if(si)si.className='tp-si '+(sort.dir);
+
+  // Recupera garaName e re-renderizza le barre
+  const garaName=detail.dataset.gara;
+  const wrapEl=detail.closest('.tp-wrap');
+  const pills=wrapEl?wrapEl.querySelectorAll('.tp-pill'):[];
+  let panelIdx=0;
+  pills.forEach((p,i)=>{if(p.textContent.trim()===garaName)panelIdx=i;});
+  const barsEl=document.getElementById('tp-bars-'+aid+'-'+panelIdx);
+  if(!barsEl)return;
+
+  // Ricostruisce le righe ordinate inline
+  const allRows=window._tpRowsCache&&window._tpRowsCache[aid]&&window._tpRowsCache[aid][garaName];
+  if(!allRows)return;
+  const rows=[...allRows];
+  rows.sort((a,b)=>{
+    let cmp=sort.by==='date'?a.sortIdx-b.sortIdx:toSec(a.tempo)-toSec(b.tempo);
+    return sort.dir==='asc'?cmp:-cmp;
+  });
+  const secs=rows.map(r=>toSec(r.tempo));
+  const bestSec=Math.min(...secs),worstSec=Math.max(...secs);
+  const range=worstSec-bestSec||1;
+  barsEl.innerHTML=rows.map(r=>{
+    const sec=toSec(r.tempo);
+    const pct=Math.min(100,38+((sec-bestSec)/range)*62);
+    const best=r.isBest;
+    return`<div class="tp-bar-row">
+      <div class="tp-bar-meta">
+        <span class="tp-bar-date">${r.dateLabel}</span>
+        <span class="tp-stag-pill">${r.stagShort}</span>
+        <span class="tp-tappa-pill${best?' best':''}">
+          ${r.tappaShort}
+        </span>
+      </div>
+      <div class="tp-track"><div class="tp-fill${best?' best':''}" style="width:${pct}%"></div></div>
+      <span class="tp-tempo${best?' best':''}">${r.tempo}</span>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
 // SCHEDA ATLETA
 // ============================================================
 function schedaSearch(){
@@ -1247,58 +1346,105 @@ async function schedaShow(idx){
   let gareHtml='';
 
   if(colonneAll.length&&gareNomi.length){
-    // Raggruppa colonne per stagione per intestazione doppia
-    const stagGroups=[];
-    colonneAll.forEach(c=>{
-      if(!stagGroups.length||stagGroups[stagGroups.length-1].sid!==c.sid)
-        stagGroups.push({sid:c.sid,label:c.stagLabel,isCurrent:c.isCurrent,count:0});
-      stagGroups[stagGroups.length-1].count++;
-    });
-
-    const minW=140+colonneAll.length*90;
-
-    gareHtml+=`<div style="margin-top:1rem">
-      <div style="background:var(--blue);color:#fff;padding:8px 16px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.95rem;letter-spacing:0.06em;border-radius:var(--radius) var(--radius) 0 0">
-        Tempi personali
-      </div>
-      <div style="overflow-x:auto">
-      <table style="width:100%;border-collapse:collapse;font-size:0.8rem;min-width:${minW}px">
-        <thead>
-          <!-- Riga 1: etichetta stagione centrata sul gruppo di colonne -->
-          <tr style="background:var(--blue)">
-            <th style="background:var(--blue)" rowspan="2"></th>
-            ${stagGroups.map(g=>`<th colspan="${g.count}" style="text-align:center;padding:7px 4px 4px;font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:700;letter-spacing:0.06em;color:#fff;border-left:2px solid rgba(255,255,255,0.25)">${g.label}</th>`).join('')}
-          </tr>
-          <!-- Riga 2: tappe -->
-          <tr style="background:var(--blue);border-bottom:2px solid rgba(255,255,255,0.3)">
-            ${colonneAll.map((c,ci)=>{
-              const isFirstInStag=ci===0||colonneAll[ci-1].sid!==c.sid;
-              const colColor=c.isTF?'#fca5a5':'rgba(255,255,255,0.9)';
-              return`<th style="text-align:center;padding:3px 8px 7px;font-family:'Barlow Condensed',sans-serif;font-size:0.8rem;font-weight:600;white-space:nowrap;color:${colColor};${isFirstInStag?'border-left:2px solid rgba(255,255,255,0.25);':''}min-width:90px">${c.colLabel}<div style="font-weight:400;font-size:0.68rem;color:rgba(255,255,255,0.6);margin-top:1px">${c.data}</div></th>`;
-            }).join('')}
-          </tr>
-        </thead>
-        <tbody>`;
-
-    gareNomi.forEach((garaName,ri)=>{
-      const rowBg=ri%2===0?'':'background:#f8faf9';
-      gareHtml+=`<tr style="${rowBg};border-bottom:1px solid #f0f0f0">
-        <td style="padding:6px 12px;font-weight:600;color:var(--text);white-space:nowrap">${garaName}</td>`;
+    // Build per-gara row data: flat list of {dateLabel, stagShort, tappaShort, tempo, sortIdx, isBest}
+    const garaRows={};
+    gareNomi.forEach(garaName=>{
+      const rows=[];
       colonneAll.forEach((c,ci)=>{
         const v=tutteGare[garaName]?.[c.sid+'|'+c.tappaId];
-        const isFirstInStag=ci===0||colonneAll[ci-1].sid!==c.sid;
-        const borderL=isFirstInStag?`border-left:2px solid ${c.isCurrent?'#bfdbfe':'#e5e7eb'};`:'';
-        if(!v){
-          gareHtml+=`<td style="text-align:center;padding:6px 8px;color:#d1d5db;${borderL}">—</td>`;
-        } else {
-          gareHtml+=`<td style="text-align:center;padding:6px 8px;${borderL}${c.isCurrent?'background:#eff6ff;':''}">
-            <span style="font-weight:600;color:var(--text);font-size:0.8rem">${v.tempo}</span>
-          </td>`;
-        }
+        if(!v)return;
+        // Abbrevia etichetta stagione: "2024/25" → "24/25"
+        const stagShort=(c.stagLabel||'').replace(/^20/,'');
+        // Abbrevia tappa: T1, T2, TF→Fin
+        const tappaShort=c.tappaId==='TF'?'Fin':c.tappaId;
+        // Data leggibile: già in c.data (es. "15 novembre 2024"), altrimenti stagione+tappa
+        const dateLabel=c.data||`${stagShort} ${c.colLabel}`;
+        rows.push({dateLabel,stagShort,tappaShort,tempo:v.tempo,sortIdx:ci,isBest:false});
       });
-      gareHtml+=`</tr>`;
+      // Calcola miglior tempo
+      let bestSec=Infinity;
+      rows.forEach(r=>{const s=toSec(r.tempo);if(s<bestSec)bestSec=s;});
+      rows.forEach(r=>{r.isBest=(toSec(r.tempo)===bestSec);});
+      garaRows[garaName]=rows;
     });
-    gareHtml+=`</tbody></table></div>`;
+
+    // Salva cache righe per re-sort senza ricalcolo
+    if(!window._tpRowsCache)window._tpRowsCache={};
+    window._tpRowsCache[aid]=garaRows;
+
+    // Stato ordinamento per atleta (chiave = aid)
+    if(!window._tpSort)window._tpSort={};
+    if(!window._tpSort[aid])window._tpSort[aid]={by:'date',dir:'asc'};
+
+    // Funzione render barre per una gara
+    function tpRenderBars(garaName,aid){
+      const rows=[...garaRows[garaName]];
+      const sort=window._tpSort[aid];
+      rows.sort((a,b)=>{
+        let cmp=0;
+        if(sort.by==='date')cmp=a.sortIdx-b.sortIdx;
+        else cmp=toSec(a.tempo)-toSec(b.tempo);
+        return sort.dir==='asc'?cmp:-cmp;
+      });
+      // calcola range per fill barre (più tempo=barra più lunga)
+      const secs=rows.map(r=>toSec(r.tempo));
+      const bestSec=Math.min(...secs),worstSec=Math.max(...secs);
+      const range=worstSec-bestSec||1;
+      let html='';
+      rows.forEach(r=>{
+        const sec=toSec(r.tempo);
+        const pct=Math.min(100,38+((sec-bestSec)/range)*62);
+        const best=r.isBest;
+        html+=`<div class="tp-bar-row">
+          <div class="tp-bar-meta">
+            <span class="tp-bar-date">${r.dateLabel}</span>
+            <span class="tp-stag-pill">${r.stagShort}</span>
+            <span class="tp-tappa-pill${best?' best':''}">
+              ${r.tappaShort}
+            </span>
+          </div>
+          <div class="tp-track"><div class="tp-fill${best?' best':''}" style="width:${pct}%"></div></div>
+          <span class="tp-tempo${best?' best':''}">${r.tempo}</span>
+        </div>`;
+      });
+      return html;
+    }
+
+    // Nav pills + pannelli
+    const firstGara=gareNomi[0];
+    let navHtml=`<div class="tp-nav"><span class="tp-nav-label">Gara:</span>`;
+    gareNomi.forEach((garaName,gi)=>{
+      const on=gi===0?' on':'';
+      navHtml+=`<button class="tp-pill${on}" onclick="tpSelectGara(this,'${aid}','${garaName.replace(/'/g,"\\'")}')">${garaName}</button>`;
+    });
+    navHtml+=`</div>`;
+
+    let detailsHtml='';
+    gareNomi.forEach((garaName,gi)=>{
+      const on=gi===0?' on':'';
+      const sort=window._tpSort[aid];
+      const dateSi=sort.by==='date'?(sort.dir==='asc'?'asc':'desc'):'both';
+      const tempoSi=sort.by==='tempo'?(sort.dir==='asc'?'asc':'desc'):'both';
+      detailsHtml+=`<div class="tp-detail${on}" data-gara="${garaName.replace(/"/g,'&quot;')}" data-aid="${aid}">
+        <div class="tp-col-heads">
+          <div class="tp-col-head tp-col-head-data${sort.by==='date'?' active':''}" onclick="tpCycleSort(this,'${aid}','date')">
+            Data <span class="tp-si ${dateSi}"></span>
+          </div>
+          <div class="tp-col-head tp-col-head-tempo${sort.by==='tempo'?' active':''}" onclick="tpCycleSort(this,'${aid}','tempo')">
+            Tempo <span class="tp-si ${tempoSi}"></span>
+          </div>
+        </div>
+        <div class="tp-bars" id="tp-bars-${aid}-${gi}">
+          ${tpRenderBars(garaName,aid)}
+        </div>
+      </div>`;
+    });
+
+    gareHtml+=`<div class="tp-wrap" style="margin-top:1rem">
+      <div class="tp-header">Tempi personali</div>
+      ${navHtml}
+      ${detailsHtml}
+    </div>`;
 
     // Staffette stagione corrente
     const staffAtletaCurr=[...DS,...DSF].filter(r=>r[5].toUpperCase().includes(nome.toUpperCase()));
