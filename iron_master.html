@@ -1218,7 +1218,9 @@ async function schedaShow(idx){
   const tappaLabel=(t,m)=>{if(!m)return t;const tp=m.tappe?.find(x=>x.id===t);return tp?tp.label:t;};
 
   // Stagioni dalla più recente alla più vecchia (seasons è già newest-first in index.json)
+  console.log('[tabella] seasons=',seasons.map(s=>s.id),'seasonData keys=',Object.keys(seasonData));
   const tutteLeStag=[...seasons].filter(s=>!s.solo_tempi&&seasonData[s.id]);
+  console.log('[tabella] tutteLeStag=',tutteLeStag.map(s=>s.id));
 
   const colonneAll=[]; // {sid, tappaId, colLabel, data, isCurrent, isTF, stagLabel}
   tutteLeStag.forEach(s=>{
