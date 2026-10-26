@@ -1193,14 +1193,19 @@ function tpCycleSort(headEl,aid,by){
   if(catRefSec){
     const meta=window._tpAtletaMeta&&window._tpAtletaMeta[aid];
     const catLabel=meta?`${meta.gen} ${meta.cat}`:'Iron';
-    const recClr=meta&&meta.gen==='F'?'#9d2a5e':'#1a3c6e';
-    const recClrBg=meta&&meta.gen==='F'?'rgba(157,42,94,.12)':'rgba(26,60,110,.12)';
-    const recClrBd=meta&&meta.gen==='F'?'rgba(157,42,94,.35)':'rgba(26,60,110,.35)';
+    const atletaGen=meta?meta.gen:'';
+    const recClr=atletaGen==='F'?'#9d2a5e':'#1a3c6e';
+    const recClrBg=atletaGen==='F'?'rgba(157,42,94,.12)':'rgba(26,60,110,.12)';
+    const recClrBd=atletaGen==='F'?'rgba(157,42,94,.35)':'rgba(26,60,110,.35)';
+    const personalBest=Math.min(...rows.map(r=>toSec(r.tempo)));
+    const gapSec=personalBest-catRefSec;
+    const gapStr=gapSec>0?`+${gapSec.toFixed(2)}"`:gapSec<0?`${gapSec.toFixed(2)}"`:null;
     const refPct=Math.min(100,38+((catRefSec-bestSec)/range)*62);
     barsHtml+=`<div class="tp-bar-row tp-ref-row" style="border-top-color:${recClr}">
       <div class="tp-bar-meta">
-        <span class="tp-bar-date" style="color:${recClr};font-weight:700">Record</span>
+        <span class="tp-bar-date" style="color:${recClr};font-weight:700">Record${gapStr?` <span style="font-size:.7rem;font-weight:600;opacity:.8">${gapStr}</span>`:''}</span>
         <span class="tp-stag-pill" style="background:${recClrBg};color:${recClr};border-color:${recClrBd}">${catLabel}</span>
+        <span class="tp-tappa-pill" style="border-color:${recClr};color:${recClr};background:${recClrBg}">${atletaGen||'?'}</span>
       </div>
       <div class="tp-track"><div class="tp-fill" style="width:${refPct}%;background:${recClr};opacity:.7"></div></div>
       <span class="tp-tempo" style="color:${recClr};font-weight:700">${fmtSec(catRefSec)}</span>
@@ -1457,10 +1462,16 @@ async function schedaShow(idx){
         const recClr=atletaGen==='F'?'#9d2a5e':'#1a3c6e';
         const recClrBg=atletaGen==='F'?'rgba(157,42,94,.12)':'rgba(26,60,110,.12)';
         const recClrBd=atletaGen==='F'?'rgba(157,42,94,.35)':'rgba(26,60,110,.35)';
+        const personalBest=Math.min(...rows.map(r=>toSec(r.tempo)));
+        const gapSec=personalBest-catRefSec;
+        const gapStr=gapSec>0?`+${gapSec.toFixed(2)}"`:gapSec<0?`${gapSec.toFixed(2)}"`:null;
         html+=`<div class="tp-bar-row tp-ref-row" style="border-top-color:${recClr}">
           <div class="tp-bar-meta">
-            <span class="tp-bar-date" style="color:${recClr};font-weight:700">Record</span>
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span class="tp-bar-date" style="color:${recClr};font-weight:700">Record${gapStr?` <span style="font-size:.7rem;font-weight:600;opacity:.8">${gapStr}</span>`:''}</span>
+            </div>
             <span class="tp-stag-pill" style="background:${recClrBg};color:${recClr};border-color:${recClrBd}">${catLabel}</span>
+            <span class="tp-tappa-pill" style="border-color:${recClr};color:${recClr};background:${recClrBg}">${atletaGen||'?'}</span>
           </div>
           <div class="tp-track"><div class="tp-fill" style="width:${refPct}%;background:${recClr};opacity:.7"></div></div>
           <span class="tp-tempo" style="color:${recClr};font-weight:700">${refTempoFmt}</span>
