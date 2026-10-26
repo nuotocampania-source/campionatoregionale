@@ -615,14 +615,15 @@ function toSec(t){
   return parseInt(p[0])*60+parseInt(p[1])+(parseInt(p[2]||0)/100);
 }
 function fmtSec(s){
-  // secondi decimali → formato mm:ss,cc oppure ss,cc
+  // secondi decimali → formato 00:ss,cc (sempre con minuti a 2 cifre, come in produzione)
   const cc=Math.round((s%1)*100);
   const intS=Math.floor(s);
   const m=Math.floor(intS/60);
   const sec=intS%60;
   const ccStr=String(cc).padStart(2,'0');
   const secStr=String(sec).padStart(2,'0');
-  return m>0?`${m}:${secStr},${ccStr}`:`${secStr},${ccStr}`;
+  const mStr=String(m).padStart(2,'0');
+  return`${mStr}:${secStr},${ccStr}`;
 }
 
 // ============================================================
@@ -1186,7 +1187,7 @@ function tpCycleSort(headEl,aid,by){
         </span>
       </div>
       <div class="tp-track"><div class="tp-fill${best?' best':''}" style="width:${pct}%"></div></div>
-      <span class="tp-tempo${best?' best':''}">${r.tempo}</span>
+      <span class="tp-tempo${best?' best':''}">${fmtSec(toSec(r.tempo))}</span>
     </div>`;
   }).join('');
   if(catRefSec){
@@ -1444,7 +1445,7 @@ async function schedaShow(idx){
             </span>
           </div>
           <div class="tp-track"><div class="tp-fill${best?' best':''}" style="width:${pct}%"></div></div>
-          <span class="tp-tempo${best?' best':''}">${r.tempo}</span>
+          <span class="tp-tempo${best?' best':''}">${fmtSec(toSec(r.tempo))}</span>
         </div>`;
       });
 
