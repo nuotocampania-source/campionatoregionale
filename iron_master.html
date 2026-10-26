@@ -147,10 +147,20 @@ body { font-family: 'Barlow', sans-serif; background: var(--bg); color: var(--te
 }
 .tab:hover:not(.on) { border-color: var(--blue); color: var(--blue); background: var(--blue-pale); }
 @media (max-width: 600px) {
-  .tabs { grid-template-columns: repeat(3, 1fr); }
+  .tabs {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .tab {
+    flex: 0 0 calc(33.333% - 4px);
+    min-width: 0;
+  }
 }
 @media (max-width: 380px) {
-  .tabs { grid-template-columns: 1fr 1fr; }
+  .tab {
+    flex: 0 0 calc(50% - 3px);
+  }
 }
 
 /* FILTERS */
@@ -358,6 +368,7 @@ thead th.sort-desc::after { content: '▼'; opacity: 1; }
 .tp-si.both::after { content:'↕'; }
 .tp-bars { display:flex; flex-direction:column; gap:10px; }
 .tp-bar-row { display:flex; align-items:center; gap:10px; }
+.tp-ref-row { border-top:1.5px dashed var(--gold); padding-top:10px; margin-top:0; }
 .tp-bar-meta { display:grid; grid-template-columns:80px 38px 30px; align-items:center; gap:4px; flex-shrink:0; }
 .tp-bar-date { font-size:0.8rem; font-weight:600; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .tp-stag-pill { height:18px; border-radius:9px; flex-shrink:0; display:inline-flex; align-items:center; justify-content:center; font-family:'Barlow Condensed',sans-serif; font-size:0.65rem; font-weight:700; letter-spacing:.02em; padding:0 5px; border:1.5px solid var(--border); color:var(--muted); background:var(--bg); white-space:nowrap; }
@@ -602,6 +613,16 @@ function toSec(t){
   if(!t||t==='—')return Infinity;
   const p=String(t).replace(':','.').split('.');
   return parseInt(p[0])*60+parseInt(p[1])+(parseInt(p[2]||0)/100);
+}
+function fmtSec(s){
+  // secondi decimali → formato mm:ss,cc oppure ss,cc
+  const cc=Math.round((s%1)*100);
+  const intS=Math.floor(s);
+  const m=Math.floor(intS/60);
+  const sec=intS%60;
+  const ccStr=String(cc).padStart(2,'0');
+  const secStr=String(sec).padStart(2,'0');
+  return m>0?`${m}:${secStr},${ccStr}`:`${secStr},${ccStr}`;
 }
 
 // ============================================================
@@ -1338,7 +1359,7 @@ async function schedaShow(idx){
         const dateLabel=rawDate?rawDate.replace(/^\d+\s+/,''):`${stagShort} ${c.colLabel}`;
         // Timestamp per ordinamento: data reale se disponibile, altrimenti indice colonna
         const sortTs=_parseITDate(rawDate)??ci*1e10;
-        rows.push({dateLabel,stagShort,tappaShort,tempo:v.tempo,sortTs,isBest:false});
+        rows.push({dateLabel,stagShort,tappaShort,tempo:v.tempo,punti:v.punti||0,sortTs,isBest:false});
       });
       // Calcola miglior tempo
       let bestSec=Infinity;
@@ -1365,8 +1386,21 @@ async function schedaShow(idx){
         else cmp=toSec(a.tempo)-toSec(b.tempo);
         return sort.dir==='asc'?cmp:-cmp;
       });
-      // calcola range per fill barre (più tempo=barra più lunga)
+
+      // Calcola tempo di riferimento categoria dalla riga col miglior punteggio Iron
+      // Formula: catRef = myBest * (punti/100)  →  punti = catRef/myBest*100
+      // Quindi: catRef = bestSec / (punti/100)
+      let catRefSec=null;
+      const rowsWithPunti=rows.filter(r=>r.punti>0);
+      if(rowsWithPunti.length){
+        // prendi la riga col punteggio più alto (= il miglior tempo ha il punti più alto)
+        const bestRow=rowsWithPunti.reduce((a,b)=>b.punti>a.punti?b:a);
+        catRefSec=toSec(bestRow.tempo)*(bestRow.punti/100);
+      }
+
+      // calcola range per fill barre includendo eventualmente il riferimento
       const secs=rows.map(r=>toSec(r.tempo));
+      if(catRefSec) secs.push(catRefSec);
       const bestSec=Math.min(...secs),worstSec=Math.max(...secs);
       const range=worstSec-bestSec||1;
       let html='';
@@ -1386,6 +1420,20 @@ async function schedaShow(idx){
           <span class="tp-tempo${best?' best':''}">${r.tempo}</span>
         </div>`;
       });
+
+      // Riga fissa riferimento categoria Iron (sempre in fondo)
+      if(catRefSec){
+        const refPct=Math.min(100,38+((catRefSec-bestSec)/range)*62);
+        const refTempoFmt=fmtSec(catRefSec);
+        html+=`<div class="tp-bar-row tp-ref-row">
+          <div class="tp-bar-meta">
+            <span class="tp-bar-date" style="color:var(--gold);font-weight:700">Riferimento cat.</span>
+            <span class="tp-stag-pill" style="background:rgba(200,150,10,.15);color:var(--gold);border-color:rgba(200,150,10,.3)">Iron</span>
+          </div>
+          <div class="tp-track"><div class="tp-fill" style="width:${refPct}%;background:var(--gold);opacity:.7"></div></div>
+          <span class="tp-tempo" style="color:var(--gold);font-weight:700">${refTempoFmt}</span>
+        </div>`;
+      }
       return html;
     }
 
