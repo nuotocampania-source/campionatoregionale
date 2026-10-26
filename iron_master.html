@@ -1388,14 +1388,14 @@ async function schedaShow(idx){
       });
 
       // Calcola tempo di riferimento categoria dalla riga col miglior punteggio Iron
-      // Formula: catRef = myBest * (punti/100)  →  punti = catRef/myBest*100
-      // Quindi: catRef = bestSec / (punti/100)
+      // Formula FINA-style: punti = (catRef/tempo)^3 * 1000
+      // Quindi: catRef = (punti/1000)^(1/3) * tempo
       let catRefSec=null;
       const rowsWithPunti=rows.filter(r=>r.punti>0);
       if(rowsWithPunti.length){
-        // prendi la riga col punteggio più alto (= il miglior tempo ha il punti più alto)
+        // prendi la riga col punteggio più alto per stima catRef più precisa
         const bestRow=rowsWithPunti.reduce((a,b)=>b.punti>a.punti?b:a);
-        catRefSec=toSec(bestRow.tempo)*(bestRow.punti/100);
+        catRefSec=Math.pow(bestRow.punti/1000,1/3)*toSec(bestRow.tempo);
       }
 
       // calcola range per fill barre includendo eventualmente il riferimento
