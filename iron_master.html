@@ -1192,7 +1192,7 @@ function tpCycleSort(headEl,aid,by){
   }).join('');
   if(catRefSec){
     const meta=window._tpAtletaMeta&&window._tpAtletaMeta[aid];
-    const catLabel=meta?`${meta.gen} ${meta.cat}`:'Iron';
+    const catLabel=meta?meta.cat:'Iron';
     const atletaGen=meta?meta.gen:'';
     const recClr=atletaGen==='F'?'#9d2a5e':'#1a3c6e';
     const recClrBg=atletaGen==='F'?'rgba(157,42,94,.12)':'rgba(26,60,110,.12)';
@@ -1457,7 +1457,7 @@ async function schedaShow(idx){
       if(catRefSec){
         const refPct=Math.min(100,38+((catRefSec-bestSec)/range)*62);
         const refTempoFmt=fmtSec(catRefSec);
-        const catLabel=(atletaGen&&atletaCat)?`${atletaGen} ${atletaCat}`:'Iron';
+        const catLabel=atletaCat||'Iron';
         const recClr=atletaGen==='F'?'#9d2a5e':'#1a3c6e';
         const recClrBg=atletaGen==='F'?'rgba(157,42,94,.12)':'rgba(26,60,110,.12)';
         const recClrBd=atletaGen==='F'?'rgba(157,42,94,.35)':'rgba(26,60,110,.35)';
