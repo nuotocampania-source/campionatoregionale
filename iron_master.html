@@ -1203,9 +1203,9 @@ function tpCycleSort(headEl,aid,by){
     const refPct=Math.min(100,38+((catRefSec-bestSec)/range)*62);
     barsHtml+=`<div class="tp-bar-row tp-ref-row" style="border-top-color:${recClr}">
       <div class="tp-bar-meta">
-        <span class="tp-bar-date" style="color:${recClr};font-weight:700">Record${gapStr?` <span style="font-size:.7rem;font-weight:600;opacity:.8">${gapStr}</span>`:''}</span>
-        <span class="tp-stag-pill" style="background:${recClrBg};color:${recClr};border-color:${recClrBd}">${catLabel}</span>
-        <span class="tp-tappa-pill" style="border-color:${recClr};color:${recClr};background:${recClrBg}">${atletaGen||'?'}</span>
+        <span class="tp-bar-date" style="color:${recClr};font-weight:700">Record <span style="font-weight:600">${catLabel}</span></span>
+        ${gapStr?`<span class="tp-stag-pill" style="background:${recClrBg};color:${recClr};border-color:${recClrBd};font-size:.75rem">${gapStr}</span>`:'<span></span>'}
+        <span></span>
       </div>
       <div class="tp-track"><div class="tp-fill" style="width:${refPct}%;background:${recClr};opacity:.7"></div></div>
       <span class="tp-tempo" style="color:${recClr};font-weight:700">${fmtSec(catRefSec)}</span>
@@ -1467,11 +1467,9 @@ async function schedaShow(idx){
         const gapStr=gapSec>0?`+${gapSec.toFixed(2)}"`:gapSec<0?`${gapSec.toFixed(2)}"`:null;
         html+=`<div class="tp-bar-row tp-ref-row" style="border-top-color:${recClr}">
           <div class="tp-bar-meta">
-            <div style="display:flex;flex-direction:column;gap:1px">
-              <span class="tp-bar-date" style="color:${recClr};font-weight:700">Record${gapStr?` <span style="font-size:.7rem;font-weight:600;opacity:.8">${gapStr}</span>`:''}</span>
-            </div>
-            <span class="tp-stag-pill" style="background:${recClrBg};color:${recClr};border-color:${recClrBd}">${catLabel}</span>
-            <span class="tp-tappa-pill" style="border-color:${recClr};color:${recClr};background:${recClrBg}">${atletaGen||'?'}</span>
+            <span class="tp-bar-date" style="color:${recClr};font-weight:700">Record <span style="font-weight:600">${catLabel}</span></span>
+            ${gapStr?`<span class="tp-stag-pill" style="background:${recClrBg};color:${recClr};border-color:${recClrBd};font-size:.75rem">${gapStr}</span>`:'<span></span>'}
+            <span></span>
           </div>
           <div class="tp-track"><div class="tp-fill" style="width:${refPct}%;background:${recClr};opacity:.7"></div></div>
           <span class="tp-tempo" style="color:${recClr};font-weight:700">${refTempoFmt}</span>
