@@ -154,8 +154,8 @@ body { font-family: 'Barlow', sans-serif; background: var(--bg); color: var(--te
     align-items: stretch;
   }
   .tab {
-    flex: 0 0 calc(33.333% - 4px);
-    min-width: 0;
+    flex: 1 1 calc(33.333% - 4px);
+    min-width: calc(33.333% - 4px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -163,7 +163,8 @@ body { font-family: 'Barlow', sans-serif; background: var(--bg); color: var(--te
 }
 @media (max-width: 380px) {
   .tab {
-    flex: 0 0 calc(50% - 3px);
+    flex: 1 1 calc(50% - 3px);
+    min-width: calc(50% - 3px);
   }
 }
 
