@@ -151,10 +151,14 @@ body { font-family: 'Barlow', sans-serif; background: var(--bg); color: var(--te
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+    align-items: stretch;
   }
   .tab {
     flex: 0 0 calc(33.333% - 4px);
     min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 @media (max-width: 380px) {
@@ -1170,6 +1174,14 @@ function tpCycleSort(headEl,aid,by){
     const bestRow=rowsWithPunti.reduce((a,b)=>b.punti>a.punti?b:a);
     catRefSec=Math.pow(bestRow.punti/1000,1/3)*toSec(bestRow.tempo);
   }
+  // Fallback: usa cache globale calcolata su tutti gli atleti delle tappe regolari
+  if(!catRefSec&&window._catRefGlobal){
+    const meta=window._tpAtletaMeta&&window._tpAtletaMeta[aid];
+    if(meta){
+      const normCat=meta.cat?meta.cat.replace(/^([A-Z])(\d)/,'$1 $2'):meta.cat;
+      catRefSec=window._catRefGlobal[garaName+'|'+meta.gen+'|'+normCat]||null;
+    }
+  }
   const secs=rows.map(r=>toSec(r.tempo));
   if(catRefSec)secs.push(catRefSec);
   const bestSec=Math.min(...secs),worstSec=Math.max(...secs);
@@ -1244,6 +1256,36 @@ async function schedaShow(idx){
   await ensureTempiLoaded(currentSeason);
   // Ricostruisci l'indice con i dati storici ora disponibili (atletiList cambia, ma usiamo nome/gen/anno)
   buildAtletiIndex(seasonData[currentSeason]);
+
+  // Costruisce cache globale catRef per (gara|gen|cat) da tutte le tappe regolari
+  // Necessaria per mostrare il record di categoria anche per atleti che gareggiano solo al finale
+  // cat normalizzata: "M25" → "M 25", "U17" → "U 17"
+  const _normCat=c=>c?c.replace(/^([A-Z])(\d)/,'$1 $2'):c;
+  // Invalida cache se i dati potrebbero essere cambiati (es. stagione diversa)
+  const _catRefSeasonKey=seasons.map(s=>s.id+(seasonData[s.id]?'ok':'?')).join(',');
+  if(!window._catRefGlobal||window._catRefGlobalKey!==_catRefSeasonKey){
+    const cache={};
+    seasons.forEach(s=>{
+      const hsd=seasonData[s.id];
+      if(!hsd) return;
+      (hsd.D||[]).forEach(r=>{
+        const punti=parseFloat(r[9])||0;
+        if(punti<=0) return;
+        // r = [tappa, pos, nome, anno, soc, gara, gen, cat, tempo, punti]
+        const gara=r[5], rgen=r[6], rcat=_normCat(r[7]);
+        const k=gara+'|'+rgen+'|'+rcat;
+        const prev=cache[k];
+        if(!prev||punti>prev.punti){
+          cache[k]={punti,tempo:r[8]};
+        }
+      });
+    });
+    window._catRefGlobal={};
+    Object.entries(cache).forEach(([k,best])=>{
+      window._catRefGlobal[k]=Math.pow(best.punti/1000,1/3)*toSec(best.tempo);
+    });
+    window._catRefGlobalKey=_catRefSeasonKey;
+  }
 
   const key=_nome+'|'+_gen+'|'+_anno;
   const a=atletiIndex[key];
@@ -1428,6 +1470,12 @@ async function schedaShow(idx){
         // prendi la riga col punteggio più alto per stima catRef più precisa
         const bestRow=rowsWithPunti.reduce((a,b)=>b.punti>a.punti?b:a);
         catRefSec=Math.pow(bestRow.punti/1000,1/3)*toSec(bestRow.tempo);
+      }
+      // Fallback: usa cache globale calcolata su tutti gli atleti delle tappe regolari
+      // (serve per atleti che hanno solo risultati del finale, dove punti=0)
+      if(!catRefSec&&window._catRefGlobal){
+        const normCat=atletaCat?atletaCat.replace(/^([A-Z])(\d)/,'$1 $2'):atletaCat;
+        catRefSec=window._catRefGlobal[garaName+'|'+atletaGen+'|'+normCat]||null;
       }
 
       // calcola range per fill barre includendo eventualmente il riferimento
