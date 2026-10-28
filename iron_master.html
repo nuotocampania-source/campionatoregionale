@@ -1167,15 +1167,9 @@ function tpCycleSort(headEl,aid,by){
     let cmp=sort.by==='date'?a.sortTs-b.sortTs:toSec(a.tempo)-toSec(b.tempo);
     return sort.dir==='asc'?cmp:-cmp;
   });
-  // Calcola catRef
+  // Record categoria = miglior tempo reale da cache globale (tappe + finale, tutte le stagioni)
   let catRefSec=null;
-  const rowsWithPunti=rows.filter(r=>r.punti>0);
-  if(rowsWithPunti.length){
-    const bestRow=rowsWithPunti.reduce((a,b)=>b.punti>a.punti?b:a);
-    catRefSec=Math.pow(bestRow.punti/1000,1/3)*toSec(bestRow.tempo);
-  }
-  // Fallback: usa cache globale calcolata su tutti gli atleti delle tappe regolari
-  if(!catRefSec&&window._catRefGlobal){
+  if(window._catRefGlobal){
     const meta=window._tpAtletaMeta&&window._tpAtletaMeta[aid];
     if(meta){
       const normCat=meta.cat?meta.cat.replace(/^([A-Z])(\d)/,'$1 $2'):meta.cat;
@@ -1264,26 +1258,22 @@ async function schedaShow(idx){
   // Invalida cache se i dati potrebbero essere cambiati (es. stagione diversa)
   const _catRefSeasonKey=seasons.map(s=>s.id+(seasonData[s.id]?'ok':'?')).join(',');
   if(!window._catRefGlobal||window._catRefGlobalKey!==_catRefSeasonKey){
-    const cache={};
+    // Record categoria = miglior tempo reale ottenuto in gara (tappe + finale)
+    // da qualsiasi atleta della categoria, in qualsiasi stagione disponibile.
+    // catRefSec è semplicemente toSec(miglior tempo).
+    const bestSec={}; // k -> secondi del miglior tempo
     seasons.forEach(s=>{
       const hsd=seasonData[s.id];
       if(!hsd) return;
-      (hsd.D||[]).forEach(r=>{
-        const punti=parseFloat(r[9])||0;
-        if(punti<=0) return;
-        // r = [tappa, pos, nome, anno, soc, gara, gen, cat, tempo, punti]
+      // Tappe regolari (D) e Finale (DF)
+      [...(hsd.D||[]),...(hsd.DF||[])].forEach(r=>{
         const gara=r[5], rgen=r[6], rcat=_normCat(r[7]);
         const k=gara+'|'+rgen+'|'+rcat;
-        const prev=cache[k];
-        if(!prev||punti>prev.punti){
-          cache[k]={punti,tempo:r[8]};
-        }
+        const sec=toSec(r[8]);
+        if(!bestSec[k]||sec<bestSec[k]) bestSec[k]=sec;
       });
     });
-    window._catRefGlobal={};
-    Object.entries(cache).forEach(([k,best])=>{
-      window._catRefGlobal[k]=Math.pow(best.punti/1000,1/3)*toSec(best.tempo);
-    });
+    window._catRefGlobal=bestSec;
     window._catRefGlobalKey=_catRefSeasonKey;
   }
 
@@ -1461,19 +1451,9 @@ async function schedaShow(idx){
         return sort.dir==='asc'?cmp:-cmp;
       });
 
-      // Calcola tempo di riferimento categoria dalla riga col miglior punteggio Iron
-      // Formula FINA-style: punti = (catRef/tempo)^3 * 1000
-      // Quindi: catRef = (punti/1000)^(1/3) * tempo
+      // Record categoria = miglior tempo reale da cache globale (tappe + finale, tutte le stagioni)
       let catRefSec=null;
-      const rowsWithPunti=rows.filter(r=>r.punti>0);
-      if(rowsWithPunti.length){
-        // prendi la riga col punteggio più alto per stima catRef più precisa
-        const bestRow=rowsWithPunti.reduce((a,b)=>b.punti>a.punti?b:a);
-        catRefSec=Math.pow(bestRow.punti/1000,1/3)*toSec(bestRow.tempo);
-      }
-      // Fallback: usa cache globale calcolata su tutti gli atleti delle tappe regolari
-      // (serve per atleti che hanno solo risultati del finale, dove punti=0)
-      if(!catRefSec&&window._catRefGlobal){
+      if(window._catRefGlobal){
         const normCat=atletaCat?atletaCat.replace(/^([A-Z])(\d)/,'$1 $2'):atletaCat;
         catRefSec=window._catRefGlobal[garaName+'|'+atletaGen+'|'+normCat]||null;
       }
