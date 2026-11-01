@@ -1252,26 +1252,29 @@ async function schedaShow(idx){
   // Ricostruisci l'indice con i dati storici ora disponibili (atletiList cambia, ma usiamo nome/gen/anno)
   buildAtletiIndex(seasonData[currentSeason]);
 
-  // Costruisce cache globale catRef per (gara|gen|cat) da tutte le tappe regolari
-  // Necessaria per mostrare il record di categoria anche per atleti che gareggiano solo al finale
+  // Costruisce cache globale catRef per (gara|gen|cat)
+  // Baseline = record_cat.json (calcolati con formula FINA su dati storici)
+  // Aggiornamento dinamico: se un atleta ottiene un tempo reale migliore, il record si aggiorna
   // cat normalizzata: "M25" → "M 25", "U17" → "U 17"
   const _normCat=c=>c?c.replace(/^([A-Z])(\d)/,'$1 $2'):c;
-  // Invalida cache se i dati potrebbero essere cambiati (es. stagione diversa)
+  // Invalida cache se i dati potrebbero essere cambiati
   const _catRefSeasonKey=seasons.map(s=>s.id+(seasonData[s.id]?'ok':'?')).join(',');
   if(!window._catRefGlobal||window._catRefGlobalKey!==_catRefSeasonKey){
-    // Record categoria = miglior tempo reale ottenuto in gara (tappe + finale)
-    // da qualsiasi atleta della categoria, in qualsiasi stagione disponibile.
-    // catRefSec è semplicemente toSec(miglior tempo).
-    const bestSec={}; // k -> secondi del miglior tempo
+    // 1. Carica baseline da record_cat.json (già in secondi)
+    let baseline={};
+    try {
+      baseline=await fetchJSON(BASE_URL+'data/record_cat.json');
+    } catch(e){ baseline={}; }
+    const bestSec=Object.assign({},baseline); // copia baseline
+    // 2. Aggiorna con miglior tempo reale (tappe + finale, tutte le stagioni)
     seasons.forEach(s=>{
       const hsd=seasonData[s.id];
       if(!hsd) return;
-      // Tappe regolari (D) e Finale (DF)
       [...(hsd.D||[]),...(hsd.DF||[])].forEach(r=>{
         const gara=r[5], rgen=r[6], rcat=_normCat(r[7]);
         const k=gara+'|'+rgen+'|'+rcat;
         const sec=toSec(r[8]);
-        if(!bestSec[k]||sec<bestSec[k]) bestSec[k]=sec;
+        if(sec && (!bestSec[k]||sec<bestSec[k])) bestSec[k]=sec;
       });
     });
     window._catRefGlobal=bestSec;
